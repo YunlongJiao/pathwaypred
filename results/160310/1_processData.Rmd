@@ -1,0 +1,85 @@
+---
+title: "Process ICGC BRCA data"
+author: "Yunlong Jiao"
+date: "10 March 2016"
+output: html_document
+---
+
+This script processes data and generates matrices for naive models later to make predictions.
+
+```{r setup}
+library(reshape2)
+knitr::opts_chunk$set(error = FALSE)
+set.seed(35875954)
+datapath <- '../../data/BRCA_saved_data/'
+```
+
+# Features
+
+Feature matrices are provided by Marta stored at `crom01:/fsclinic/common/analisis/data/BRCA_saved_data`.
+
+```{r features}
+# gene expression
+load(paste0(datapath, '110_genes_vals.RData'))
+
+# gene expression wrt those present in pathways
+load(paste0(datapath, '110_mini_genes_vals.RData'))
+
+# pathway-wise features
+load(paste0(datapath, '110_hipathia_matrices.RData'))
+
+# process all 6 matrices
+xlist <- ls(pattern = 'vals')
+for (xname in xlist) {
+  # check for no duplicated row- or col- names
+  stopifnot(!any(duplicated(rownames(get(xname)))))
+  stopifnot(!any(duplicated(colnames(get(xname)))))
+  stopifnot(!any(is.na(get(xname))))
+  assign(xname, t(get(xname))) # make patients in rows and features in cols
+  cat('-------------> ', xname, ' <------------- \n')
+  cat('n = ', nrow(get(xname)), '\t p = ', ncol(get(xname)), '\npreview[1:3,1:3] = \n')
+  print(get(xname)[1:3,1:3])
+  cat('\n')
+}
+# set samples
+samplelist <- unique(lapply(xlist, function(xname) rownames(get(xname))))
+stopifnot(length(samplelist) == 1)
+samplelist <- unlist(samplelist)
+nsample <- length(samplelist)
+```
+
+# Groups
+
+Binary classes are created from clinical info for classification.
+
+```{r groups}
+#### TODO
+rbinom.grp <- factor(rbinom(nsample, 1, 0.5), labels = c('neg', 'pos'))
+names(rbinom.grp) <- samplelist
+
+ylist <- ls(pattern = 'grp')
+```
+
+# Predictors
+
+```{r predictors}
+# see [path2repo]/src/func.R for predictors
+prlist <- paste0('predictor', c('LDA', 'RF', 'SVM'))
+```
+
+# Save up !!
+
+```{r save}
+# write out combinations of datasets
+melt(list(xlist, ylist, prlist))
+
+# save entire image to be loaded later
+if (!dir.exists('Robj')) dir.create('Robj')
+save.image('Robj/dat.RData')
+```
+
+# Session info
+
+```{r session_info}
+devtools::session_info()
+```
