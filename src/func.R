@@ -1,9 +1,11 @@
-library(caret)
-library(ROCR)
-library(survival)
-library(survcomp)
-library(ggplot2)
-# # import classifier libraries in predictors if needed
+# # generic libraries needed for general purpose
+# library(caret)
+# library(ROCR)
+# library(survival)
+# library(survcomp)
+# library(ggplot2)
+
+# # import classifier libraries in those predictors called
 # library(MASS) # LDA, logit
 # library(glmnet) # L1-GLM
 # library(e1071) # SVM
@@ -67,7 +69,11 @@ evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = names(table(ytst)
 	# ysurv is of class Surv containing true surv.time and surv.event, defaulted unavailable
 	# NOTE large pred$prob should be associated with short survival time!!
 	# NOTE F(beta=0.5) or equiv F(alpha=0.8) is used by default since we emphasize on precision more than recall, i.e. reduce FPR
-	
+  
+  library(ROCR)
+  library(survival)
+  library(survcomp)
+  
 	if(length(pred$class) != length(ytst)){
 		stop("Inconsistent prediction length!")
 	}
@@ -135,7 +141,9 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
 	# predictor is a char denoting the predictor function name (starting with predictorxxx)
   # pthres defaulted 0 does no indep signif feature reduction
 	# indepValidation() returns model performances validated against test set which have been trained on training set
-	
+  
+  library(survival)
+  
   classes <- sort(unique(as.character(ytr)))
   neg.label <- classes[1]; pos.label <- classes[2]
 	
@@ -192,7 +200,9 @@ crossValidation <- function(xtr, ytr, ..., seed=61215942, nfolds=5, nrepeats=10,
 	# elem_keepfold are those to keep as they come from each fold
 	# elem_inherit are those to inherit some parameters from res of subfold as in ensembleResults()
 	# crossValidation() returns cross validated results from a single dataset
-	
+  
+  library(caret)
+  
 	# data split
   if (!is.null(seed)) set.seed(seed)
 	foldIndices <- createMultiFolds(1:nrow(xtr), k=nfolds, times=nrepeats)
@@ -221,7 +231,9 @@ crossValidation <- function(xtr, ytr, ..., seed=61215942, nfolds=5, nrepeats=10,
 plotROCcv <- function(res, savepath)
 {
 	# res is the result list from calling indepValidation() or crossValidation(), ess having as elements list of $true.class and $test.prob (can be cross-fold result given by list)
-	
+  
+  library(ROCR)
+  
 	alpha <- function(b){return(1/(1+b*b))}
 	
 	if (!is.null(savepath)) pdf(savepath, height=10, width=15)
@@ -289,6 +301,9 @@ indepSignif <- function(xtr, ytr, method = "wilcox.test", ...)
 # 	# savepath needs to end in ".pdf"
 # 	# featIllustrate_static() defaults to run indepSignif() with inter-class histograms illustrating difference
 # 	
+#   
+#   library(ggplot2)
+#   
 # 	classes <- sort(unique(as.character(ytr)))
 # 	
 # 	if(is.null(featlist)){

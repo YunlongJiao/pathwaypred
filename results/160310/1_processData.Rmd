@@ -8,15 +8,15 @@ output: html_document
 This script processes data and generates matrices for naive models later to make predictions.
 
 ```{r setup}
-library(reshape2)
 knitr::opts_chunk$set(error = FALSE)
 set.seed(35875954)
+source("../../src/func.R")
 datapath <- '../../data/BRCA_saved_data/'
 ```
 
 # Features
 
-Feature matrices are provided by Marta stored at `crom01:/fsclinic/common/analisis/data/BRCA_saved_data`.
+Feature matrices are provided by Marta stored at `crom01:/fsclinic/common/analisis/data/BRCA_saved_data`. Note that all feature matrices have to be initially provided by features in rows and patients in cols (to facilitate processing in a universal style). These matrix objects should have a name ending with `[.]vals$`.
 
 ```{r features}
 # gene expression
@@ -28,17 +28,17 @@ load(paste0(datapath, '110_mini_genes_vals.RData'))
 # pathway-wise features
 load(paste0(datapath, '110_hipathia_matrices.RData'))
 
-# process all 6 matrices
-xlist <- ls(pattern = 'vals')
-for (xname in xlist) {
+xlist <- ls(pattern = '[.]vals$')
+# show all feature matrices
+xlist
+for (xname in xlist) { # process each feature matrices
   # check for no duplicated row- or col- names
   stopifnot(!any(duplicated(rownames(get(xname)))))
   stopifnot(!any(duplicated(colnames(get(xname)))))
   stopifnot(!any(is.na(get(xname))))
   assign(xname, t(get(xname))) # make patients in rows and features in cols
   cat('-------------> ', xname, ' <------------- \n')
-  cat('n = ', nrow(get(xname)), '\t p = ', ncol(get(xname)), '\npreview[1:3,1:3] = \n')
-  print(get(xname)[1:3,1:3])
+  print(str(get(xname)))
   cat('\n')
 }
 # set samples
@@ -50,28 +50,33 @@ nsample <- length(samplelist)
 
 # Groups
 
-Binary classes are created from clinical info for classification.
+Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grp$`.
 
 ```{r groups}
 #### TODO
 rbinom.grp <- factor(rbinom(nsample, 1, 0.5), labels = c('neg', 'pos'))
 names(rbinom.grp) <- samplelist
 
-ylist <- ls(pattern = 'grp')
+ylist <- ls(pattern = '[.]grp$')
+# show all label vectors
+ylist
 ```
 
 # Predictors
 
+See `../../src/func.R` for all predictors implemented. These function objects should all have a name starting with `^predictor`.
+
 ```{r predictors}
-# see [path2repo]/src/func.R for predictors
-prlist <- paste0('predictor', c('LDA', 'RF', 'SVM'))
+prlist <- ls(pattern = '^predictor')
+prlist
 ```
 
 # Save up !!
 
 ```{r save}
-# write out combinations of datasets
-melt(list(xlist, ylist, prlist))
+# write out combinations of datasets for running on cluster
+param <- expand.grid(xlist, ylist, prlist, KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+write.table(param, file = 'param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE)
 
 # save entire image to be loaded later
 if (!dir.exists('Robj')) dir.create('Robj')
