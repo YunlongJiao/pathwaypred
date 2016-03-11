@@ -76,7 +76,7 @@ prlist
 ```{r save}
 # write out combinations of datasets for running on cluster
 param <- expand.grid(xlist, ylist, prlist, KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
-write.table(param, file = 'param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE)
+write.table(param, file = '2_cluster_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE)
 
 # save entire image to be loaded later
 if (!dir.exists('Robj')) dir.create('Robj')
@@ -86,5 +86,5 @@ save.image('Robj/dat.RData')
 # Session info
 
 ```{r session_info}
-devtools::session_info()
+sessionInfo()
 ```
