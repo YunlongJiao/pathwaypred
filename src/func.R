@@ -21,7 +21,7 @@
 # library(class) # KNN
 # library(randomForest) # RF
 # library(rpart) # DT
-# library(nnet) # NNet
+# library(nnet) # NNet # tooooo many error T^T
 
 options(stringsAsFactors = FALSE)
 
@@ -44,7 +44,7 @@ normalizeData <- function (xtr, xtst=NULL, do.center=TRUE, do.scale=TRUE, ...)
 		}
 	}
 	
-	numid <- sapply(as.data.frame(xtr),is.numeric)
+	numid <- sapply(as.data.frame(xtr), is.numeric)
 	t <- scale(xtr[,numid], center=do.center, scale=do.scale)
 	xtr[,numid] <- t
 	
@@ -59,6 +59,22 @@ normalizeData <- function (xtr, xtst=NULL, do.center=TRUE, do.scale=TRUE, ...)
 		}
 		return(list(xtr=xtr, xtst=xtst))
 	}
+}
+
+removeConst <- function (xtr, xtst=NULL, tol=1e-6)
+{
+  
+  numid <- which(sapply(as.data.frame(xtr), is.numeric))
+  constid <- apply(xtr[,numid], 2, function(u){
+    (mean(u, na.rm = TRUE) < tol && diff(range(u, na.rm = TRUE)) < tol) || (diff(range(u, na.rm = TRUE)) / mean(u, na.rm = TRUE) < tol)
+  })
+  xtr <- xtr[ , numid[!constid], drop = F]
+  if(is.null(xtst)){
+    return(xtr)
+  } else{
+    xtst <- xtst[ , numid[!constid], drop = F]
+    return(list(xtr=xtr, xtst=xtst))
+  }
 }
 
 
@@ -166,6 +182,11 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
 	  xtst <- xtst[,colnames(xtr),drop=F]
 	}
 	
+  # remove constant features
+  d <- removeConst(xtr=xtr, xtst=xtst)
+  xtr <- d$xtr
+  xtst <- d$xtst
+  
 	# indep signif test for feature reduction
 	if(pthres > 0){
 		plist <- indepSignif(xtr=xtr, ytr=ytr, method = method, ...)
@@ -560,27 +581,27 @@ predictorDT <- function(xtr, xtst, ytr, cutoff = 0.5, do.prune = FALSE, ...){
 
 
 
-predictorNNet <- function(xtr, xtst, ytr, size = 2, cutoff = 0.5, do.normalize = TRUE, ...){
-	
-	library(nnet)
-  
-	classes <- sort(unique(as.character(ytr)))
-	targets <- class.ind(as.factor(ytr))
-	
-	if(do.normalize){
-		d <- normalizeData(xtr, xtst, ...)
-		xtr <- d$xtr
-		xtst <- d$xtst
-	}
-	
-	model <- nnet(xtr, targets, size=size, ...)
-	
-	pred_prob <- predict(model, xtst, type="raw")[,classes[2]]
-	pred_class <- rep(classes[1],nrow(xtst)); pred_class[pred_prob > cutoff] <- classes[2]
-	
-	res <- list(model=model, class=pred_class, prob=pred_prob, cutoff=cutoff)
-	return(res)
-}
+# predictorNNet <- function(xtr, xtst, ytr, size = 2, cutoff = 0.5, do.normalize = TRUE, ...){
+# 	
+# 	library(nnet)
+#   
+# 	classes <- sort(unique(as.character(ytr)))
+# 	targets <- class.ind(as.factor(ytr))
+# 	
+# 	if(do.normalize){
+# 		d <- normalizeData(xtr, xtst, ...)
+# 		xtr <- d$xtr
+# 		xtst <- d$xtst
+# 	}
+# 	
+# 	model <- nnet(xtr, targets, size=size, ...)
+# 	
+# 	pred_prob <- predict(model, xtst, type="raw")[,classes[2]]
+# 	pred_class <- rep(classes[1],nrow(xtst)); pred_class[pred_prob > cutoff] <- classes[2]
+# 	
+# 	res <- list(model=model, class=pred_class, prob=pred_prob, cutoff=cutoff)
+# 	return(res)
+# }
 
 
 
