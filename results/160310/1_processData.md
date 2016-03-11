@@ -140,10 +140,9 @@ prlist
 ```
 
 ```
-##  [1] "predictorDT"         "predictorGBM"        "predictorKNN"       
-##  [4] "predictorLDA"        "predictorLogit"      "predictorLogitLasso"
-##  [7] "predictorNNet"       "predictorRF"         "predictorSparseSVM" 
-## [10] "predictorSVM"
+## [1] "predictorDT"         "predictorGBM"        "predictorKNN"       
+## [4] "predictorLDA"        "predictorLogit"      "predictorLogitLasso"
+## [7] "predictorRF"         "predictorSparseSVM"  "predictorSVM"
 ```
 
 # Save up !!
