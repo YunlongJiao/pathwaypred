@@ -10,13 +10,13 @@
 ## working directory
 #$ -cwd
 ## Merge the standard out and standard error to one file
-#$ -o logs/
-#$ -e logs/
+#$ -o logs
+#$ -e logs
 
 ## set up distributed jobs for nclust range
 #$ -t 1-60
 ## limit the number of simultaneous jobs
-#$ -tc 30
+#$ -tc 20
 
 source $HOME/.bashrc
 

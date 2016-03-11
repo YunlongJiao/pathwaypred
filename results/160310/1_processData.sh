@@ -8,8 +8,8 @@
 ## working directory
 #$ -cwd
 ## Merge the standard out and standard error to one file
-#$ -o logs/
-#$ -e logs/
+#$ -o logs
+#$ -e logs
 
 source $HOME/.bashrc
 Rscript $PWD/1_processData.R

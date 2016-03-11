@@ -1,9 +1,5 @@
----
-title: "Process ICGC BRCA data"
-author: "Yunlong Jiao"
-date: "10 March 2016"
-output: html_document
----
+### Process ICGC BRCA data
+## Yunlong Jiao, 10 March 2016
 
 This script processes data and generates matrices for naive models later to make predictions.
 
@@ -41,12 +37,21 @@ xlist
 ```
 
 ```r
-for (xname in xlist) { # process each feature matrices
+for (xname in xlist) {
+  # process each feature matrices
+  x <- get(xname)
+  # check no NA values
+  stopifnot(!any(is.na(x)))
+  # make patients in rows and features in cols
+  x <- t(x)
   # check for no duplicated row- or col- names
-  stopifnot(!any(duplicated(rownames(get(xname)))))
-  stopifnot(!any(duplicated(colnames(get(xname)))))
-  stopifnot(!any(is.na(get(xname))))
-  assign(xname, t(get(xname))) # make patients in rows and features in cols
+  stopifnot(!any(duplicated(rownames(x))))
+  stopifnot(!any(duplicated(colnames(x))))
+  rownames(x) <- gsub('[^[:alnum:]_]', '_', rownames(x))
+  colnames(x) <- gsub('[^[:alnum:]_]', '_', colnames(x))
+  # assign back
+  assign(xname, x)
+  # preview
   cat('-------------> ', xname, ' <------------- \n')
   print(str(get(xname)))
   cat('\n')
@@ -57,43 +62,43 @@ for (xname in xlist) { # process each feature matrices
 ## ------------->  eff.vals  <------------- 
 ##  num [1:881, 1:1038] 0.00407 0.0044 0.00438 0.00426 0.00426 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:881] "TCGA_BH_A0W3_01A_11R_A109_07" "TCGA_BH_A0W4_01A_11R_A109_07" "TCGA_BH_A0DX_01A_11R_A115_07" "TCGA_BH_A0W7_01A_11R_A115_07" ...
 ##   ..$ : chr [1:1038] "hsa04014__42" "hsa04014__43" "hsa04014__44" "hsa04014__33" ...
 ## NULL
 ## 
 ## ------------->  fun.vals  <------------- 
 ##  num [1:881, 1:81] 0.09 0.0865 0.0904 0.0936 0.0929 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
-##   ..$ : chr [1:81] "Lipid degradation" "Lipid metabolism" "Transcription regulation" "Apoptosis" ...
+##   ..$ : chr [1:881] "TCGA_BH_A0W3_01A_11R_A109_07" "TCGA_BH_A0W4_01A_11R_A109_07" "TCGA_BH_A0DX_01A_11R_A115_07" "TCGA_BH_A0W7_01A_11R_A115_07" ...
+##   ..$ : chr [1:81] "Lipid_degradation" "Lipid_metabolism" "Transcription_regulation" "Apoptosis" ...
 ## NULL
 ## 
 ## ------------->  genes.vals  <------------- 
 ##  num [1:881, 1:18708] 0.417 0.418 0.418 0.426 0.401 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:881] "TCGA_BH_A0W3_01A_11R_A109_07" "TCGA_BH_A0W4_01A_11R_A109_07" "TCGA_BH_A0DX_01A_11R_A115_07" "TCGA_BH_A0W7_01A_11R_A115_07" ...
 ##   ..$ : chr [1:18708] "1" "29974" "87769" "2" ...
 ## NULL
 ## 
 ## ------------->  go.vals  <------------- 
 ##  num [1:881, 1:370] 0.0247 0.0262 0.0259 0.0259 0.0265 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
-##   ..$ : chr [1:370] "glycerophospholipid catabolic process" "phospholipid metabolic process" "multicellular organismal lipid catabolic process" "positive regulation of phospholipase activity" ...
+##   ..$ : chr [1:881] "TCGA_BH_A0W3_01A_11R_A109_07" "TCGA_BH_A0W4_01A_11R_A109_07" "TCGA_BH_A0DX_01A_11R_A115_07" "TCGA_BH_A0W7_01A_11R_A115_07" ...
+##   ..$ : chr [1:370] "glycerophospholipid_catabolic_process" "phospholipid_metabolic_process" "multicellular_organismal_lipid_catabolic_process" "positive_regulation_of_phospholipase_activity" ...
 ## NULL
 ## 
 ## ------------->  mini.genes.vals  <------------- 
 ##  num [1:881, 1:2212] 0.513 0.529 0.525 0.505 0.532 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:881] "TCGA_BH_A0W3_01A_11R_A109_07" "TCGA_BH_A0W4_01A_11R_A109_07" "TCGA_BH_A0DX_01A_11R_A115_07" "TCGA_BH_A0W7_01A_11R_A115_07" ...
 ##   ..$ : chr [1:2212] "5594" "5595" "5604" "5605" ...
 ## NULL
 ## 
 ## ------------->  path.vals  <------------- 
 ##  num [1:881, 1:6101] 0.00209 0.0022 0.00205 0.00186 0.00218 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
-##   ..$ : chr [1:6101] "hsa04014__14 - 42" "hsa04014__14 - 43" "hsa04014__14 - 44" "hsa04014__14 - 33" ...
+##   ..$ : chr [1:881] "TCGA_BH_A0W3_01A_11R_A109_07" "TCGA_BH_A0W4_01A_11R_A109_07" "TCGA_BH_A0DX_01A_11R_A115_07" "TCGA_BH_A0W7_01A_11R_A115_07" ...
+##   ..$ : chr [1:6101] "hsa04014__14___42" "hsa04014__14___43" "hsa04014__14___44" "hsa04014__14___33" ...
 ## NULL
 ```
 
@@ -147,11 +152,10 @@ prlist
 ```r
 # write out combinations of datasets for running on cluster
 param <- expand.grid(xlist, ylist, prlist, KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
-write.table(param, file = '2_cluster_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE)
+write.table(param, file = 'cluster_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE)
 
 # save entire image to be loaded later
-if (!dir.exists('Robj')) dir.create('Robj')
-save(list = c(xlist, ylist), file = 'Robj/dat.RData')
+save(list = c(xlist, ylist), file = 'dat.RData')
 ```
 
 # Session info
