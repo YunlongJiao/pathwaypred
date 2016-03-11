@@ -32,5 +32,4 @@
 ## TODO
 
 - email jp about current situation and project proposal; description and dependency of current project; main project on wavelets along; jp can involve
-- 160310 write runPredict files and send over to cluster for test run
-- 160310 generate groups in processData and finally send over to cluster for first results
+- 160310 generate groups in processData and revise plotROCcv and finally send over to cluster for first results

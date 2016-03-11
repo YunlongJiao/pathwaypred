@@ -9,25 +9,27 @@ predictor <- ags[3]
 # start! ------------------------------------------------------------------
 
 message("loading features and groups and predictors ...")
-load('Robj/dat.RData')
+load('dat.RData')
 source("../../src/func.R") # complementary functions for kernel kmeans for top-k rankings
 
 xtr <- get(xname)
 ytr <- get(yname)
-savepath <- paste('figures/ROC', xname, yname, predictor, '.pdf', sep = '_')
 objname <- paste('res', xname, yname, predictor, sep = '_')
-if (!dir.exists('figures')) dir.create('figures')
 
 message('train and predict ... ')
 assign(objname, 
-       crossValidation(xtr = xtr, ytr = ytr, predictor = predictor, savepath = savepath, seed = 94151402))
+       crossValidation(xtr = xtr, ytr = ytr, predictor = predictor, seed = 94151402))
+
+message('plot ROC ... ')
+if (!dir.exists('figures')) dir.create('figures')
+plotROCcv(res = get(objname), savepath = paste0('figures/', objname, '.pdf'))
 
 message('write results ... ')
 score <- c("acc","fpr","tpr","ppv","fval","concordance.index","auroc")
 dd <- data.frame(xname, yname, predictor, score, unlist(get(objname)[score]))
-if (!file.exists('2_scores.txt')) file.create('2_scores.txt')
-write.table(dd, file = "2_scores.txt", row.names = FALSE, col.names = FALSE, append = TRUE)
+if (!file.exists('scores.txt')) file.create('scores.txt')
+write.table(dd, file = "scores.txt", row.names = FALSE, col.names = FALSE, append = TRUE)
 
 message('save up !!')
-if (!dir.exists('Robj/2_runPredict')) dir.create('Robj/2_runPredict')
-save(list = objname, file = paste0('Robj/2_runPredict/', objname, '.RData'))
+if (!dir.exists('Robj')) dir.create('Robj')
+save(list = objname, file = paste0('Robj/', objname, '.RData'))

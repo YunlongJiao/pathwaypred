@@ -244,6 +244,8 @@ plotROCcv <- function(res, savepath)
   
 	alpha <- function(b){return(1/(1+b*b))}
 	
+	if (!grepl("[.]pdf$", savepath)) savepath <- paste0(savepath, "_ROC_.pdf")
+	
 	if (!is.null(savepath)) pdf(savepath, height=10, width=15)
 	
 	par(mfrow=c(2,3))
