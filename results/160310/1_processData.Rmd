@@ -50,14 +50,14 @@ nsample <- length(samplelist)
 
 # Groups
 
-Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grp$`.
+Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
 
 ```{r groups}
 #### TODO
-rbinom.grp <- factor(rbinom(nsample, 1, 0.5), labels = c('neg', 'pos'))
-names(rbinom.grp) <- samplelist
+rbinom.grps <- factor(rbinom(nsample, 1, 0.5), labels = c('neg', 'pos'))
+names(rbinom.grps) <- samplelist
 
-ylist <- ls(pattern = '[.]grp$')
+ylist <- ls(pattern = '[.]grps$')
 # show all label vectors
 ylist
 ```
@@ -80,7 +80,7 @@ write.table(param, file = '2_cluster_param.txt', quote = FALSE, row.names = TRUE
 
 # save entire image to be loaded later
 if (!dir.exists('Robj')) dir.create('Robj')
-save.image('Robj/dat.RData')
+save(list = c(xlist, ylist), file = 'Robj/dat.RData')
 ```
 
 # Session info

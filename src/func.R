@@ -1,17 +1,24 @@
 # # generic libraries needed for general purpose
+# # from CRAN
+# library(knitr)
+# library(devtools)
 # library(caret)
 # library(ROCR)
-# library(survival)
+# # from Bioconductor
 # library(survcomp)
+# # already exists for 3.2.1-atalas on crom01
+# library(survival)
 # library(ggplot2)
 
 # # import classifier libraries in those predictors called
-# library(MASS) # LDA, logit
+# # from CRAN
 # library(glmnet) # L1-GLM
-# library(e1071) # SVM
 # library(LiblineaR) # L1-SVM
-# library(class) # KNN
 # library(gbm) # GBM
+# # already exists for 3.2.1-atalas on crom01
+# library(MASS) # LDA, logit
+# library(e1071) # SVM
+# library(class) # KNN
 # library(randomForest) # RF
 # library(rpart) # DT
 # library(nnet) # NNet
@@ -24,7 +31,7 @@ options(stringsAsFactors = FALSE)
 ###
 ########################
 
-normalizeData <- function (xtr, xtst=NULL, do.center=TRUE, do.scale=TRUE)
+normalizeData <- function (xtr, xtst=NULL, do.center=TRUE, do.scale=TRUE, ...)
 {
 	# normalizeData() normalizes col-wisely to mean 0 (do.center=T) and sd 1 (do.scale=T)
 	# NOTE: xtst is normalized wrt xtr
@@ -154,8 +161,8 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
 	
 	if (!is.null(dimnames(xtr)) && !is.null(dimnames(xtst)) && !is.null(names(ytr)) && !is.null(names(ytst))) {
 	  # adjust correp rows and cols in case they do not match
-	  ytr <- ytr[rownames(xtr),,drop=F]
-	  ytst <- ytst[rownames(xtst),,drop=F]
+	  ytr <- ytr[rownames(xtr)]
+	  ytst <- ytst[rownames(xtst)]
 	  xtst <- xtst[,colnames(xtr),drop=F]
 	}
 	
@@ -174,7 +181,8 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
 	}
 	
 	# model and predict
-	pred <- get(predictor, mode = "function")(xtr=xtr, xtst=xtst, ytr=ytr, ...)
+  FUN <- get(predictor, mode = "function")
+	pred <- FUN(xtr=xtr, xtst=xtst, ytr=ytr, ...)
 	
 	# evaluation and result list
 	res <- c(list(validation="seqVal", predictor=predictor, cutoff=pred$cutoff, featlist=featlist, 
@@ -208,9 +216,9 @@ crossValidation <- function(xtr, ytr, ..., seed=61215942, nfolds=5, nrepeats=10,
 	foldIndices <- createMultiFolds(1:nrow(xtr), k=nfolds, times=nrepeats)
 	
 	message(nrepeats," repeated experiments of ",nfolds, "-fold cross validation!")
-	foldres <- mclapply(foldIndices, function(fold){
+	foldres <- lapply(foldIndices, function(fold){
 		message("New fold started...")
-		ivres <- indepValidation(xtr=xtr[fold,,drop=F], ytr=ytr[fold,,drop=F], xtst=xtr[-fold,,drop=F], ytst=ytr[-fold,,drop=F], ..., save.model=FALSE)
+		ivres <- indepValidation(xtr=xtr[fold,,drop=F], ytr=ytr[fold], xtst=xtr[-fold,,drop=F], ytst=ytr[-fold], ..., save.model=FALSE)
 		return(ivres)
 	})
 	
