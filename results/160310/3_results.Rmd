@@ -4,7 +4,67 @@
 This script collects results from earlier run and illustrates with tables and plots.
 
 ```{r setup}
-knitr::opts_chunk$set(error = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, dev = "png", fig.keep = "high", fig.path = "figure/", cache.path = "cache/")
+knitr::opts_chunk$set(error = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, dev = c("png","pdf"), fig.keep = "high", fig.path = "result_figure/", cache.path = "result_cache/")
+source("../../src/func.R")
+library(ggplot2)
+```
+
+# Read scores
+
+```{r read_scores}
+# read in score table
+scores <- read.table("scores.txt", header = FALSE)
+colnames(scores) <- c("x", "y", "predictor", "score", "value")
+xlist <- unique(scores$x)
+ylist <- unique(scores$y)
+prlist <- unique(scores$predictor)
+slist <- unique(scores$score)
+# round values to 3 digits for ease of labeling
+scores <- subset(scores, !is.na(scores$value))
+scores$value <- round(scores$value, 3)
+head(scores)
+```
+
+# Overview
+
+We plot the boxplot showing the score values for each feature type across different methods.
+
+```{r overview}
+# plot each grps in a separate figure
+for (yname in ylist) {
+  d <- subset(scores, scores$y == yname)
+  p1 <- ggplot(d, aes(x = x, y = value)) + 
+    geom_boxplot(aes(fill = x), alpha = 0.8) + 
+    facet_wrap(~score) + 
+    coord_cartesian(ylim = c(0, 1)) + 
+    ggtitle(paste0("predicting ", yname)) + 
+    theme(axis.text.x = element_blank())
+  plot(p1)
+}
+```
+
+
+# AUROC
+
+As we see that error rate is not high but fpr is very high. We focus on AUROC to evaluate performance.
+
+```{r auroc}
+# focus only one type of scores
+key <- "auroc"
+# plot each grps in a separate figure
+for (yname in ylist) {
+  d <- subset(scores, scores$score == key & scores$y == yname)
+  yrange <- c(min(d$value)*0.95, 1)
+  p1 <- ggplot(d, aes(x = x, y = value)) + 
+    geom_bar(aes(fill = x), stat = "identity", position = "dodge") + 
+    geom_text(aes(label = value), vjust = 1.6, colour = "white", 
+              position = position_dodge(0.9), size = 5) + 
+    facet_wrap(~predictor) + 
+    coord_cartesian(ylim = yrange) + 
+    ggtitle(paste0(key, " for predicting ", yname)) + 
+    theme(axis.text.x = element_blank())
+  plot(p1)
+}
 ```
 
 # Session info
