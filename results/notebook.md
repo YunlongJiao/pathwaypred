@@ -31,5 +31,4 @@
 
 ## TODO
 
-- 160310 send over to cluster for first results and write plot.Rmd!
 - Questions to Ximo: other phenotypes? other interesting problems (just in case the prediction performance is not very promising)? 
