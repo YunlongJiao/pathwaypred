@@ -1,5 +1,5 @@
-### Process ICGC BRCA data
-## Yunlong Jiao, 10 March 2016
+# Process ICGC BRCA data
+# Yunlong Jiao, 10 March 2016
 
 This script processes data and generates matrices for naive models later to make predictions.
 
@@ -120,11 +120,21 @@ y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
 basal.grps <- as.factor(gsub('[^[:alnum:]_]', '_', y$V2))
 names(basal.grps) <- y$V1
 # sample size (how many labels are available in the sample cohort)
-length(intersect(samplelist, names(basal.grps)))
+length(sl <- intersect(samplelist, names(basal.grps)))
 ```
 
 ```
 ## [1] 495
+```
+
+```r
+table(basal.grps[sl])
+```
+
+```
+## 
+##     Basal Not_Basal 
+##        94       401
 ```
 
 ```r
@@ -133,11 +143,21 @@ y <- read.table(paste0(datapath, 'TCGA_phenotype.txt'), header = TRUE)
 tumor.grps <- as.factor(gsub('[^[:alnum:]_]', '_', y$cancer))
 names(tumor.grps) <- rownames(y)
 # sample size (how many labels are available in the sample cohort)
-length(intersect(samplelist, names(tumor.grps)))
+length(sl <- intersect(samplelist, names(tumor.grps)))
 ```
 
 ```
 ## [1] 881
+```
+
+```r
+table(tumor.grps[sl])
+```
+
+```
+## 
+## Normal  Tumor 
+##    102    779
 ```
 
 ```r
@@ -193,20 +213,21 @@ sessionInfo()
 ```
 
 ```
-## R version 3.2.3 (2015-12-10)
-## Platform: x86_64-apple-darwin13.4.0 (64-bit)
-## Running under: OS X 10.11.4 (El Capitan)
+## R version 3.2.1 (2015-06-18)
+## Platform: x86_64-unknown-linux-gnu (64-bit)
 ## 
 ## locale:
-## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
-## other attached packages:
-## [1] e1071_1.6-7
-## 
 ## loaded via a namespace (and not attached):
-## [1] magrittr_1.5  class_7.3-14  formatR_1.2.1 tools_3.2.3   stringi_1.0-1
-## [6] knitr_1.12.3  stringr_1.0.0 evaluate_0.8
+## [1] magrittr_1.5   formatR_1.3    tools_3.2.1    stringi_1.0-1 
+## [5] knitr_1.12.3   stringr_1.0.0  evaluate_0.8.3
 ```
