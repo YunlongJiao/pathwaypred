@@ -1,0 +1,14 @@
+# Results
+# Yunlong Jiao, 10 March 2016
+
+This script collects results from earlier run and illustrates with tables and plots.
+
+```{r setup}
+knitr::opts_chunk$set(error = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, dev = "png", fig.keep = "high", fig.path = "figure/", cache.path = "cache/")
+```
+
+# Session info
+
+```{r session_info}
+sessionInfo()
+```
