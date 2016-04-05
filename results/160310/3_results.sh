@@ -3,7 +3,7 @@
 ## run on crom01 with R version=3.2.1
 
 ## -- our name ---
-#$ -N processData
+#$ -N plotResults
 ## Make sure that the .e and .o file arrive in the
 ## working directory
 #$ -cwd
