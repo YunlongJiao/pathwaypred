@@ -96,6 +96,7 @@ for (yname in ylist) {
 ## ymax not defined: adjusting position using y instead
 ## ymax not defined: adjusting position using y instead
 ## ymax not defined: adjusting position using y instead
+## ymax not defined: adjusting position using y instead
 ```
 
 ![plot of chunk auroc](result_figure/auroc-1.png)
