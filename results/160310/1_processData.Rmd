@@ -62,14 +62,16 @@ y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
 basal.grps <- as.factor(gsub('[^[:alnum:]_]', '_', y$V2))
 names(basal.grps) <- y$V1
 # sample size (how many labels are available in the sample cohort)
-length(intersect(samplelist, names(basal.grps)))
+length(sl <- intersect(samplelist, names(basal.grps)))
+table(basal.grps[sl])
 
 # phenotype tumor
 y <- read.table(paste0(datapath, 'TCGA_phenotype.txt'), header = TRUE)
 tumor.grps <- as.factor(gsub('[^[:alnum:]_]', '_', y$cancer))
 names(tumor.grps) <- rownames(y)
 # sample size (how many labels are available in the sample cohort)
-length(intersect(samplelist, names(tumor.grps)))
+length(sl <- intersect(samplelist, names(tumor.grps)))
+table(tumor.grps[sl])
 
 # show all label vectors
 ylist <- ls(pattern = '[.]grps$')
