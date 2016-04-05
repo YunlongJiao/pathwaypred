@@ -24,8 +24,8 @@ load(paste0(datapath, '110_mini_genes_vals.RData'))
 # pathway-wise features
 load(paste0(datapath, '110_hipathia_matrices.RData'))
 
-xlist <- ls(pattern = '[.]vals$')
 # show all feature matrices
+xlist <- ls(pattern = '[.]vals$')
 xlist
 for (xname in xlist) {
   # process each feature matrices
@@ -34,11 +34,10 @@ for (xname in xlist) {
   stopifnot(!any(is.na(x)))
   # make patients in rows and features in cols
   x <- t(x)
-  # check for no duplicated row- or col- names
+  # reform feature names and check for duplicated names
+  colnames(x) <- paste0('X_', gsub('[^[:alnum:]_]', '_', colnames(x)))
   stopifnot(!any(duplicated(rownames(x))))
   stopifnot(!any(duplicated(colnames(x))))
-  rownames(x) <- gsub('[^[:alnum:]_]', '_', rownames(x))
-  colnames(x) <- gsub('[^[:alnum:]_]', '_', colnames(x))
   # assign back
   assign(xname, x)
   # preview
@@ -58,13 +57,27 @@ nsample <- length(samplelist)
 Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
 
 ```{r groups}
-#### TODO
-rbinom.grps <- factor(rbinom(nsample, 1, 0.5), labels = c('neg', 'pos'))
-names(rbinom.grps) <- samplelist
+# basal type
+y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
+basal.grps <- as.factor(gsub('[^[:alnum:]_]', '_', y$V2))
+names(basal.grps) <- y$V1
+# sample size (how many labels are available in the sample cohort)
+length(intersect(samplelist, names(basal.grps)))
 
-ylist <- ls(pattern = '[.]grps$')
+# phenotype tumor
+y <- read.table(paste0(datapath, 'TCGA_phenotype.txt'), header = TRUE)
+tumor.grps <- as.factor(gsub('[^[:alnum:]_]', '_', y$cancer))
+names(tumor.grps) <- rownames(y)
+# sample size (how many labels are available in the sample cohort)
+length(intersect(samplelist, names(tumor.grps)))
+
 # show all label vectors
+ylist <- ls(pattern = '[.]grps$')
 ylist
+# check for now to deal with binary classification only
+for (yname in ylist) {
+  stopifnot(length(levels(get(yname))) == 2)
+}
 ```
 
 # Predictors

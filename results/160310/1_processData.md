@@ -26,8 +26,8 @@ load(paste0(datapath, '110_mini_genes_vals.RData'))
 # pathway-wise features
 load(paste0(datapath, '110_hipathia_matrices.RData'))
 
-xlist <- ls(pattern = '[.]vals$')
 # show all feature matrices
+xlist <- ls(pattern = '[.]vals$')
 xlist
 ```
 
@@ -44,11 +44,10 @@ for (xname in xlist) {
   stopifnot(!any(is.na(x)))
   # make patients in rows and features in cols
   x <- t(x)
-  # check for no duplicated row- or col- names
+  # reform feature names and check for duplicated names
+  colnames(x) <- paste0('X_', gsub('[^[:alnum:]_]', '_', colnames(x)))
   stopifnot(!any(duplicated(rownames(x))))
   stopifnot(!any(duplicated(colnames(x))))
-  rownames(x) <- gsub('[^[:alnum:]_]', '_', rownames(x))
-  colnames(x) <- gsub('[^[:alnum:]_]', '_', colnames(x))
   # assign back
   assign(xname, x)
   # preview
@@ -62,43 +61,43 @@ for (xname in xlist) {
 ## ------------->  eff.vals  <------------- 
 ##  num [1:881, 1:1038] 0.00407 0.0044 0.00438 0.00426 0.00426 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:881] "TCGA_BH_A0W3_01A_11R_A109_07" "TCGA_BH_A0W4_01A_11R_A109_07" "TCGA_BH_A0DX_01A_11R_A115_07" "TCGA_BH_A0W7_01A_11R_A115_07" ...
-##   ..$ : chr [1:1038] "hsa04014__42" "hsa04014__43" "hsa04014__44" "hsa04014__33" ...
+##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:1038] "X_hsa04014__42" "X_hsa04014__43" "X_hsa04014__44" "X_hsa04014__33" ...
 ## NULL
 ## 
 ## ------------->  fun.vals  <------------- 
 ##  num [1:881, 1:81] 0.09 0.0865 0.0904 0.0936 0.0929 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:881] "TCGA_BH_A0W3_01A_11R_A109_07" "TCGA_BH_A0W4_01A_11R_A109_07" "TCGA_BH_A0DX_01A_11R_A115_07" "TCGA_BH_A0W7_01A_11R_A115_07" ...
-##   ..$ : chr [1:81] "Lipid_degradation" "Lipid_metabolism" "Transcription_regulation" "Apoptosis" ...
+##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:81] "X_Lipid_degradation" "X_Lipid_metabolism" "X_Transcription_regulation" "X_Apoptosis" ...
 ## NULL
 ## 
 ## ------------->  genes.vals  <------------- 
 ##  num [1:881, 1:18708] 0.417 0.418 0.418 0.426 0.401 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:881] "TCGA_BH_A0W3_01A_11R_A109_07" "TCGA_BH_A0W4_01A_11R_A109_07" "TCGA_BH_A0DX_01A_11R_A115_07" "TCGA_BH_A0W7_01A_11R_A115_07" ...
-##   ..$ : chr [1:18708] "1" "29974" "87769" "2" ...
+##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:18708] "X_1" "X_29974" "X_87769" "X_2" ...
 ## NULL
 ## 
 ## ------------->  go.vals  <------------- 
 ##  num [1:881, 1:370] 0.0247 0.0262 0.0259 0.0259 0.0265 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:881] "TCGA_BH_A0W3_01A_11R_A109_07" "TCGA_BH_A0W4_01A_11R_A109_07" "TCGA_BH_A0DX_01A_11R_A115_07" "TCGA_BH_A0W7_01A_11R_A115_07" ...
-##   ..$ : chr [1:370] "glycerophospholipid_catabolic_process" "phospholipid_metabolic_process" "multicellular_organismal_lipid_catabolic_process" "positive_regulation_of_phospholipase_activity" ...
+##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:370] "X_glycerophospholipid_catabolic_process" "X_phospholipid_metabolic_process" "X_multicellular_organismal_lipid_catabolic_process" "X_positive_regulation_of_phospholipase_activity" ...
 ## NULL
 ## 
 ## ------------->  mini.genes.vals  <------------- 
 ##  num [1:881, 1:2212] 0.513 0.529 0.525 0.505 0.532 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:881] "TCGA_BH_A0W3_01A_11R_A109_07" "TCGA_BH_A0W4_01A_11R_A109_07" "TCGA_BH_A0DX_01A_11R_A115_07" "TCGA_BH_A0W7_01A_11R_A115_07" ...
-##   ..$ : chr [1:2212] "5594" "5595" "5604" "5605" ...
+##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:2212] "X_5594" "X_5595" "X_5604" "X_5605" ...
 ## NULL
 ## 
 ## ------------->  path.vals  <------------- 
 ##  num [1:881, 1:6101] 0.00209 0.0022 0.00205 0.00186 0.00218 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:881] "TCGA_BH_A0W3_01A_11R_A109_07" "TCGA_BH_A0W4_01A_11R_A109_07" "TCGA_BH_A0DX_01A_11R_A115_07" "TCGA_BH_A0W7_01A_11R_A115_07" ...
-##   ..$ : chr [1:6101] "hsa04014__14___42" "hsa04014__14___43" "hsa04014__14___44" "hsa04014__14___33" ...
+##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:6101] "X_hsa04014__14___42" "X_hsa04014__14___43" "X_hsa04014__14___44" "X_hsa04014__14___33" ...
 ## NULL
 ```
 
@@ -116,17 +115,46 @@ Binary classes are created from clinical info for classification. There vector o
 
 
 ```r
-#### TODO
-rbinom.grps <- factor(rbinom(nsample, 1, 0.5), labels = c('neg', 'pos'))
-names(rbinom.grps) <- samplelist
+# basal type
+y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
+basal.grps <- as.factor(gsub('[^[:alnum:]_]', '_', y$V2))
+names(basal.grps) <- y$V1
+# sample size (how many labels are available in the sample cohort)
+length(intersect(samplelist, names(basal.grps)))
+```
 
-ylist <- ls(pattern = '[.]grps$')
+```
+## [1] 495
+```
+
+```r
+# phenotype tumor
+y <- read.table(paste0(datapath, 'TCGA_phenotype.txt'), header = TRUE)
+tumor.grps <- as.factor(gsub('[^[:alnum:]_]', '_', y$cancer))
+names(tumor.grps) <- rownames(y)
+# sample size (how many labels are available in the sample cohort)
+length(intersect(samplelist, names(tumor.grps)))
+```
+
+```
+## [1] 881
+```
+
+```r
 # show all label vectors
+ylist <- ls(pattern = '[.]grps$')
 ylist
 ```
 
 ```
-## [1] "rbinom.grps"
+## [1] "basal.grps" "tumor.grps"
+```
+
+```r
+# check for now to deal with binary classification only
+for (yname in ylist) {
+  stopifnot(length(levels(get(yname))) == 2)
+}
 ```
 
 # Predictors
@@ -140,9 +168,9 @@ prlist
 ```
 
 ```
-## [1] "predictorDT"         "predictorGBM"        "predictorKNN"       
-## [4] "predictorLDA"        "predictorLogit"      "predictorLogitLasso"
-## [7] "predictorRF"         "predictorSparseSVM"  "predictorSVM"
+## [1] "predictorGBM"        "predictorKNN"        "predictorLDA"       
+## [4] "predictorLinearSVM"  "predictorLogit"      "predictorLogitLasso"
+## [7] "predictorRadialSVM"  "predictorRF"         "predictorSparseSVM"
 ```
 
 # Save up !!
@@ -165,24 +193,20 @@ sessionInfo()
 ```
 
 ```
-## R version 3.2.1 (2015-06-18)
-## Platform: x86_64-unknown-linux-gnu (64-bit)
+## R version 3.2.3 (2015-12-10)
+## Platform: x86_64-apple-darwin13.4.0 (64-bit)
+## Running under: OS X 10.11.4 (El Capitan)
 ## 
 ## locale:
-##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
 ## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  base     
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] knitr_1.12.3
+## [1] e1071_1.6-7
 ## 
 ## loaded via a namespace (and not attached):
-## [1] magrittr_1.5   formatR_1.3    tools_3.2.1    stringi_1.0-1 
-## [5] methods_3.2.1  stringr_1.0.0  evaluate_0.8.3
+## [1] magrittr_1.5  class_7.3-14  formatR_1.2.1 tools_3.2.3   stringi_1.0-1
+## [6] knitr_1.12.3  stringr_1.0.0 evaluate_0.8
 ```

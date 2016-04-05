@@ -16,6 +16,12 @@ xtr <- get(xname)
 ytr <- get(yname)
 objname <- paste('res', xname, yname, predictor, sep = '_')
 
+# keep only samples for which label info is available
+samplelist <- intersect(rownames(xtr), names(ytr))
+message('Sample size = ', length(samplelist))
+xtr <- xtr[samplelist, ]
+ytr <- ytr[samplelist]
+
 message('train and predict ... ')
 assign(objname, 
        crossValidation(xtr = xtr, ytr = ytr, predictor = predictor, seed = 94151402))

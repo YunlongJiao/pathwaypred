@@ -63,7 +63,6 @@ normalizeData <- function (xtr, xtst=NULL, do.center=TRUE, do.scale=TRUE, ...)
 
 removeConst <- function (xtr, xtst=NULL, tol=1e-6)
 {
-  
   numid <- which(sapply(as.data.frame(xtr), is.numeric))
   constid <- apply(xtr[,numid], 2, function(u){
     (mean(u, na.rm = TRUE) < tol && diff(range(u, na.rm = TRUE)) < tol) || (diff(range(u, na.rm = TRUE)) / mean(u, na.rm = TRUE) < tol)
@@ -85,13 +84,13 @@ removeConst <- function (xtr, xtst=NULL, tol=1e-6)
 ###
 ########################
 
-evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = names(table(ytst))[2], savepath = NULL, beta = 0.5, ...)
+evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = names(table(ytst))[2], savepath = NULL, beta = 1, ...)
 {
 	# pred results from calling predictorXXX(), ess. a list containing $class and $prob of which class must be factor or character
 	# ytst is true binary class indicators
 	# ysurv is of class Surv containing true surv.time and surv.event, defaulted unavailable
 	# NOTE large pred$prob should be associated with short survival time!!
-	# NOTE F(beta=0.5) or equiv F(alpha=0.8) is used by default since we emphasize on precision more than recall, i.e. reduce FPR
+	# NOTE F(beta=1) is used by default while F(beta=0.5) can emphasize on precision more than recall, i.e. reduce FPR
   
   library(ROCR)
   library(survival)
@@ -157,11 +156,13 @@ evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = names(table(ytst)
 
 
 indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL, 
+                            remove.const = TRUE, 
                             pthres = 0, method = "wilcox.test", 
                             ..., save.model = FALSE, seed = 53359292)
 {
 	# xtr, xtst are n*p feature matrices and ytr, ytst are label vectors
 	# predictor is a char denoting the predictor function name (starting with predictorxxx)
+  # remove.const defaulted TRUE to remove constant feature columns in xtr
   # pthres defaulted 0 does no indep signif feature reduction
 	# indepValidation() returns model performances validated against test set which have been trained on training set
   
@@ -176,16 +177,18 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
 	}
 	
 	if (!is.null(dimnames(xtr)) && !is.null(dimnames(xtst)) && !is.null(names(ytr)) && !is.null(names(ytst))) {
-	  # adjust correp rows and cols in case they do not match
+	  # adjust correp rows and cols position in case they do not match
 	  ytr <- ytr[rownames(xtr)]
 	  ytst <- ytst[rownames(xtst)]
 	  xtst <- xtst[,colnames(xtr),drop=F]
 	}
 	
   # remove constant features
-  d <- removeConst(xtr=xtr, xtst=xtst)
-  xtr <- d$xtr
-  xtst <- d$xtst
+  if (remove.const) {
+    d <- removeConst(xtr=xtr, xtst=xtst)
+    xtr <- d$xtr
+    xtst <- d$xtst
+  }
   
 	# indep signif test for feature reduction
 	if(pthres > 0){
@@ -257,7 +260,7 @@ crossValidation <- function(xtr, ytr, ..., seed=61215942, nfolds=5, nrepeats=10,
 
 
 
-plotROCcv <- function(res, savepath)
+plotROCcv <- function(res, savepath, beta = 1)
 {
 	# res is the result list from calling indepValidation() or crossValidation(), ess having as elements list of $true.class and $test.prob (can be cross-fold result given by list)
   
@@ -269,30 +272,39 @@ plotROCcv <- function(res, savepath)
 	
 	if (!is.null(savepath)) pdf(savepath, height=10, width=15)
 	
-	par(mfrow=c(2,3))
+	par(mfrow=c(2,2))
 	predROCR <- prediction(res$test.prob, res$true.class)
+	
+	acccurve <- performance(predROCR, "acc")
+	plot(acccurve, lwd=2, main="Classification accuracy")
+	grid()
+	
+	fcurve <- performance(predROCR, "f", alpha=alpha(b=beta))
+	plot(fcurve, lwd=2, main=paste0("F-measure (beta=",beta,")"))
+	grid()
 	
 	roccurve <- performance(predROCR, "tpr", "fpr")
 	plot(roccurve, lwd=2, main="ROC curve")
 	grid()
-	tprcurve <- performance(predROCR, "tpr")
-	plot(tprcurve, lwd=2, main="True Positive Rate (Recall or Sensitivity)")
-	grid()
-	fprcurve <- performance(predROCR, "fpr")
-	plot(fprcurve, lwd=2, main="False Positive Rate (Fallout)")
-	grid()
 	
-	# liftcurve <- performance(predROCR, "lift", "rpp")
-	# plot(liftcurve, lwd=2, main="Lift Chart")
-	# grid()
+# 	tprcurve <- performance(predROCR, "tpr")
+# 	plot(tprcurve, lwd=2, main="True Positive Rate (Recall or Sensitivity)")
+# 	grid()
+	
+# 	fprcurve <- performance(predROCR, "fpr")
+# 	plot(fprcurve, lwd=2, main="False Positive Rate (Fallout)")
+# 	grid()
+	
+# 	liftcurve <- performance(predROCR, "lift", "rpp")
+# 	plot(liftcurve, lwd=2, main="Lift Chart")
+# 	grid()
+	
+# 	ppvcurve <- performance(predROCR, "ppv")
+# 	plot(ppvcurve, lwd=2, main="Positive Predictive Value (Precision)")
+# 	grid()
+	
 	prcurve <- performance(predROCR, "prec", "rec")
 	plot(prcurve, lwd=2, main="Precision/Recall Graph")
-	grid()
-	fcurve <- performance(predROCR, "f", alpha=alpha(b=0.5))
-	plot(fcurve, lwd=2, main="F-measure (beta=0.5)")
-	grid()
-	ppvcurve <- performance(predROCR, "ppv")
-	plot(ppvcurve, lwd=2, main="Positive Predictive Value (Precision)")
 	grid()
 	
 	if (!is.null(savepath)) dev.off()
@@ -481,8 +493,8 @@ predictorLogitLasso <- function(xtr, xtst, ytr, cutoff = 0, do.normalize = TRUE,
 
 
 
-predictorSVM <- function(xtr, xtst, ytr, kernel = "linear", cost = 1, cutoff = 0, do.normalize = TRUE, ...){
-	# cost is defaulted constant value without tuning by cross-validation
+predictorLinearSVM <- function(xtr, xtst, ytr, kernel = "linear", cost = 10^seq(-2,2,0.4), cutoff = 0, do.normalize = TRUE, ...){
+	# cost is a vector of parameter range to tune with
 	# NOTE cross validation is set to minimize misclassification error by default of tune.svm arguments
 	
 	library(e1071)
@@ -498,6 +510,12 @@ predictorSVM <- function(xtr, xtst, ytr, kernel = "linear", cost = 1, cutoff = 0
 	
 	res <- list(model=model$best.model, class=pred_class, prob=pred_prob, cutoff=cutoff)
 	return(res)
+}
+
+
+
+predictorRadialSVM <- function(xtr, xtst, ytr, kernel = "radial", gamma = 10^(-3:3), ...){
+  predictorLinearSVM(xtr = xtr, xtst = xtst, ytr = ytr, kernel = kernel, gamma = gamma, ...)
 }
 
 
@@ -532,7 +550,7 @@ predictorGBM <- function(xtr, xtst, ytr, n.trees = 100, shrinkage = 0.001, inter
 	classes <- sort(unique(as.character(ytr)))
 	ytr <- as.numeric(as.factor(ytr))-1
 	
-	model <- gbm.fit(xtr, ytr, distribution="bernoulli", interaction.depth=interaction.depth, n.trees=n.trees, shrinkage=shrinkage, verbose=TRUE, ...)
+	model <- gbm.fit(xtr, ytr, distribution="bernoulli", interaction.depth=interaction.depth, n.trees=n.trees, shrinkage=shrinkage, verbose=FALSE, ...)
 	
 	pred_prob <- predict(model, xtst, model$n.trees, type="link")
 	pred_class <- rep(classes[1],nrow(xtst)); pred_class[pred_prob > cutoff] <- classes[2]
@@ -549,7 +567,7 @@ predictorRF <- function(xtr, xtst, ytr, ntrees = 1000, cutoff = 0.5, ...){
   
 	classes <- sort(unique(as.character(ytr)))
 	
-	model <- randomForest(xtr, as.factor(ytr), ntree=ntrees, importance=TRUE, proximity=TRUE, do.trace=FALSE, ...)
+	model <- randomForest(xtr, as.factor(ytr), ntree=ntrees, importance=FALSE, proximity=FALSE, do.trace=FALSE, ...)
 	
 	pred_prob <- predict(model, xtst, type="prob")[,classes[2]]
 	pred_class <- rep(classes[1],nrow(xtst)); pred_class[pred_prob > cutoff] <- classes[2]
@@ -560,24 +578,24 @@ predictorRF <- function(xtr, xtst, ytr, ntrees = 1000, cutoff = 0.5, ...){
 
 
 
-predictorDT <- function(xtr, xtst, ytr, cutoff = 0.5, do.prune = FALSE, ...){
-	
-	library(rpart)
-  
-	classes <- sort(unique(as.character(ytr)))
-	
-	model <- rpart(y ~ ., data=data.frame(y=ytr,as.data.frame(xtr)), method="class", ...)
-	if(do.prune){
-		message("Pruning trees...")
-		model <- prune(model, cp=model$cptable[which.min(model$cptable[,"xerror"]),"CP"])
-	}
-	
-	pred_prob <- predict(model, as.data.frame(xtst), type="prob")[,classes[2]]
-	pred_class <- rep(classes[1],nrow(xtst)); pred_class[pred_prob > cutoff] <- classes[2]
-	
-	res <- list(model=model, class=pred_class, prob=pred_prob, cutoff=cutoff)
-	return(res)
-}
+# predictorDT <- function(xtr, xtst, ytr, cutoff = 0.5, do.prune = FALSE, ...){
+# 	
+# 	library(rpart)
+#   
+# 	classes <- sort(unique(as.character(ytr)))
+# 	
+# 	model <- rpart(y ~ ., data=data.frame(y=ytr,as.data.frame(xtr)), method="class", ...)
+# 	if(do.prune){
+# 		message("Pruning trees...")
+# 		model <- prune(model, cp=model$cptable[which.min(model$cptable[,"xerror"]),"CP"])
+# 	}
+# 	
+# 	pred_prob <- predict(model, as.data.frame(xtst), type="prob")[,classes[2]]
+# 	pred_class <- rep(classes[1],nrow(xtst)); pred_class[pred_prob > cutoff] <- classes[2]
+# 	
+# 	res <- list(model=model, class=pred_class, prob=pred_prob, cutoff=cutoff)
+# 	return(res)
+# }
 
 
 
@@ -606,7 +624,8 @@ predictorDT <- function(xtr, xtst, ytr, cutoff = 0.5, do.prune = FALSE, ...){
 
 
 predictorSparseSVM <- function(xtr, xtst, ytr, cost = 1, cutoff = 0, do.normalize = TRUE, ...){
-	# L1-regularized L2-loss support vector classification
+	# cost is a constant C parameter
+  # L1-regularized L2-loss support vector classification
 	
 	library(LiblineaR)
   

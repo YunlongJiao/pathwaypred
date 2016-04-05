@@ -14,7 +14,7 @@
 #$ -e logs
 
 ## set up distributed jobs for nclust range
-#$ -t 1-54
+#$ -t 1-108
 ## limit the number of simultaneous jobs
 #$ -tc 20
 
