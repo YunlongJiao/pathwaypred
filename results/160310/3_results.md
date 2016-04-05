@@ -5,7 +5,7 @@ This script collects results from earlier run and illustrates with tables and pl
 
 
 ```r
-knitr::opts_chunk$set(error = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, dev = c("png","pdf"), fig.keep = "high", fig.path = "result_figure/", cache.path = "result_cache/")
+knitr::opts_chunk$set(error = FALSE, warning = FALSE, message = FALSE, fig.width = 12, fig.height = 8, dev = c("png","pdf"), fig.keep = "high", fig.path = "result_figure/", cache.path = "result_cache/")
 source("../../src/func.R")
 library(ggplot2)
 ```
@@ -87,33 +87,7 @@ for (yname in ylist) {
 }
 ```
 
-```
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-```
-
-![plot of chunk auroc](result_figure/auroc-1.png)
-
-```
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-## ymax not defined: adjusting position using y instead
-```
-
-![plot of chunk auroc](result_figure/auroc-2.png)
+![plot of chunk auroc](result_figure/auroc-1.png)![plot of chunk auroc](result_figure/auroc-2.png)
 
 # Session info
 

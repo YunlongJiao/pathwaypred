@@ -621,3 +621,17 @@
 "path.vals" "basal.grps" "predictorLinearSVM" "fval" 0.960856735703485
 "path.vals" "basal.grps" "predictorLinearSVM" "concordance.index" NA
 "path.vals" "basal.grps" "predictorLinearSVM" "auroc" 0.95344850724312
+"path.vals" "tumor.grps" "predictorLinearSVM" "acc" 0.993872624550591
+"path.vals" "tumor.grps" "predictorLinearSVM" "fpr" 0.014837111087414
+"path.vals" "tumor.grps" "predictorLinearSVM" "tpr" 0.995016913669669
+"path.vals" "tumor.grps" "predictorLinearSVM" "ppv" 0.998078723148461
+"path.vals" "tumor.grps" "predictorLinearSVM" "fval" 0.996535113034385
+"path.vals" "tumor.grps" "predictorLinearSVM" "concordance.index" NA
+"path.vals" "tumor.grps" "predictorLinearSVM" "auroc" 0.998212333005154
+"path.vals" "tumor.grps" "predictorRF" "acc" 0.992057010785824
+"path.vals" "tumor.grps" "predictorRF" "fpr" 0.0456721864326926
+"path.vals" "tumor.grps" "predictorRF" "tpr" 0.996934996197351
+"path.vals" "tumor.grps" "predictorRF" "ppv" 0.994141120646149
+"path.vals" "tumor.grps" "predictorRF" "fval" 0.995521774155219
+"path.vals" "tumor.grps" "predictorRF" "concordance.index" NA
+"path.vals" "tumor.grps" "predictorRF" "auroc" 0.99935507294333
