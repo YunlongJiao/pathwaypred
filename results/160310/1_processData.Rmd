@@ -12,7 +12,7 @@ datapath <- '../../data/BRCA_saved_data/'
 
 # Features
 
-Feature matrices are provided by Marta stored at `crom01:/fsclinic/common/analisis/data/BRCA_saved_data`. Note that all feature matrices have to be initially provided by features in rows and patients in cols (to facilitate processing in a universal style). These matrix objects should have a name ending with `[.]vals$`.
+Feature matrices are stored at `crom01:/fsclinic/common/analisis/data/BRCA_saved_data/`. Note that all feature matrices have to be initially provided by features in rows and patients in cols (to facilitate processing in a universal style). These matrix objects should have a name ending with `[.]vals$`.
 
 ```{r features}
 # gene expression
@@ -23,6 +23,10 @@ load(paste0(datapath, '110_mini_genes_vals.RData'))
 
 # pathway-wise features
 load(paste0(datapath, '110_hipathia_matrices.RData'))
+
+# complement of mini.genes from all.genes
+stopifnot(rownames(mini.genes.vals) %in% rownames(genes.vals))
+other.genes.vals <- genes.vals[setdiff(rownames(genes.vals), rownames(mini.genes.vals)), ]
 
 # show all feature matrices
 xlist <- ls(pattern = '[.]vals$')
@@ -41,7 +45,7 @@ for (xname in xlist) {
   # assign back
   assign(xname, x)
   # preview
-  cat('-------------> ', xname, ' <------------- \n')
+  cat('\n-------------> ', xname, ' <-------------\n')
   print(str(get(xname)))
   cat('\n')
 }
@@ -52,26 +56,60 @@ samplelist <- unlist(samplelist)
 nsample <- length(samplelist)
 ```
 
-# Groups
+# Groups (binary)
 
 Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
 
 ```{r groups}
 # basal type
 y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
-basal.grps <- as.factor(gsub('[^[:alnum:]_]', '_', y$V2))
+head(y$V2)
+basal.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$V2), levels = c("Not_Basal", "Basal"), labels = c("neg_NonBasal", "pos_Basal"))
+stopifnot(!any(is.na(basal.grps)))
 names(basal.grps) <- y$V1
+head(basal.grps)
 # sample size (how many labels are available in the sample cohort)
 length(sl <- intersect(samplelist, names(basal.grps)))
 table(basal.grps[sl])
 
 # phenotype tumor
 y <- read.table(paste0(datapath, 'TCGA_phenotype.txt'), header = TRUE)
-tumor.grps <- as.factor(gsub('[^[:alnum:]_]', '_', y$cancer))
+head(y$cancer)
+tumor.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$cancer), levels = c("Normal", "Tumor"), labels = c("neg_Normal", "pos_Tumor"))
+stopifnot(!any(is.na(tumor.grps)))
 names(tumor.grps) <- rownames(y)
+head(tumor.grps)
 # sample size (how many labels are available in the sample cohort)
 length(sl <- intersect(samplelist, names(tumor.grps)))
 table(tumor.grps[sl])
+
+# survival
+alignmat <- read.table(paste0(datapath, 'clinical_info_sample.txt'), sep = "\t", quote = "\"", header = TRUE)
+y <- read.table(paste0(datapath, 'clinical_info_donor.txt'), sep = "\t", quote = "\"", header = TRUE)
+alignid <- data.frame(sample = samplelist, 
+                      donor = sapply(samplelist, function(id){
+                        i <- grep(id, alignmat$submitted_sample_id)
+                        if (length(i) == 1) return(alignmat$icgc_donor_id[i])
+                        else if (length(i) == 0) return(NA)
+                        else stop(id, " has more than 1 alignment!")
+                      }))
+# number of samples before pruning
+nrow(alignid)
+alignid <- subset(alignid, !is.na(alignid$donor))
+id <- match(alignid$donor, y$icgc_donor_id)
+alignid <- alignid[!is.na(id), ]
+id <- id[!is.na(id)]
+y <- y[id, ]
+# number of samples after pruning
+nrow(alignid)
+head(y$donor_vital_status)
+surv.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$donor_vital_status), levels = c("alive", "deceased"), labels = c("neg_alive", "pos_deceased"))
+stopifnot(!any(is.na(surv.grps)))
+names(surv.grps) <- alignid$sample
+head(surv.grps)
+# sample size (how many labels are available in the sample cohort)
+length(sl <- intersect(samplelist, names(surv.grps)))
+table(surv.grps[sl])
 
 # show all label vectors
 ylist <- ls(pattern = '[.]grps$')

@@ -5,7 +5,7 @@
 ## -- our name ---
 #$ -N pathwayPred
 #$ -pe smp 1
-#$ -l h_vmem=4G
+#$ -l h_vmem=32G
 ## Make sure that the .e and .o file arrive in the
 ## working directory
 #$ -cwd

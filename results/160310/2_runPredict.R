@@ -6,6 +6,8 @@ xname <- ags[1]
 yname <- ags[2]
 predictor <- ags[3]
 
+message("Running ...\n", paste(ags, collapse = "\t"),"\n\n")
+
 # start! ------------------------------------------------------------------
 
 message("loading features and groups and predictors ...")
@@ -23,8 +25,12 @@ xtr <- xtr[samplelist, ]
 ytr <- ytr[samplelist]
 
 message('train and predict ... ')
-assign(objname, 
-       crossValidation(xtr = xtr, ytr = ytr, predictor = predictor, seed = 94151402))
+if (file.exists(paste0('Robj/', objname, '.RData'))) {
+  load(paste0('Robj/', objname, '.RData'))
+} else {
+  assign(objname, 
+         crossValidation(xtr = xtr, ytr = ytr, predictor = predictor, seed = 94151402))
+}
 
 message('plot ROC ... ')
 if (!dir.exists('figures')) dir.create('figures')

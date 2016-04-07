@@ -3,13 +3,14 @@
 
 This script collects results from earlier run and illustrates with tables and plots.
 
-```{r setup}
+```{r setup, message = FALSE}
 knitr::opts_chunk$set(error = FALSE, warning = FALSE, message = FALSE, fig.width = 12, fig.height = 8, dev = c("png","pdf"), fig.keep = "high", fig.path = "result_figure/", cache.path = "result_cache/")
+set.seed(70236562)
 source("../../src/func.R")
 library(ggplot2)
 ```
 
-# Read scores
+# Read in scores
 
 ```{r read_scores}
 # read in score table
@@ -27,7 +28,7 @@ head(scores)
 
 # Overview
 
-We plot the boxplot showing the score values for each feature type across different methods.
+We show the score values for different each feature types (with variance of boxplots across different methods in boxplot).
 
 ```{r overview}
 # plot each grps in a separate figure
@@ -43,10 +44,9 @@ for (yname in ylist) {
 }
 ```
 
-
 # AUROC
 
-As we see that error rate is not high but fpr is very high. We focus on AUROC to evaluate performance.
+As we see that class sizes are unbalanced so that we focus on AUROC to evaluate performance.
 
 ```{r auroc}
 # focus only one type of scores

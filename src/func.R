@@ -25,11 +25,9 @@
 
 options(stringsAsFactors = FALSE)
 
-########################
-###
-### data processing
-###
-########################
+
+# data processing ---------------------------------------------------------
+
 
 normalizeData <- function (xtr, xtst=NULL, do.center=TRUE, do.scale=TRUE, ...)
 {
@@ -77,12 +75,8 @@ removeConst <- function (xtr, xtst=NULL, tol=1e-6)
 }
 
 
+# validation --------------------------------------------------------------
 
-########################
-###
-### validation
-###
-########################
 
 evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = names(table(ytst))[2], savepath = NULL, beta = 1, ...)
 {
@@ -313,12 +307,8 @@ plotROCcv <- function(res, savepath, beta = 1)
 }
 
 
+# feature reduction -------------------------------------------------------
 
-########################
-###
-### feature reduction
-###
-########################
 
 indepSignif <- function(xtr, ytr, method = "wilcox.test", ...)
 {
@@ -337,80 +327,14 @@ indepSignif <- function(xtr, ytr, method = "wilcox.test", ...)
 }
 
 
+# classifiers -------------------------------------------------------------
+# in this section
+# xtr/xtst have ntr/ntst samples in rows, p explanatory variables in cols
+# ytr have ntr (binary) indicators
 
-# featIllustrate_static <- function(xtr, ytr, method = "wilcox.test", featlist=NULL, pthres = 0.05, savepath = NULL, cols=3, ...)
-# {
-# 	# featlist denotes the idx or names of col to illustrate differences
-# 	# savepath needs to end in ".pdf"
-# 	# featIllustrate_static() defaults to run indepSignif() with inter-class histograms illustrating difference
-# 	
-#   
-#   library(ggplot2)
-#   
-# 	classes <- sort(unique(as.character(ytr)))
-# 	
-# 	if(is.null(featlist)){
-# 		plist <- indepSignif(xtr=xtr, ytr=ytr, method = method, ...)
-# 		featlist <- names(plist)[plist < pthres]
-# 		if(length(featlist) == 0){
-# 			warning("No feature survived after independence significance test!")
-#       plist <- NA
-#       featlist <- colnames(xtr)
-# 		}
-# 	} else{
-# 		plist <- NA
-# 		featlist <- colnames(xtr[,featlist,drop=F])
-# 	}
-# 	
-# 	plots <- list()
-# 	for(featname in featlist){
-# 		d <- data.frame(feat=xtr[[featname]], grp=ytr)
-# 		grp_mean <- tapply(d$feat, d$grp, mean, na.rm=TRUE)
-# 		grp_mean <- data.frame(grp=names(grp_mean), m=grp_mean)
-# 		
-# 		p1 <- ggplot(d) + xlab(featname) + 
-# 			geom_density(aes(x=feat, color=grp), size=1) + 
-# 			geom_histogram(aes(x=feat, fill=grp, y=..density..), alpha=0.5, position="identity") + 
-# 			guides(color=FALSE, fill=guide_legend(title=NULL)) + 
-# 			geom_vline(data=grp_mean, aes(xintercept=m, color=grp), linetype="dashed", size=1)
-# 		plots[[featname]] <- p1
-# 	}
-# 	
-# 	if(is.null(savepath)){
-# 		return(plots)
-# 	} else{
-#     if (length(featlist) < 20) {
-#       if (!grepl("[.]pdf$", savepath)) savepath <- paste0(savepath, "_features.pdf")
-#       nw <- min(cols, length(plots))
-#       nh <- ceiling(length(plots)/nw)
-#       pdf(file=savepath, width=8*nw, height=5*nh)
-#       multiplot(plotlist=plots, cols=cols)
-#       dev.off()
-#     } else {
-#       for (featname in featlist) {
-#         savepath <- paste(savepath, featname, ".pdf", sep = "_")
-#         pdf(file=savepath, width=8, height=5)
-#         plot(plots[[featname]])
-#         dev.off()
-#       }
-#     }
-# 		return(plist)
-# 	}
-# }
-
-
-
-########################
-###
-### classifiers
-###
-########################
-
-### in this section
-### xtr/xtst have ntr/ntst samples in rows, p explanatory variables in cols
-### ytr have ntr (binary) indicators
 
 predictorLDA <- function(xtr, xtst, ytr, cutoff = 0, do.normalize = TRUE, ...){
+  # no feature selection, no parameter tuning
 	
   library(MASS)
   
@@ -435,6 +359,7 @@ predictorLDA <- function(xtr, xtst, ytr, cutoff = 0, do.normalize = TRUE, ...){
 
 
 predictorLogit <- function(xtr, xtst, ytr, do.stepAIC = FALSE, cutoff = 0, do.normalize = TRUE, ...){
+  # no feature selection, no parameter tuning
 	
 	library(MASS)
   
@@ -469,7 +394,7 @@ predictorLogit <- function(xtr, xtst, ytr, do.stepAIC = FALSE, cutoff = 0, do.no
 
 
 predictorLogitLasso <- function(xtr, xtst, ytr, cutoff = 0, do.normalize = TRUE, ...){
-	# predictorLogit() with Lasso
+	# predictorLogit() with Lasso for feature selection with parameter tuning
 	
 	library(glmnet)
   
@@ -494,7 +419,7 @@ predictorLogitLasso <- function(xtr, xtst, ytr, cutoff = 0, do.normalize = TRUE,
 
 
 predictorLinearSVM <- function(xtr, xtst, ytr, kernel = "linear", cost = 10^seq(-2,2,0.4), cutoff = 0, do.normalize = TRUE, ...){
-	# cost is a vector of parameter range to tune with
+	# cost is a vector of C parameter range to tune with, no feature selection
 	# NOTE cross validation is set to minimize misclassification error by default of tune.svm arguments
 	
 	library(e1071)
@@ -515,12 +440,18 @@ predictorLinearSVM <- function(xtr, xtst, ytr, kernel = "linear", cost = 10^seq(
 
 
 predictorRadialSVM <- function(xtr, xtst, ytr, kernel = "radial", gamma = 10^(-3:3), ...){
-  predictorLinearSVM(xtr = xtr, xtst = xtst, ytr = ytr, kernel = kernel, gamma = gamma, ...)
+  # predictorLinearSVM with linear kernel replaced by Gaussian RBF kernel plus tuning for gamma
+  
+  res <- predictorLinearSVM(xtr = xtr, xtst = xtst, ytr = ytr, kernel = kernel, gamma = gamma, ...)
+  return(res)
 }
 
 
 
-predictorKNN <- function(xtr, xtst, ytr, k = 5, do.normalize = TRUE, cutoff = 0.5, ...){
+predictorKNN <- function(xtr, xtst, ytr, k = seq(1,15,2), do.normalize = TRUE, cutoff = 0.5, ...){
+  # no feature selection, with parameter tuning for k
+  # NOTE k takes only odd values to avoid confusion from ties
+  # NOTE cross validation is set to minimize misclassification error by default of tune.knn arguments
 	
 	library(class)
   
@@ -532,8 +463,9 @@ predictorKNN <- function(xtr, xtst, ytr, k = 5, do.normalize = TRUE, cutoff = 0.
 		xtst <- d$xtst
 	}
 	
-	pred <- knn(xtr, xtst, ytr, k, prob = TRUE, ...)
-	
+	model <- tune.knn(xtr, ytr, k = k, ...)
+	k <- model$best.parameters$k
+	pred <- knn(xtr, xtst, ytr, k = k, prob = TRUE, ...)
 	pred_prob <- attr(pred,"prob"); pred_prob[pred == classes[1]] <- 1 - pred_prob[pred == classes[1]]
 	pred_class <- rep(classes[1],nrow(xtst)); pred_class[pred_prob > cutoff] <- classes[2]
 	
@@ -543,7 +475,8 @@ predictorKNN <- function(xtr, xtst, ytr, k = 5, do.normalize = TRUE, cutoff = 0.
 
 
 
-predictorGBM <- function(xtr, xtst, ytr, n.trees = 100, shrinkage = 0.001, interaction.depth = 3, cutoff = 0, ...){
+predictorGBM <- function(xtr, xtst, ytr, n.trees = 100, shrinkage = 0.001, interaction.depth = 1, cutoff = 0, ...){
+  # no feature selection, no parameter tuning
 	
 	library(gbm)
   
@@ -561,13 +494,14 @@ predictorGBM <- function(xtr, xtst, ytr, n.trees = 100, shrinkage = 0.001, inter
 
 
 
-predictorRF <- function(xtr, xtst, ytr, ntrees = 1000, cutoff = 0.5, ...){
+predictorRF <- function(xtr, xtst, ytr, ntrees = 500, cutoff = 0.5, ...){
+  # no feature selection, no parameter tuning
 	
 	library(randomForest)
   
 	classes <- sort(unique(as.character(ytr)))
 	
-	model <- randomForest(xtr, as.factor(ytr), ntree=ntrees, importance=FALSE, proximity=FALSE, do.trace=FALSE, ...)
+	model <- randomForest(xtr, as.factor(ytr), ntree=ntrees, importance=TRUE, proximity=TRUE, do.trace=FALSE, ...)
 	
 	pred_prob <- predict(model, xtst, type="prob")[,classes[2]]
 	pred_class <- rep(classes[1],nrow(xtst)); pred_class[pred_prob > cutoff] <- classes[2]
@@ -579,7 +513,8 @@ predictorRF <- function(xtr, xtst, ytr, ntrees = 1000, cutoff = 0.5, ...){
 
 
 # predictorDT <- function(xtr, xtst, ytr, cutoff = 0.5, do.prune = FALSE, ...){
-# 	
+# 	# TOO MANY BUGS ...
+# 
 # 	library(rpart)
 #   
 # 	classes <- sort(unique(as.character(ytr)))
@@ -600,6 +535,7 @@ predictorRF <- function(xtr, xtst, ytr, ntrees = 1000, cutoff = 0.5, ...){
 
 
 # predictorNNet <- function(xtr, xtst, ytr, size = 2, cutoff = 0.5, do.normalize = TRUE, ...){
+# 	# TOO MANY BUGS ...
 # 	
 # 	library(nnet)
 #   
@@ -624,8 +560,8 @@ predictorRF <- function(xtr, xtst, ytr, ntrees = 1000, cutoff = 0.5, ...){
 
 
 predictorSparseSVM <- function(xtr, xtst, ytr, cost = 1, cutoff = 0, do.normalize = TRUE, ...){
-	# cost is a constant C parameter
-  # L1-regularized L2-loss support vector classification
+  # cost is a constant C parameter so no parameter tuning
+  # L1-regularized L2-loss support vector classification (i.e. with feature selection)
 	
 	library(LiblineaR)
   
@@ -649,15 +585,11 @@ predictorSparseSVM <- function(xtr, xtst, ytr, cost = 1, cutoff = 0, do.normaliz
 }
 
 
+# utiles ------------------------------------------------------------------
 
-########################
-###
-### others
-###
-########################
 
 # NA proportion function
-NArate <- function(v){mean(is.na(v))}
+NArate <- function(v) mean(is.na(v))
 
 
 
