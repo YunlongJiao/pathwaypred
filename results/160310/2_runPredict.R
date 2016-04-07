@@ -2,6 +2,7 @@
 
 # read nclust from bash command line
 ags <- commandArgs(trailingOnly = TRUE)
+stopifnot(length(ags) == 3)
 xname <- ags[1]
 yname <- ags[2]
 predictor <- ags[3]

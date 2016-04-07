@@ -29,10 +29,12 @@
     - hipathia contain four matrices, that are eff.vals effectorPathwayScores x patients; path.val decomposedPathway x patients; fun.val functions x patients where functions of effector proteins are encoded by UniProt taxonomy; go.val processes x patients where processes of effector proteins are encoded by GeneOncology taxonomy
     - clinical data include interesting phenotypes such as tumor vs normal; types of tumors; progressive stages; etc
 
-## 160407
+## 160407 Meeting notes
 - other types of labels to predict: binary survival status wrt threshold (or maybe survival time?), multi-class subtypes of cancer, etc
 - see the prediction power of setdiff(all.genes, mini.genes) and how to combine this information in addition to pathway features?
 - cross-platform or cross-technique validation in generalizable prediction efficiency
 
 ## TODO
+
+- collect survival info and build survival predictors
 
