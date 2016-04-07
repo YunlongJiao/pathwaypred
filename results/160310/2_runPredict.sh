@@ -4,8 +4,8 @@
 
 ## -- our name ---
 #$ -N pathwayPred
-#$ -pe smp 4
-#$ -l h_vmem=16G
+#$ -pe smp 2
+#$ -l h_vmem=8G
 ## Make sure that the .e and .o file arrive in the
 ## working directory
 #$ -cwd
@@ -16,7 +16,7 @@
 ## set up distributed jobs for nclust range
 #$ -t 1-200
 ## limit the number of simultaneous jobs
-#$ -tc 50
+#$ -tc 60
 
 source $HOME/.bashrc
 

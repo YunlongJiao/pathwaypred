@@ -7,7 +7,7 @@ xname <- ags[1]
 yname <- ags[2]
 predictor <- ags[3]
 
-message("Running ...\n", paste(ags, collapse = "\t"),"\n\n")
+message("Running ...\n", paste(ags, collapse = "\t"),"\n")
 
 # start! ------------------------------------------------------------------
 

@@ -239,7 +239,7 @@ crossValidation <- function(xtr, ytr, ..., seed=61215942, nfolds=5, nrepeats=10,
 		message("New fold started...")
 		ivres <- indepValidation(xtr=xtr[fold,,drop=F], ytr=ytr[fold], xtst=xtr[-fold,,drop=F], ytst=ytr[-fold], ..., save.model=FALSE)
 		return(ivres)
-	}, mc.cores = 4)
+	})
 	
 	cvres <- list(validation=paste0(nrepeats,"_repeats_",nfolds,"_fold_cross_validation"))
 	cvres <- c(cvres,foldres[[1]][elem_inherit])
