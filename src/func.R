@@ -475,7 +475,7 @@ predictorKNN <- function(xtr, xtst, ytr, k = seq(1,15,2), do.normalize = TRUE, c
 
 
 
-predictorGBM <- function(xtr, xtst, ytr, n.trees = 100, shrinkage = 0.001, interaction.depth = 1, cutoff = 0, ...){
+predictorGBM <- function(xtr, xtst, ytr, n.trees = 1500, shrinkage = 0.002, interaction.depth = 6, bag.fraction = 1, cutoff = 0, ...){
   # no feature selection, no parameter tuning
 	
 	library(gbm)
@@ -483,7 +483,7 @@ predictorGBM <- function(xtr, xtst, ytr, n.trees = 100, shrinkage = 0.001, inter
 	classes <- sort(unique(as.character(ytr)))
 	ytr <- as.numeric(as.factor(ytr))-1
 	
-	model <- gbm.fit(xtr, ytr, distribution="bernoulli", interaction.depth=interaction.depth, n.trees=n.trees, shrinkage=shrinkage, verbose=FALSE, ...)
+	model <- gbm.fit(xtr, ytr, distribution="bernoulli", interaction.depth=interaction.depth, n.trees=n.trees, shrinkage=shrinkage, bag.fraction=bag.fraction, verbose=FALSE, ...)
 	
 	pred_prob <- predict(model, xtst, model$n.trees, type="link")
 	pred_class <- rep(classes[1],nrow(xtst)); pred_class[pred_prob > cutoff] <- classes[2]
