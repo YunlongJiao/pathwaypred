@@ -228,17 +228,18 @@ crossValidation <- function(xtr, ytr, ..., seed=61215942, nfolds=5, nrepeats=10,
 	# crossValidation() returns cross validated results from a single dataset
   
   library(caret)
+  library(parallel)
   
 	# data split
   if (!is.null(seed)) set.seed(seed)
 	foldIndices <- createMultiFolds(1:nrow(xtr), k=nfolds, times=nrepeats)
 	
 	message(nrepeats," repeated experiments of ",nfolds, "-fold cross validation!")
-	foldres <- lapply(foldIndices, function(fold){
+	foldres <- mclapply(foldIndices, function(fold){
 		message("New fold started...")
 		ivres <- indepValidation(xtr=xtr[fold,,drop=F], ytr=ytr[fold], xtst=xtr[-fold,,drop=F], ytst=ytr[-fold], ..., save.model=FALSE)
 		return(ivres)
-	})
+	}, mc.cores = 4)
 	
 	cvres <- list(validation=paste0(nrepeats,"_repeats_",nfolds,"_fold_cross_validation"))
 	cvres <- c(cvres,foldres[[1]][elem_inherit])
@@ -454,7 +455,8 @@ predictorKNN <- function(xtr, xtst, ytr, k = seq(1,15,2), do.normalize = TRUE, c
   # NOTE cross validation is set to minimize misclassification error by default of tune.knn arguments
 	
 	library(class)
-  
+	library(e1071)
+	
 	classes <- sort(unique(as.character(ytr)))
 	
 	if(do.normalize){
