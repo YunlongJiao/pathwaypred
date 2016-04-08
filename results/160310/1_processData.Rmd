@@ -60,7 +60,7 @@ nsample <- length(samplelist)
 
 Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
 
-```{r groups}
+```{r groups, message = FALSE}
 # basal type
 y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
 head(y$V2)
@@ -88,10 +88,15 @@ alignmat <- read.table(paste0(datapath, 'clinical_info_sample.txt'), sep = "\t",
 y <- read.table(paste0(datapath, 'clinical_info_donor.txt'), sep = "\t", quote = "\"", header = TRUE)
 alignid <- data.frame(sample = samplelist, 
                       donor = sapply(samplelist, function(id){
+                        message(".", appendLF = FALSE)
                         i <- grep(id, alignmat$submitted_sample_id)
-                        if (length(i) == 1) return(alignmat$icgc_donor_id[i])
-                        else if (length(i) == 0) return(NA)
-                        else stop(id, " has more than 1 alignment!")
+                        if (length(i) == 1) {
+                          return(alignmat$icgc_donor_id[i])
+                        } else if (length(i) == 0) {
+                          return(NA)
+                        } else {
+                          stop(id, " has more than 1 alignment!")
+                        }
                       }))
 # number of samples before pruning
 nrow(alignid)
@@ -125,15 +130,23 @@ for (yname in ylist) {
 See `../../src/func.R` for all predictors implemented. These function objects should all have a name starting with `^predictor`.
 
 ```{r predictors}
-prlist <- ls(pattern = '^predictor')
+prlist <- ls(pattern = '^predictor.')
 prlist
+```
+
+# Cross validation parameters
+
+```{r cv}
+nfolds <- 5
+nrepeats <- 10
 ```
 
 # Save up !!
 
 ```{r save}
 # write out combinations of datasets for running on cluster
-param <- expand.grid(xlist, ylist, prlist, KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+param <- expand.grid(xlist, ylist, prlist, seq(nfolds * nrepeats), KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+param <- cbind(param, nfolds, nrepeats)
 write.table(param, file = 'cluster_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE)
 
 # save entire image to be loaded later

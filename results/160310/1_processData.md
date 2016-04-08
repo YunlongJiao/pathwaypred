@@ -231,10 +231,15 @@ alignmat <- read.table(paste0(datapath, 'clinical_info_sample.txt'), sep = "\t",
 y <- read.table(paste0(datapath, 'clinical_info_donor.txt'), sep = "\t", quote = "\"", header = TRUE)
 alignid <- data.frame(sample = samplelist, 
                       donor = sapply(samplelist, function(id){
+                        message(".", appendLF = FALSE)
                         i <- grep(id, alignmat$submitted_sample_id)
-                        if (length(i) == 1) return(alignmat$icgc_donor_id[i])
-                        else if (length(i) == 0) return(NA)
-                        else stop(id, " has more than 1 alignment!")
+                        if (length(i) == 1) {
+                          return(alignmat$icgc_donor_id[i])
+                        } else if (length(i) == 0) {
+                          return(NA)
+                        } else {
+                          stop(id, " has more than 1 alignment!")
+                        }
                       }))
 # number of samples before pruning
 nrow(alignid)
@@ -325,14 +330,22 @@ See `../../src/func.R` for all predictors implemented. These function objects sh
 
 
 ```r
-prlist <- ls(pattern = '^predictor')
+prlist <- ls(pattern = '^predictor.')
 prlist
 ```
 
 ```
 ## [1] "predictorGBM"        "predictorKNN"        "predictorLDA"       
 ## [4] "predictorLinearSVM"  "predictorLogit"      "predictorLogitLasso"
-## [7] "predictorRadialSVM"  "predictorRF"         "predictorSparseSVM"
+## [7] "predictorRF"         "predictorRadialSVM"  "predictorSparseSVM"
+```
+
+# Cross validation parameters
+
+
+```r
+nfolds <- 5
+nrepeats <- 10
 ```
 
 # Save up !!
@@ -340,7 +353,8 @@ prlist
 
 ```r
 # write out combinations of datasets for running on cluster
-param <- expand.grid(xlist, ylist, prlist, KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+param <- expand.grid(xlist, ylist, prlist, seq(nfolds * nrepeats), KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+param <- cbind(param, nfolds, nrepeats)
 write.table(param, file = 'cluster_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE)
 
 # save entire image to be loaded later
@@ -355,16 +369,12 @@ sessionInfo()
 ```
 
 ```
-## R version 3.2.1 (2015-06-18)
-## Platform: x86_64-unknown-linux-gnu (64-bit)
+## R version 3.2.3 (2015-12-10)
+## Platform: x86_64-apple-darwin13.4.0 (64-bit)
+## Running under: OS X 10.11.4 (El Capitan)
 ## 
 ## locale:
-##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## [1] C/UTF-8/C/C/C/C
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  base     
@@ -373,6 +383,6 @@ sessionInfo()
 ## [1] knitr_1.12.3
 ## 
 ## loaded via a namespace (and not attached):
-## [1] magrittr_1.5   formatR_1.3    tools_3.2.1    stringi_1.0-1 
-## [5] methods_3.2.1  stringr_1.0.0  evaluate_0.8.3
+## [1] magrittr_1.5  formatR_1.2.1 tools_3.2.3   stringi_1.0-1 methods_3.2.3
+## [6] stringr_1.0.0 evaluate_0.8
 ```

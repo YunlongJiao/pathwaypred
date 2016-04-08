@@ -2,47 +2,48 @@
 
 # read nclust from bash command line
 ags <- commandArgs(trailingOnly = TRUE)
-stopifnot(length(ags) == 3)
-xname <- ags[1]
-yname <- ags[2]
-predictor <- ags[3]
+stopifnot(length(ags) == 6)
+xname <- as.character(ags[1]) # feature matrix
+yname <- as.character(ags[2]) # response groups
+prname <- as.character(ags[3]) # predictor
+i.fold <- as.integer(ags[4]) # cv fold index
+nfolds <- as.integer(ags[5]) # number of folds
+nrepeats <- as.integer(ags[6]) # number of repeats
 
-message("Running ...\n", paste(ags, collapse = "\t"),"\n")
+message("\nRunning ...\n", paste(ags, collapse = "\t"),"\n")
 
 # start! ------------------------------------------------------------------
 
-message("loading features and groups and predictors ...")
+message("loading features and groups ...")
 load('dat.RData')
 source("../../src/func.R") # complementary functions for kernel kmeans for top-k rankings
 
+# get R objects
 xtr <- get(xname)
 ytr <- get(yname)
-objname <- paste('res', xname, yname, predictor, sep = '_')
-
+objname <- paste('res', xname, yname, prname, nfolds, nrepeats, i.fold, sep = '_')
+objpath <- paste0('Robj/', objname, '.RData')
+if (file.exists(objpath)) {
+  message('job already done !!')
+  quit(save = 'no')
+}
 # keep only samples for which label info is available
 samplelist <- intersect(rownames(xtr), names(ytr))
 message('Sample size = ', length(samplelist))
-xtr <- xtr[samplelist, ]
+xtr <- xtr[samplelist,]
 ytr <- ytr[samplelist]
 
+# create cv folds
+set.seed(94151402)
+foldIndices <- caret::createMultiFolds(1:nrow(xtr), k=nfolds, times=nrepeats)
+fold <- foldIndices[[i.fold]]
+
 message('train and predict ... ')
-if (file.exists(paste0('Robj/', objname, '.RData'))) {
-  load(paste0('Robj/', objname, '.RData'))
-} else {
-  assign(objname, 
-         crossValidation(xtr = xtr, ytr = ytr, predictor = predictor, seed = 94151402))
-}
-
-message('plot ROC ... ')
-if (!dir.exists('figures')) dir.create('figures')
-plotROCcv(res = get(objname), savepath = paste0('figures/', objname, '.pdf'))
-
-message('write results ... ')
-score <- c("acc","fpr","tpr","ppv","fval","concordance.index","auroc")
-dd <- data.frame(xname, yname, predictor, score, unlist(get(objname)[score]))
-if (!file.exists('scores.txt')) file.create('scores.txt')
-write.table(dd, file = "scores.txt", row.names = FALSE, col.names = FALSE, append = TRUE)
-
-message('save up !!')
+assign(objname, 
+       indepValidation(xtr = xtr[fold, , drop=F], ytr = ytr[fold], 
+                       xtst = xtr[-fold, , drop=F], ytst = ytr[-fold], 
+                       predictor = prname))
 if (!dir.exists('Robj')) dir.create('Robj')
-save(list = objname, file = paste0('Robj/', objname, '.RData'))
+save(list = objname, file = objpath)
+message('new job saved up !!')
+quit(save = 'no')

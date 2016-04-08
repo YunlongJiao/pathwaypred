@@ -12,16 +12,50 @@ library(ggplot2)
 
 # Read in scores
 
-```{r read_scores}
-# read in score table
-scores <- read.table("scores.txt", header = FALSE)
-colnames(scores) <- c("x", "y", "predictor", "score", "value")
-xlist <- unique(scores$x)
-ylist <- unique(scores$y)
-prlist <- unique(scores$predictor)
-slist <- unique(scores$score)
-# round values to 3 digits for ease of labeling
-scores <- subset(scores, !is.na(scores$value))
+```{r scores}
+param <- read.table("cluster_param.txt", header = FALSE, row.names = NULL, col.names = c("idx", "xname", "yname", "prname", "rep", "nfolds", "nrepeats"))
+xlist <- unique(param$xname)
+ylist <- unique(param$yname)
+prlist <- unique(param$prname)
+nfolds <- unique(param$nfolds); stopifnot(length(nfolds) == 1)
+nrepeats <- unique(param$nrepeats); stopifnot(length(nrepeats) == 1)
+slist <- c("acc","fpr","tpr","ppv","fval","concordance.index","auroc")
+
+scores <- list()
+for (xname in xlist) {
+  for (yname in ylist){
+    for (prname in prlist) {
+      message(".", appendLF = FALSE)
+      objname <- paste('res', xname, yname, prname, nfolds, nrepeats, sep = '_')
+      # read and combine cv results from cluster runs
+      cvres.files <- list.files(path = "Robj", pattern = objname, full.names = TRUE)
+      nfiles <- length(cvres.files) # number of cv jobs successfully done
+      cvres <- lapply(cvres.files, function(f) get(load(f)))
+      names(cvres) <- cvres.files
+      assign(objname, crossValidationCombineResults(cvres))
+      # plot ROC
+      if (!dir.exists('figures')) dir.create('figures')
+      plotROCcv(res = get(objname), savepath = paste0('figures/', objname, '.pdf'))
+      # write in scores
+      ss <- get(objname)[slist]
+      ss[sapply(ss, is.null)] <- NA
+      scores[[objname]] <- data.frame(x = xname, 
+                                      y = yname, 
+                                      predictor = prname, 
+                                      score = slist, 
+                                      value = unlist(ss), 
+                                      n.cv.folds = nfiles,
+                                      row.names = NULL)
+    }
+  }
+}
+scores <- do.call('rbind', scores)
+rownames(scores) <- seq(nrow(scores))
+# write out
+write.table(scores[order(scores$n.cv.folds, decreasing = TRUE), ], 
+            file = "scores.txt", row.names = TRUE, col.names = TRUE, sep = '\t')
+# a bit more pruning for plotting
+scores <- subset(scores, scores$score != "concordance.index")
 scores$value <- round(scores$value, 3)
 head(scores)
 ```
@@ -57,8 +91,8 @@ for (yname in ylist) {
   yrange <- c(min(d$value)*0.95, 1)
   p1 <- ggplot(d, aes(x = x, y = value)) + 
     geom_bar(aes(fill = x), stat = "identity", position = "dodge") + 
-    geom_text(aes(label = value), vjust = -0.1, colour = "black", 
-              position = position_dodge(0.9), size = 5) + 
+    geom_text(aes(label = value), vjust = -0.3, colour = "black", 
+              position = position_dodge(0.9), size = 4) + 
     facet_wrap(~predictor) + 
     coord_cartesian(ylim = yrange) + 
     ggtitle(paste0(key, " for predicting ", yname)) + 

@@ -162,10 +162,11 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
   
   library(survival)
   
+  if (!is.null(seed)) set.seed(seed)
+  
   classes <- sort(unique(as.character(ytr)))
   neg.label <- classes[1]; pos.label <- classes[2]
 	
-	if (!is.null(seed)) set.seed(seed)
 	if(!is.character(predictor)){
 		stop("Specify predictor with a character!")
 	}
@@ -216,41 +217,53 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
 
 
 
-crossValidation <- function(xtr, ytr, ..., seed=61215942, nfolds=5, nrepeats=10, 
-                            elem_ave=c("acc","fpr","tpr","ppv","fval","concordance.index","auroc"), 
-                            elem_keepfold=c("true.surv","true.class","test.class","test.prob","featlist"),
-                            elem_inherit=c("predictor", "cutoff"))
+crossValidation <- function(xtr, ytr, ..., seed=61215942, nfolds=5, nrepeats=10)
 {
 	# nfolds, nrepeats are used to generate nrepeats simultaneous training splits each being nfolds
-	# elem_ave are those scores to average over cv fold
-	# elem_keepfold are those to keep as they come from each fold
-	# elem_inherit are those to inherit some parameters from res of subfold as in ensembleResults()
 	# crossValidation() returns cross validated results from a single dataset
   
   library(caret)
-  library(parallel)
   
 	# data split
   if (!is.null(seed)) set.seed(seed)
 	foldIndices <- createMultiFolds(1:nrow(xtr), k=nfolds, times=nrepeats)
 	
 	message(nrepeats," repeated experiments of ",nfolds, "-fold cross validation!")
-	foldres <- mclapply(foldIndices, function(fold){
+	foldres <- lapply(foldIndices, function(fold){
 		message("New fold started...")
 		ivres <- indepValidation(xtr=xtr[fold,,drop=F], ytr=ytr[fold], xtst=xtr[-fold,,drop=F], ytst=ytr[-fold], ..., save.model=FALSE)
 		return(ivres)
 	})
 	
-	cvres <- list(validation=paste0(nrepeats,"_repeats_",nfolds,"_fold_cross_validation"))
-	cvres <- c(cvres,foldres[[1]][elem_inherit])
-	for(elem in elem_keepfold){
-		cvres[[elem]] <- lapply(foldres, function(u){u[[elem]]})
-	}
-	for(elem in elem_ave){
-		cvres[[elem]] <- mean(sapply(foldres, function(u){u[[elem]]}), na.rm=TRUE)
-	}
+	cvres <- crossValidationCombineResults(foldres)
 	
 	return(cvres)
+}
+
+
+
+crossValidationCombineResults <- function(foldres, 
+                                          elem_ave=c("acc","fpr","tpr","ppv","fval","concordance.index","auroc"), 
+                                          elem_keepfold=c("true.surv","true.class","test.class","test.prob","featlist"),
+                                          elem_inherit=c("predictor", "cutoff"))
+{
+  # elem_ave are those scores to average over cv fold
+  # elem_keepfold are those to keep as they come from each fold
+  # elem_inherit are those to inherit some parameters from res of subfold as in ensembleResults()
+  
+  if (is.null(foldres) || (is.list(foldres) && length(foldres) == 0))
+    return(NULL)
+  
+  cvres <- list(validation=paste0(nrepeats,"_repeats_",nfolds,"_fold_cross_validation"))
+  cvres <- c(cvres,foldres[[1]][elem_inherit])
+  for(elem in elem_keepfold){
+    cvres[[elem]] <- lapply(foldres, function(u){u[[elem]]})
+  }
+  for(elem in elem_ave){
+    cvres[[elem]] <- mean(sapply(foldres, function(u){u[[elem]]}), na.rm=TRUE)
+  }
+  
+  return(cvres)
 }
 
 
@@ -260,6 +273,9 @@ plotROCcv <- function(res, savepath, beta = 1)
 	# res is the result list from calling indepValidation() or crossValidation(), ess having as elements list of $true.class and $test.prob (can be cross-fold result given by list)
   
   library(ROCR)
+  
+  if (is.null(res) || (is.list(res) && length(res) == 0))
+    return(NULL)
   
 	alpha <- function(b){return(1/(1+b*b))}
 	
