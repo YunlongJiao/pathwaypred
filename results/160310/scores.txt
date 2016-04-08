@@ -1083,3 +1083,10 @@
 "genes.vals" "surv.grps" "predictorRF" "fval" 0.191997976749777
 "genes.vals" "surv.grps" "predictorRF" "concordance.index" NA
 "genes.vals" "surv.grps" "predictorRF" "auroc" 0.66767749654172
+"path.vals" "surv.grps" "predictorLinearSVM" "acc" 0.820131168831169
+"path.vals" "surv.grps" "predictorLinearSVM" "fpr" 0.106394157564567
+"path.vals" "surv.grps" "predictorLinearSVM" "tpr" 0.375744947941164
+"path.vals" "surv.grps" "predictorLinearSVM" "ppv" 0.367115836706194
+"path.vals" "surv.grps" "predictorLinearSVM" "fval" 0.365493257125395
+"path.vals" "surv.grps" "predictorLinearSVM" "concordance.index" NA
+"path.vals" "surv.grps" "predictorLinearSVM" "auroc" 0.725991067077955
