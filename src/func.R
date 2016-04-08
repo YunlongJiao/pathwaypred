@@ -15,13 +15,14 @@
 # library(glmnet) # L1-GLM
 # library(LiblineaR) # L1-SVM
 # library(gbm) # GBM
+# library(kernlab) # estimate gamma for Gaussian RBF SVM
 # # already exists for 3.2.1-atalas on crom01
 # library(MASS) # LDA, logit
-# library(e1071) # SVM
-# library(class) # KNN
+# library(e1071) # SVM and KNN tuning
+# library(class) # KNN predicting
 # library(randomForest) # RF
-# library(rpart) # DT
-# library(nnet) # NNet # tooooo many error T^T
+# library(rpart) # DT # tooooo many errors T T
+# library(nnet) # NNet # tooooo many errors T T
 
 options(stringsAsFactors = FALSE)
 
@@ -435,7 +436,7 @@ predictorLogitLasso <- function(xtr, xtst, ytr, cutoff = 0, do.normalize = TRUE,
 
 
 
-predictorLinearSVM <- function(xtr, xtst, ytr, kernel = "linear", cost = 10^seq(-2,2,0.4), cutoff = 0, do.normalize = TRUE, ...){
+predictorLinearSVM <- function(xtr, xtst, ytr, kernel = "linear", cost = 10^(-3:3), cutoff = 0, do.normalize = TRUE, ...){
 	# cost is a vector of C parameter range to tune with, no feature selection
 	# NOTE cross validation is set to minimize misclassification error by default of tune.svm arguments
 	
@@ -444,7 +445,7 @@ predictorLinearSVM <- function(xtr, xtst, ytr, kernel = "linear", cost = 10^seq(
 	classes <- sort(unique(as.character(ytr)))
 	
 	o <- order(ytr, decreasing = TRUE) # otherwise decision values might be inversed
-	model <- tune.svm(xtr[o,], as.factor(ytr[o]), kernel=kernel, cost=cost, scale=do.normalize, type="C-classification", ...)
+	model <- tune.svm(xtr[o,], as.factor(ytr[o]), kernel=kernel, cost=cost, scale=do.normalize, type="C-classification", tunecontrol=tune.control(sampling="cross", cross=5), ...)
 	
 	pred <- predict(model$best.model, xtst, decision.values=T)
 	pred_prob <- attr(pred,"decision.values")[,1]
@@ -456,16 +457,18 @@ predictorLinearSVM <- function(xtr, xtst, ytr, kernel = "linear", cost = 10^seq(
 
 
 
-predictorRadialSVM <- function(xtr, xtst, ytr, kernel = "radial", gamma = 10^(-3:3), ...){
-  # predictorLinearSVM with linear kernel replaced by Gaussian RBF kernel plus tuning for gamma
+predictorRadialSVM <- function(xtr, xtst, ytr, do.normalize = TRUE, ...){
+  # predictorLinearSVM with linear kernel replaced by Gaussian RBF kernel
+  # gamma for radial kernel is set with median trick implemented by kernlab:sigest()
   
-  res <- predictorLinearSVM(xtr = xtr, xtst = xtst, ytr = ytr, kernel = kernel, gamma = gamma, ...)
+  gamma <- kernlab::sigest(xtr, scaled=do.normalize)['50%']
+  res <- predictorLinearSVM(xtr = xtr, xtst = xtst, ytr = ytr, kernel = "radial", gamma = gamma, do.normalize = do.normalize, ...)
   return(res)
 }
 
 
 
-predictorKNN <- function(xtr, xtst, ytr, k = seq(1,15,2), do.normalize = TRUE, cutoff = 0.5, ...){
+predictorKNN <- function(xtr, xtst, ytr, k = seq(1,10,2), do.normalize = TRUE, cutoff = 0.5, ...){
   # no feature selection, with parameter tuning for k
   # NOTE k takes only odd values to avoid confusion from ties
   # NOTE cross validation is set to minimize misclassification error by default of tune.knn arguments
@@ -481,7 +484,7 @@ predictorKNN <- function(xtr, xtst, ytr, k = seq(1,15,2), do.normalize = TRUE, c
 		xtst <- d$xtst
 	}
 	
-	model <- tune.knn(xtr, ytr, k = k, ...)
+	model <- tune.knn(xtr, ytr, k = k, tunecontrol=tune.control(sampling="cross", cross=5), ...)
 	k <- model$best.parameters$k
 	pred <- knn(xtr, xtst, ytr, k = k, prob = TRUE, ...)
 	pred_prob <- attr(pred,"prob"); pred_prob[pred == classes[1]] <- 1 - pred_prob[pred == classes[1]]

@@ -16,7 +16,7 @@
 ## set up distributed jobs for nclust range
 #$ -t 1-9500
 ## limit the number of simultaneous jobs
-#$ -tc 200
+#$ -tc 80
 
 source $HOME/.bashrc
 
