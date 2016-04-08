@@ -52,8 +52,7 @@ for (xname in xlist) {
 scores <- do.call('rbind', scores)
 rownames(scores) <- seq(nrow(scores))
 # write out
-write.table(scores[order(scores$n.cv.folds, decreasing = TRUE), ], 
-            file = "scores.txt", row.names = TRUE, col.names = TRUE, sep = '\t')
+write.table(scores, file = "scores.txt", row.names = TRUE, col.names = TRUE, sep = '\t')
 # a bit more pruning for plotting
 scores <- subset(scores, scores$score != "concordance.index")
 scores$value <- round(scores$value, 3)

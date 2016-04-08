@@ -252,7 +252,7 @@ crossValidationCombineResults <- function(foldres,
   # elem_inherit are those to inherit some parameters from res of subfold as in ensembleResults()
   
   if (is.null(foldres) || (is.list(foldres) && length(foldres) == 0))
-    return(NULL)
+    return(list())
   
   cvres <- list(validation=paste0(nrepeats,"_repeats_",nfolds,"_fold_cross_validation"))
   cvres <- c(cvres,foldres[[1]][elem_inherit])
