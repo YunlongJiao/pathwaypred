@@ -6,15 +6,12 @@ This script collects results from earlier run and illustrates with tables and pl
 
 ```r
 knitr::opts_chunk$set(error = FALSE, warning = FALSE, message = FALSE, fig.width = 12, fig.height = 8, dev = c("png","pdf"), fig.keep = "high", fig.path = "result_figure/", cache.path = "result_cache/")
+set.seed(70236562)
 source("../../src/func.R")
 library(ggplot2)
 ```
 
-```
-## Loading required package: methods
-```
-
-# Read scores
+# Read in scores
 
 
 ```r
@@ -33,17 +30,17 @@ head(scores)
 
 ```
 ##          x          y    predictor score value
-## 1 fun.vals basal.grps predictorKNN   acc 0.897
-## 2 fun.vals basal.grps predictorKNN   fpr 0.535
-## 3 fun.vals basal.grps predictorKNN   tpr 1.000
-## 4 fun.vals basal.grps predictorKNN   ppv 0.888
-## 5 fun.vals basal.grps predictorKNN  fval 0.940
-## 7 fun.vals basal.grps predictorKNN auroc 0.891
+## 1 fun.vals basal.grps predictorGBM   acc 0.905
+## 2 fun.vals basal.grps predictorGBM   fpr 0.013
+## 3 fun.vals basal.grps predictorGBM   tpr 0.560
+## 4 fun.vals basal.grps predictorGBM   ppv 0.909
+## 5 fun.vals basal.grps predictorGBM  fval 0.684
+## 7 fun.vals basal.grps predictorGBM auroc 0.943
 ```
 
 # Overview
 
-We plot the boxplot showing the score values for each feature type across different methods.
+We show the score values for different each feature types (with variance of boxplots across different methods in boxplot).
 
 
 ```r
@@ -60,12 +57,11 @@ for (yname in ylist) {
 }
 ```
 
-![plot of chunk overview](result_figure/overview-1.png)![plot of chunk overview](result_figure/overview-2.png)
-
+![plot of chunk overview](result_figure/overview-1.png)![plot of chunk overview](result_figure/overview-2.png)![plot of chunk overview](result_figure/overview-3.png)
 
 # AUROC
 
-As we see that error rate is not high but fpr is very high. We focus on AUROC to evaluate performance.
+As we see that class sizes are unbalanced so that we focus on AUROC to evaluate performance.
 
 
 ```r
@@ -77,7 +73,7 @@ for (yname in ylist) {
   yrange <- c(min(d$value)*0.95, 1)
   p1 <- ggplot(d, aes(x = x, y = value)) + 
     geom_bar(aes(fill = x), stat = "identity", position = "dodge") + 
-    geom_text(aes(label = value), vjust = 1.6, colour = "white", 
+    geom_text(aes(label = value), vjust = -0.1, colour = "black", 
               position = position_dodge(0.9), size = 5) + 
     facet_wrap(~predictor) + 
     coord_cartesian(ylim = yrange) + 
@@ -87,7 +83,7 @@ for (yname in ylist) {
 }
 ```
 
-![plot of chunk auroc](result_figure/auroc-1.png)![plot of chunk auroc](result_figure/auroc-2.png)
+![plot of chunk auroc](result_figure/auroc-1.png)![plot of chunk auroc](result_figure/auroc-2.png)![plot of chunk auroc](result_figure/auroc-3.png)
 
 # Session info
 
