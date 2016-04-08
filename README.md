@@ -3,5 +3,5 @@
 # Notes
 
 - Dependent packages are listed at the top of `src/func.R`.
-- within each folder under `results/` files are numbered by the order of execution.
-- .sh files are for cluster run, .Rmd files are for knitting .md, .R files are for wrapper function for .Rmd files or scipts to be passed to .sh, .Rout files are outputs from calling .R files.
+- Within each folder named by dates under `results/`, files are numbered by the necessary order of execution.
+- Specifically, .md files record results, .Rmd files are for knitting OUTPUT files .md, .R files are for wrapper function for .Rmd files or scipts to be passed to .sh which are ready to submit onto cluster.

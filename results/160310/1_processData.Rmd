@@ -147,7 +147,7 @@ nrepeats <- 10
 # write out combinations of datasets for running on cluster
 param <- expand.grid(xlist, ylist, prlist, seq(nfolds * nrepeats), KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
 param <- cbind(param, nfolds, nrepeats)
-write.table(param, file = 'cluster_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE)
+write.table(param, file = 'cluster_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE, sep = ' ')
 
 # save entire image to be loaded later
 save(list = c(xlist, ylist), file = 'dat.RData')
