@@ -15,27 +15,60 @@ library(ggplot2)
 
 
 ```r
-# read in score table
-scores <- read.table("scores.txt", header = FALSE)
-colnames(scores) <- c("x", "y", "predictor", "score", "value")
-xlist <- unique(scores$x)
-ylist <- unique(scores$y)
-prlist <- unique(scores$predictor)
-slist <- unique(scores$score)
-# round values to 3 digits for ease of labeling
-scores <- subset(scores, !is.na(scores$value))
+param <- read.table("cluster_param.txt", header = FALSE, row.names = NULL, col.names = c("idx", "xname", "yname", "prname", "rep", "nfolds", "nrepeats"))
+xlist <- unique(param$xname)
+ylist <- unique(param$yname)
+prlist <- unique(param$prname)
+nfolds <- unique(param$nfolds); stopifnot(length(nfolds) == 1)
+nrepeats <- unique(param$nrepeats); stopifnot(length(nrepeats) == 1)
+slist <- c("acc","fpr","tpr","ppv","fval","concordance.index","auroc")
+
+scores <- list()
+for (xname in xlist) {
+  for (yname in ylist){
+    for (prname in prlist) {
+      message(".", appendLF = FALSE)
+      objname <- paste('res', xname, yname, prname, nfolds, nrepeats, sep = '_')
+      # read and combine cv results from cluster runs
+      cvres.files <- list.files(path = "Robj", pattern = objname, full.names = TRUE)
+      nfiles <- length(cvres.files) # number of cv jobs successfully done
+      cvres <- lapply(cvres.files, function(f) get(load(f)))
+      names(cvres) <- cvres.files
+      assign(objname, crossValidationCombineResults(cvres))
+      # plot ROC
+      if (!dir.exists('figures')) dir.create('figures')
+      plotROCcv(res = get(objname), savepath = paste0('figures/', objname, '.pdf'))
+      # write in scores
+      ss <- get(objname)[slist]
+      ss[sapply(ss, is.null)] <- NA
+      scores[[objname]] <- data.frame(x = xname, 
+                                      y = yname, 
+                                      predictor = prname, 
+                                      score = slist, 
+                                      value = unlist(ss), 
+                                      n.cv.folds = nfiles,
+                                      row.names = NULL)
+    }
+  }
+}
+scores <- do.call('rbind', scores)
+rownames(scores) <- seq(nrow(scores))
+# write out
+write.table(scores, file = "scores.txt", row.names = TRUE, col.names = TRUE, sep = '\t')
+# a bit more pruning for plotting
+scores <- subset(scores, scores$score != "concordance.index")
 scores$value <- round(scores$value, 3)
 head(scores)
 ```
 
 ```
-##          x          y    predictor score value
-## 1 fun.vals basal.grps predictorGBM   acc 0.905
-## 2 fun.vals basal.grps predictorGBM   fpr 0.013
-## 3 fun.vals basal.grps predictorGBM   tpr 0.560
-## 4 fun.vals basal.grps predictorGBM   ppv 0.909
-## 5 fun.vals basal.grps predictorGBM  fval 0.684
-## 7 fun.vals basal.grps predictorGBM auroc 0.943
+##          x          y    predictor score value n.cv.folds
+## 1 eff.vals basal.grps predictorGBM   acc 0.941         50
+## 2 eff.vals basal.grps predictorGBM   fpr 0.010         50
+## 3 eff.vals basal.grps predictorGBM   tpr 0.733         50
+## 4 eff.vals basal.grps predictorGBM   ppv 0.946         50
+## 5 eff.vals basal.grps predictorGBM  fval 0.822         50
+## 7 eff.vals basal.grps predictorGBM auroc 0.968         50
 ```
 
 # Overview
@@ -64,51 +97,5 @@ for (yname in ylist) {
 As we see that class sizes are unbalanced so that we focus on AUROC to evaluate performance.
 
 
-```r
-# focus only one type of scores
-key <- "auroc"
-# plot each grps in a separate figure
-for (yname in ylist) {
-  d <- subset(scores, scores$score == key & scores$y == yname)
-  yrange <- c(min(d$value)*0.95, 1)
-  p1 <- ggplot(d, aes(x = x, y = value)) + 
-    geom_bar(aes(fill = x), stat = "identity", position = "dodge") + 
-    geom_text(aes(label = value), vjust = -0.3, colour = "black", 
-              position = position_dodge(0.9), size = 4) + 
-    facet_wrap(~predictor) + 
-    coord_cartesian(ylim = yrange) + 
-    ggtitle(paste0(key, " for predicting ", yname)) + 
-    theme(axis.text.x = element_blank())
-  plot(p1)
-}
-```
-
-![plot of chunk auroc](result_figure/auroc-1.png)![plot of chunk auroc](result_figure/auroc-2.png)![plot of chunk auroc](result_figure/auroc-3.png)
-
-# Session info
 
 
-```r
-sessionInfo()
-```
-
-```
-## R version 3.2.3 (2015-12-10)
-## Platform: x86_64-apple-darwin13.4.0 (64-bit)
-## Running under: OS X 10.11.4 (El Capitan)
-## 
-## locale:
-## [1] C/UTF-8/C/C/C/C
-## 
-## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  base     
-## 
-## other attached packages:
-## [1] ggplot2_2.1.0 knitr_1.12.3 
-## 
-## loaded via a namespace (and not attached):
-##  [1] labeling_0.3     colorspace_1.2-6 scales_0.4.0     plyr_1.8.3      
-##  [5] magrittr_1.5     formatR_1.2.1    tools_3.2.3      gtable_0.2.0    
-##  [9] Rcpp_0.12.3      stringi_1.0-1    grid_3.2.3       methods_3.2.3   
-## [13] digest_0.6.9     stringr_1.0.0    munsell_0.4.3    evaluate_0.8
-```
