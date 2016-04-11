@@ -381,12 +381,12 @@ sessionInfo()
 ## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 ## 
 ## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  base     
+## [1] methods   stats     graphics  grDevices utils     datasets  base     
 ## 
 ## other attached packages:
 ## [1] knitr_1.12.3
 ## 
 ## loaded via a namespace (and not attached):
 ## [1] magrittr_1.5   formatR_1.3    tools_3.2.1    stringi_1.0-1 
-## [5] methods_3.2.1  stringr_1.0.0  evaluate_0.8.3
+## [5] stringr_1.0.0  evaluate_0.8.3
 ```

@@ -17,13 +17,14 @@
 # library(gbm) # GBM
 # library(kernlab) # estimate gamma for Gaussian RBF SVM
 # # already exists for 3.2.1-atalas on crom01
-# library(MASS) # LDA, logit
+# library(MASS) # LDA
 # library(e1071) # SVM and KNN tuning
 # library(class) # KNN predicting
 # library(randomForest) # RF
 # library(rpart) # DT # tooooo many errors T T
 # library(nnet) # NNet # tooooo many errors T T
 
+library(methods) # manually import important BASE packages otherwise error in calling glmnet()
 options(stringsAsFactors = FALSE)
 
 
@@ -379,8 +380,6 @@ predictorLDA <- function(xtr, xtst, ytr, cutoff = 0, do.normalize = TRUE, ...){
 predictorLogit <- function(xtr, xtst, ytr, do.stepAIC = FALSE, cutoff = 0, do.normalize = TRUE, ...){
   # no feature selection, no parameter tuning
 	
-	library(MASS)
-  
 	classes <- sort(unique(as.character(ytr)))
 	if(length(classes) < 2){
 		warning("Singe-class for training set!")
@@ -396,7 +395,7 @@ predictorLogit <- function(xtr, xtst, ytr, do.stepAIC = FALSE, cutoff = 0, do.no
 		xtst <- d$xtst
 	}
 	
-	model <- glm(y ~ ., data=data.frame(y=as.factor(ytr),as.data.frame(xtr)), family="binomial", ...)
+	model <- glm.fit(x=as.data.frame(xtr), y=as.factor(ytr), family=binomial(link="logit"), ...)
 	if(do.stepAIC){
 		message("Choosing a model by stepwise AIC...")
 		model <- stepAIC(model, trace=0)

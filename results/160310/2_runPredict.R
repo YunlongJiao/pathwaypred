@@ -12,6 +12,13 @@ nrepeats <- as.integer(ags[6]) # number of repeats
 
 message("\nRunning ...\n", paste(ags, collapse = "\t"),"\n")
 
+objname <- paste('res', xname, yname, prname, nfolds, nrepeats, i.fold, sep = '_')
+objpath <- paste0('Robj/', objname, '.RData')
+if (file.exists(objpath)) {
+  message('job already done !!')
+  quit(save = 'no')
+}
+
 # start! ------------------------------------------------------------------
 
 message("loading features and groups ...")
@@ -21,12 +28,6 @@ source("../../src/func.R") # complementary functions for kernel kmeans for top-k
 # get R objects
 xtr <- get(xname)
 ytr <- get(yname)
-objname <- paste('res', xname, yname, prname, nfolds, nrepeats, i.fold, sep = '_')
-objpath <- paste0('Robj/', objname, '.RData')
-if (file.exists(objpath)) {
-  message('job already done !!')
-  quit(save = 'no')
-}
 # keep only samples for which label info is available
 samplelist <- intersect(rownames(xtr), names(ytr))
 message('Sample size = ', length(samplelist))
