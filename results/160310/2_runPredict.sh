@@ -5,10 +5,12 @@
 ## -- our name ---
 #$ -N pathwayPred
 #$ -pe smp 1
-#$ -l h_vmem=2G
+#$ -l h_vmem=8G
 ## Make sure that the .e and .o file arrive in the
 ## working directory
 #$ -cwd
+## Merge the standard out and standard error to one file
+#$ -j y
 ## Merge the standard out and standard error to one file
 #$ -o logs
 #$ -e logs
@@ -16,7 +18,7 @@
 ## set up distributed jobs for nclust range
 #$ -t 1-9500
 ## limit the number of simultaneous jobs
-#$ -tc 80
+#$ -tc 30
 
 source $HOME/.bashrc
 
