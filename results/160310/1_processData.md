@@ -336,7 +336,7 @@ prlist
 
 ```
 ## [1] "predictorGBM"        "predictorKNN"        "predictorLDA"       
-## [4] "predictorLinearSVM"  "predictorLogit"      "predictorLogitLasso"
+## [4] "predictorLinearSVM"  "predictorLogitLasso" "predictorNB"        
 ## [7] "predictorRadialSVM"  "predictorRF"         "predictorSparseSVM"
 ```
 

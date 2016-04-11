@@ -13,12 +13,12 @@
 # # import classifier libraries in those predictors called
 # # from CRAN
 # library(glmnet) # L1-GLM
-# library(LiblineaR) # L1-SVM
+# library(LiblineaR) # L1reg-L2loss-SVM
 # library(gbm) # GBM
 # library(kernlab) # estimate gamma for Gaussian RBF SVM
 # # already exists for 3.2.1-atalas on crom01
 # library(MASS) # LDA
-# library(e1071) # SVM and KNN tuning
+# library(e1071) # NB, SVM and KNN tuning
 # library(class) # KNN predicting
 # library(randomForest) # RF
 # library(rpart) # DT # tooooo many errors T T
@@ -377,36 +377,36 @@ predictorLDA <- function(xtr, xtst, ytr, cutoff = 0, do.normalize = TRUE, ...){
 
 
 
-predictorLogit <- function(xtr, xtst, ytr, do.stepAIC = FALSE, cutoff = 0, do.normalize = TRUE, ...){
-  # no feature selection, no parameter tuning
-	
-	classes <- sort(unique(as.character(ytr)))
-	if(length(classes) < 2){
-		warning("Singe-class for training set!")
-		res <- list(model="Single-class classifier", class=rep(classes,nrow(xtst)), prob=rep(1,nrow(xtst)))
-		return(res)
-	} else if (length(classes) > 2){
-		stop("Multi-class setting...")
-	}
-	
-	if(do.normalize){
-		d <- normalizeData(xtr, xtst, ...)
-		xtr <- d$xtr
-		xtst <- d$xtst
-	}
-	
-	model <- glm.fit(x=as.data.frame(xtr), y=as.factor(ytr), family=binomial(link="logit"), ...)
-	if(do.stepAIC){
-		message("Choosing a model by stepwise AIC...")
-		model <- stepAIC(model, trace=0)
-	}
-	
-	pred_prob <- predict(model, as.data.frame(xtst), type="link")
-	pred_class <- rep(classes[1],nrow(xtst)); pred_class[pred_prob > cutoff] <- classes[2]
-	
-	res <- list(model=model, class=pred_class, prob=pred_prob, cutoff=cutoff)
-	return(res)
-}
+# predictorLogit <- function(xtr, xtst, ytr, do.stepAIC = FALSE, cutoff = 0, do.normalize = TRUE, ...){
+#   	# MANY BUGS FOR LARGE FEATURE MATRIX ...
+# 	
+# 	classes <- sort(unique(as.character(ytr)))
+# 	if(length(classes) < 2){
+# 		warning("Singe-class for training set!")
+# 		res <- list(model="Single-class classifier", class=rep(classes,nrow(xtst)), prob=rep(1,nrow(xtst)))
+# 		return(res)
+# 	} else if (length(classes) > 2){
+# 		stop("Multi-class setting...")
+# 	}
+# 	
+# 	if(do.normalize){
+# 		d <- normalizeData(xtr, xtst, ...)
+# 		xtr <- d$xtr
+# 		xtst <- d$xtst
+# 	}
+# 	
+# 	model <- glm(y~., family=binomial(link="logit"), data=data.frame(y=as.factor(ytr),as.as.data.frame(xtr)), ...)
+# 	if(do.stepAIC){
+# 		message("Choosing a model by stepwise AIC...")
+# 		model <- stepAIC(model, trace=0)
+# 	}
+# 	
+# 	pred_prob <- predict(model, as.data.frame(xtst), type="link")
+# 	pred_class <- rep(classes[1],nrow(xtst)); pred_class[pred_prob > cutoff] <- classes[2]
+# 	
+# 	res <- list(model=model, class=pred_class, prob=pred_prob, cutoff=cutoff)
+# 	return(res)
+# }
 
 
 
@@ -491,6 +491,12 @@ predictorKNN <- function(xtr, xtst, ytr, k = seq(1,10,2), do.normalize = TRUE, c
 	
 	res <- list(model=paste0(k,"-nearest neighbour classification"), class=pred_class, prob=pred_prob, cutoff=cutoff)
 	return(res)
+}
+
+
+
+predictorNB <- function(xtr, xtst, ytr, laplace = 0, do.normalize = TRUE, cutoff = 0.5, ...){
+
 }
 
 
