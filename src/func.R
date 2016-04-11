@@ -495,8 +495,25 @@ predictorKNN <- function(xtr, xtst, ytr, k = seq(1,10,2), do.normalize = TRUE, c
 
 
 
-predictorNB <- function(xtr, xtst, ytr, laplace = 0, do.normalize = TRUE, cutoff = 0.5, ...){
-
+predictorNB <- function(xtr, xtst, ytr, do.normalize = TRUE, cutoff = 0.5, ...){
+  # no feature selection, no parameter tuning
+  
+  library(e1071)
+  
+  classes <- sort(unique(as.character(ytr)))
+  
+  if(do.normalize){
+    d <- normalizeData(xtr, xtst, ...)
+    xtr <- d$xtr
+    xtst <- d$xtst
+  }
+  
+  model <- naiveBayes(xtr, ytr, ...)
+  pred_prob <- predict(model, xtst, type = "raw", ...)[,classes[2]]
+  pred_class <- rep(classes[1],nrow(xtst)); pred_class[pred_prob > cutoff] <- classes[2]
+  
+  res <- list(model=model, class=pred_class, prob=pred_prob, cutoff=cutoff)
+  return(res)
 }
 
 
