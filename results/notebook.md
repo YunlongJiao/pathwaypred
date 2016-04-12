@@ -12,7 +12,7 @@
 - use rule-based model to output biologically meaningful descriptors (the maximal amplitude (A), the activation threshold (K50), and the Hill exponent (H), etc) and set thresholds (Kaplan-Meier scanner) from training data and test the ability to stratify patients by KM statistics
 - use of multivariate Cox regression analysis to establish the advantage of combining network components over individuals
 
-## 160307 Questions on hipathia
+## 160307 Questions to hipathia
 
 - circuits encoded as 1) a pair of signal input node -> output with all intermediate connecting nodes and should they only be shortest paths?? Or 2) an individual effector protein as a signal output node and all possible paths leading to it??
 - what about directed circles?? need to (and how) turn it to DAG first??
@@ -30,11 +30,23 @@
     - clinical data include interesting phenotypes such as tumor vs normal; types of tumors; progressive stages; etc
 
 ## 160407 Meeting notes
+
 - other types of labels to predict: binary survival status wrt threshold (or maybe survival time?), multi-class subtypes of cancer, etc
 - see the prediction power of setdiff(all.genes, mini.genes) and how to combine this information in addition to pathway features?
 - cross-platform or cross-technique validation in generalizable prediction efficiency
 
+## 160412 Meeting notes jp 
+
+- boxplots showing variance of performance over different algorithms do not make sense as it is too subjective to 'randomly' choose a predictor
+
 ## TODO
 
-- collect survival info and build survival predictors
+- collect survival time info and build survival predictors
+
+## Questions
+
+- negative control experiments over: a) random network to generate pathway features; b) random functionality coding to exclude the potential of random projection of pathway features onto lower dimensionality
+- other cancer survival datasets for indep validation so that predictor can be a parameter to tune with (or simply pick one algorithm that overall works well)
+- Wilcoxon tests to quantitatively address the superiority in terms of performance
+- other labels to predict
 
