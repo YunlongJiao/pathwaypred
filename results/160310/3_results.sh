@@ -7,7 +7,8 @@
 ## Make sure that the .e and .o file arrive in the
 ## working directory
 #$ -cwd
-## Merge the standard out and standard error to one file
+## Merge the standard out and standard error to one file in one folder
+#$ -j y
 #$ -o logs
 #$ -e logs
 

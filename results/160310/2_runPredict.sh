@@ -9,14 +9,13 @@
 ## Make sure that the .e and .o file arrive in the
 ## working directory
 #$ -cwd
-## Merge the standard out and standard error to one file
+## Merge the standard out and standard error to one file in one folder
 #$ -j y
-## Merge the standard out and standard error to one file
 #$ -o logs
 #$ -e logs
 
 ## set up distributed jobs for nclust range
-#$ -t 1-9500
+#$ -t 1-9450
 ## limit the number of simultaneous jobs
 #$ -tc 60
 
