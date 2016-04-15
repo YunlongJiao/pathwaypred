@@ -337,15 +337,19 @@ prlist
 ```
 ## [1] "predictorGBM"        "predictorKNN"        "predictorLDA"       
 ## [4] "predictorLinearSVM"  "predictorLogitLasso" "predictorNB"        
-## [7] "predictorRadialSVM"  "predictorRF"         "predictorSparseSVM"
+## [7] "predictorRF"         "predictorRadialSVM"  "predictorSparseSVM"
 ```
 
 # Cross validation parameters
 
 
 ```r
+# CV folds for evaluation
 nfolds <- 5
 nrepeats <- 10
+# inner CV folds for tuning predictor
+nfolds.inn <- 5
+nrepeats.inn <- 1
 ```
 
 # Save up !!
@@ -353,8 +357,10 @@ nrepeats <- 10
 
 ```r
 # write out combinations of datasets for running on cluster
-param <- expand.grid(xlist, ylist, prlist, seq(nfolds * nrepeats), KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
-param <- cbind(param, nfolds, nrepeats)
+param <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
+                     seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
+                     seq(nfolds.inn * nrepeats.inn), nfolds.inn, nrepeats.inn, # inner CV folds for tuning predictor
+                     KEEP.OUT.ATTRS = FALSE)
 write.table(param, file = 'cluster_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE, sep = ' ')
 
 # save entire image to be loaded later
@@ -369,16 +375,12 @@ sessionInfo()
 ```
 
 ```
-## R version 3.2.1 (2015-06-18)
-## Platform: x86_64-unknown-linux-gnu (64-bit)
+## R version 3.2.3 (2015-12-10)
+## Platform: x86_64-apple-darwin13.4.0 (64-bit)
+## Running under: OS X 10.11.4 (El Capitan)
 ## 
 ## locale:
-##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## [1] C/UTF-8/C/C/C/C
 ## 
 ## attached base packages:
 ## [1] methods   stats     graphics  grDevices utils     datasets  base     
@@ -387,6 +389,6 @@ sessionInfo()
 ## [1] knitr_1.12.3
 ## 
 ## loaded via a namespace (and not attached):
-## [1] magrittr_1.5   formatR_1.3    tools_3.2.1    stringi_1.0-1 
-## [5] stringr_1.0.0  evaluate_0.8.3
+## [1] magrittr_1.5  formatR_1.2.1 tools_3.2.3   stringi_1.0-1 stringr_1.0.0
+## [6] evaluate_0.8
 ```

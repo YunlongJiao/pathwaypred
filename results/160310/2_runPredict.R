@@ -2,22 +2,28 @@
 
 # read nclust from bash command line
 ags <- commandArgs(trailingOnly = TRUE)
-stopifnot(length(ags) == 6)
+stopifnot(length(ags) == 9)
 xname <- as.character(ags[1]) # feature matrix
 yname <- as.character(ags[2]) # response groups
 prname <- as.character(ags[3]) # predictor
 i.fold <- as.integer(ags[4]) # cv fold index
 nfolds <- as.integer(ags[5]) # number of folds
 nrepeats <- as.integer(ags[6]) # number of repeats
+i.fold.inn <- as.integer(ags[7]) # inner cv fold index
+nfolds.inn <- as.integer(ags[8]) # inner number of folds
+nrepeats.inn <- as.integer(ags[9]) # inner number of repeats
 
 message("\nRunning ...\n", paste(ags, collapse = "\t"),"\n")
 
-objname <- paste('res', xname, yname, prname, nfolds, nrepeats, i.fold, sep = '_')
+objname <- paste(ags, collapse = '_')
 objpath <- paste0('Robj/', objname, '.RData')
 if (file.exists(objpath)) {
   message('job already done !!')
   quit(save = 'no')
 }
+
+
+quit(save='no')
 
 # start! ------------------------------------------------------------------
 

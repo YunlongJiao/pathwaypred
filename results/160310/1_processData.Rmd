@@ -137,16 +137,22 @@ prlist
 # Cross validation parameters
 
 ```{r cv}
+# CV folds for evaluation
 nfolds <- 5
 nrepeats <- 10
+# inner CV folds for tuning predictor
+nfolds.inn <- 5
+nrepeats.inn <- 1
 ```
 
 # Save up !!
 
 ```{r save}
 # write out combinations of datasets for running on cluster
-param <- expand.grid(xlist, ylist, prlist, seq(nfolds * nrepeats), KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
-param <- cbind(param, nfolds, nrepeats)
+param <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
+                     seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
+                     seq(nfolds.inn * nrepeats.inn), nfolds.inn, nrepeats.inn, # inner CV folds for tuning predictor
+                     KEEP.OUT.ATTRS = FALSE)
 write.table(param, file = 'cluster_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE, sep = ' ')
 
 # save entire image to be loaded later

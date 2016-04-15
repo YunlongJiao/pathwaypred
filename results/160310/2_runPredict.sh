@@ -15,9 +15,9 @@
 #$ -e logs
 
 ## set up distributed jobs for nclust range
-#$ -t 1-9450
+#$ -t 1-1 ## 47250
 ## limit the number of simultaneous jobs
-#$ -tc 60
+#$ -tc 100
 
 source $HOME/.bashrc
 
@@ -28,4 +28,7 @@ FIELD3=$(grep "^$SGE_TASK_ID " $FILE | cut -d' ' -f4)
 FIELD4=$(grep "^$SGE_TASK_ID " $FILE | cut -d' ' -f5)
 FIELD5=$(grep "^$SGE_TASK_ID " $FILE | cut -d' ' -f6)
 FIELD6=$(grep "^$SGE_TASK_ID " $FILE | cut -d' ' -f7)
-Rscript $PWD/2_runPredict.R $FIELD1 $FIELD2 $FIELD3 $FIELD4 $FIELD5 $FIELD6
+FIELD7=$(grep "^$SGE_TASK_ID " $FILE | cut -d' ' -f8)
+FIELD8=$(grep "^$SGE_TASK_ID " $FILE | cut -d' ' -f9)
+FIELD9=$(grep "^$SGE_TASK_ID " $FILE | cut -d' ' -f10)
+Rscript $PWD/2_runPredict.R $FIELD1 $FIELD2 $FIELD3 $FIELD4 $FIELD5 $FIELD6 $FIELD7 $FIELD8 $FIELD9
