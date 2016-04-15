@@ -11,7 +11,7 @@ source("../../src/func.R")
 datapath <- '../../data/BRCA_saved_data/'
 ```
 
-# Features
+## Features
 
 Feature matrices are stored at `crom01:/fsclinic/common/analisis/data/BRCA_saved_data/`. Note that all feature matrices have to be initially provided by features in rows and patients in cols (to facilitate processing in a universal style). These matrix objects should have a name ending with `[.]vals$`.
 
@@ -30,18 +30,8 @@ load(paste0(datapath, '110_hipathia_matrices.RData'))
 stopifnot(rownames(mini.genes.vals) %in% rownames(genes.vals))
 other.genes.vals <- genes.vals[setdiff(rownames(genes.vals), rownames(mini.genes.vals)), ]
 
-# show all feature matrices
+# get all feature matrices
 xlist <- ls(pattern = '[.]vals$')
-xlist
-```
-
-```
-## [1] "eff.vals"         "fun.vals"         "genes.vals"      
-## [4] "go.vals"          "mini.genes.vals"  "other.genes.vals"
-## [7] "path.vals"
-```
-
-```r
 for (xname in xlist) {
   # process each feature matrices
   x <- get(xname)
@@ -56,7 +46,8 @@ for (xname in xlist) {
   # assign back
   assign(xname, x)
   # preview
-  cat('\n-------------> ', xname, ' <-------------\n')
+  cat('\n-------------> \t preview \t <-------------\n')
+  cat('\n-------------> \t ', xname, ' \t <-------------\n')
   print(str(get(xname)))
   cat('\n')
 }
@@ -64,7 +55,9 @@ for (xname in xlist) {
 
 ```
 ## 
-## ------------->  eff.vals  <-------------
+## -------------> 	 preview 	 <-------------
+## 
+## -------------> 	  eff.vals  	 <-------------
 ##  num [1:881, 1:1038] 0.00407 0.0044 0.00438 0.00426 0.00426 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
@@ -72,7 +65,9 @@ for (xname in xlist) {
 ## NULL
 ## 
 ## 
-## ------------->  fun.vals  <-------------
+## -------------> 	 preview 	 <-------------
+## 
+## -------------> 	  fun.vals  	 <-------------
 ##  num [1:881, 1:81] 0.09 0.0865 0.0904 0.0936 0.0929 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
@@ -80,7 +75,9 @@ for (xname in xlist) {
 ## NULL
 ## 
 ## 
-## ------------->  genes.vals  <-------------
+## -------------> 	 preview 	 <-------------
+## 
+## -------------> 	  genes.vals  	 <-------------
 ##  num [1:881, 1:18708] 0.417 0.418 0.418 0.426 0.401 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
@@ -88,7 +85,9 @@ for (xname in xlist) {
 ## NULL
 ## 
 ## 
-## ------------->  go.vals  <-------------
+## -------------> 	 preview 	 <-------------
+## 
+## -------------> 	  go.vals  	 <-------------
 ##  num [1:881, 1:370] 0.0247 0.0262 0.0259 0.0259 0.0265 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
@@ -96,7 +95,9 @@ for (xname in xlist) {
 ## NULL
 ## 
 ## 
-## ------------->  mini.genes.vals  <-------------
+## -------------> 	 preview 	 <-------------
+## 
+## -------------> 	  mini.genes.vals  	 <-------------
 ##  num [1:881, 1:2212] 0.513 0.529 0.525 0.505 0.532 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
@@ -104,7 +105,9 @@ for (xname in xlist) {
 ## NULL
 ## 
 ## 
-## ------------->  other.genes.vals  <-------------
+## -------------> 	 preview 	 <-------------
+## 
+## -------------> 	  other.genes.vals  	 <-------------
 ##  num [1:881, 1:16496] 0.417 0.418 0.418 0.426 0.401 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
@@ -112,7 +115,9 @@ for (xname in xlist) {
 ## NULL
 ## 
 ## 
-## ------------->  path.vals  <-------------
+## -------------> 	 preview 	 <-------------
+## 
+## -------------> 	  path.vals  	 <-------------
 ##  num [1:881, 1:6101] 0.00209 0.0022 0.00205 0.00186 0.00218 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
@@ -126,15 +131,24 @@ samplelist <- unique(lapply(xlist, function(xname) rownames(get(xname))))
 stopifnot(length(samplelist) == 1)
 samplelist <- unlist(samplelist)
 nsample <- length(samplelist)
+# show all feature matrices
+xlist
 ```
 
-# Groups (binary)
+```
+## [1] "eff.vals"         "fun.vals"         "genes.vals"      
+## [4] "go.vals"          "mini.genes.vals"  "other.genes.vals"
+## [7] "path.vals"
+```
+
+## Groups (binary only)
 
 Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
 
+#### Basal vs Non-basal
+
 
 ```r
-# basal type
 y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
 head(y$V2)
 ```
@@ -170,6 +184,7 @@ length(sl <- intersect(samplelist, names(basal.grps)))
 ```
 
 ```r
+# contrasting class size
 table(basal.grps[sl])
 ```
 
@@ -179,8 +194,10 @@ table(basal.grps[sl])
 ##          401           94
 ```
 
+#### Tumor vs Normal
+
+
 ```r
-# phenotype tumor
 y <- read.table(paste0(datapath, 'TCGA_phenotype.txt'), header = TRUE)
 head(y$cancer)
 ```
@@ -216,6 +233,7 @@ length(sl <- intersect(samplelist, names(tumor.grps)))
 ```
 
 ```r
+# contrasting class size
 table(tumor.grps[sl])
 ```
 
@@ -225,8 +243,10 @@ table(tumor.grps[sl])
 ##        102        779
 ```
 
+#### Alive vs Deceased (overall survival)
+
+
 ```r
-# survival
 alignmat <- read.table(paste0(datapath, 'clinical_info_sample.txt'), sep = "\t", quote = "\"", header = TRUE)
 y <- read.table(paste0(datapath, 'clinical_info_donor.txt'), sep = "\t", quote = "\"", header = TRUE)
 alignid <- data.frame(sample = samplelist, 
@@ -307,9 +327,17 @@ table(surv.grps[sl])
 ##          755          124
 ```
 
+#### Summary
+
+
 ```r
-# show all label vectors
+# get all groups
 ylist <- ls(pattern = '[.]grps$')
+# check for now to deal with binary classification only
+for (yname in ylist) {
+  stopifnot(length(levels(get(yname))) == 2)
+}
+# show all groups
 ylist
 ```
 
@@ -317,14 +345,7 @@ ylist
 ## [1] "basal.grps" "surv.grps"  "tumor.grps"
 ```
 
-```r
-# check for now to deal with binary classification only
-for (yname in ylist) {
-  stopifnot(length(levels(get(yname))) == 2)
-}
-```
-
-# Predictors
+## Predictors
 
 See `../../src/func.R` for all predictors implemented. These function objects should all have a name starting with `^predictor`.
 
@@ -340,7 +361,7 @@ prlist
 ## [7] "predictorRadialSVM"  "predictorRF"         "predictorSparseSVM"
 ```
 
-# Cross validation parameters
+## (Nested) cross validation parameters
 
 
 ```r
@@ -352,69 +373,54 @@ nfolds.inn <- 5
 nrepeats.inn <- 1
 ```
 
-# Save up !!
+## Save up !!
 
 
 ```r
+# save entire image to be loaded later
+save(list = c(xlist, ylist), file = 'dat.RData')
+
 # For cluster jobs, write out full combinations of double nested CV parameters
 param.inn <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
                          seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
                          seq(nfolds.inn * nrepeats.inn), nfolds.inn, nrepeats.inn, # inner CV folds for tuning predictor
                          KEEP.OUT.ATTRS = FALSE)
-dim(param.inn)
-```
-
-```
-## [1] 47250     9
-```
-
-```r
-head(param.inn)
-```
-
-```
-##               Var1       Var2         Var3 Var4 Var5 Var6 Var7 Var8 Var9
-## 1         eff.vals basal.grps predictorGBM    1    5   10    1    5    1
-## 2         fun.vals basal.grps predictorGBM    1    5   10    1    5    1
-## 3       genes.vals basal.grps predictorGBM    1    5   10    1    5    1
-## 4          go.vals basal.grps predictorGBM    1    5   10    1    5    1
-## 5  mini.genes.vals basal.grps predictorGBM    1    5   10    1    5    1
-## 6 other.genes.vals basal.grps predictorGBM    1    5   10    1    5    1
-```
-
-```r
 write.table(param.inn, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
+# preview
+str(param.inn)
+```
 
+```
+## 'data.frame':	47250 obs. of  9 variables:
+##  $ Var1: Factor w/ 7 levels "eff.vals","fun.vals",..: 1 2 3 4 5 6 7 1 2 3 ...
+##  $ Var2: Factor w/ 3 levels "basal.grps","surv.grps",..: 1 1 1 1 1 1 1 2 2 2 ...
+##  $ Var3: Factor w/ 9 levels "predictorGBM",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Var4: int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ Var5: num  5 5 5 5 5 5 5 5 5 5 ...
+##  $ Var6: num  10 10 10 10 10 10 10 10 10 10 ...
+##  $ Var7: int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ Var8: num  5 5 5 5 5 5 5 5 5 5 ...
+##  $ Var9: num  1 1 1 1 1 1 1 1 1 1 ...
+```
+
+```r
 # For cluster jobs, write out simplified combinations of CV parameters
 param <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
                      seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
                      KEEP.OUT.ATTRS = FALSE)
-dim(param)
-```
-
-```
-## [1] 9450    6
-```
-
-```r
-head(param)
-```
-
-```
-##               Var1       Var2         Var3 Var4 Var5 Var6
-## 1         eff.vals basal.grps predictorGBM    1    5   10
-## 2         fun.vals basal.grps predictorGBM    1    5   10
-## 3       genes.vals basal.grps predictorGBM    1    5   10
-## 4          go.vals basal.grps predictorGBM    1    5   10
-## 5  mini.genes.vals basal.grps predictorGBM    1    5   10
-## 6 other.genes.vals basal.grps predictorGBM    1    5   10
-```
-
-```r
 write.table(param, file = '3_selectPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
+# preview
+str(param)
+```
 
-# save entire image to be loaded later
-save(list = c(xlist, ylist), file = 'dat.RData')
+```
+## 'data.frame':	9450 obs. of  6 variables:
+##  $ Var1: Factor w/ 7 levels "eff.vals","fun.vals",..: 1 2 3 4 5 6 7 1 2 3 ...
+##  $ Var2: Factor w/ 3 levels "basal.grps","surv.grps",..: 1 1 1 1 1 1 1 2 2 2 ...
+##  $ Var3: Factor w/ 9 levels "predictorGBM",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Var4: int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ Var5: num  5 5 5 5 5 5 5 5 5 5 ...
+##  $ Var6: num  10 10 10 10 10 10 10 10 10 10 ...
 ```
 
 # Session info
