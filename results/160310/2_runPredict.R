@@ -65,7 +65,7 @@ pt <- system.time(
   res <- indepValidation(xtr = xtr[train.fold, , drop=F], ytr = ytr[train.fold], 
                          xtst = xtr[test.fold, , drop=F], ytst = ytr[test.fold], 
                          predictor = prname))
-res[["time"]] <- pt
+res[["system_time"]] <- pt
 assign(objname, res)
 if (!dir.exists('Robj')) dir.create('Robj')
 save(list = objname, file = objpath)
