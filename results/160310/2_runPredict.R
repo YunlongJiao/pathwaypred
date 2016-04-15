@@ -1,3 +1,4 @@
+# this script is used to run double nested CV runs to later select predictors
 # run this script on crom01 for prediction results
 
 # read cluster parameters from bash command line

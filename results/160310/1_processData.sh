@@ -13,4 +13,4 @@
 #$ -e logs
 
 source $HOME/.bashrc
-Rscript $PWD/1_processData.R
+Rscript -e "knitr::knit('$PWD/1_processData.Rmd')"

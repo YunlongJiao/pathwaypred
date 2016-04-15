@@ -3,7 +3,7 @@
 ## run on crom01 with R version=3.2.1
 
 ## -- our name ---
-#$ -N plotResults
+#$ -N results
 ## Make sure that the .e and .o file arrive in the
 ## working directory
 #$ -cwd
@@ -13,4 +13,4 @@
 #$ -e logs
 
 source $HOME/.bashrc
-Rscript $PWD/3_results.R
+Rscript -e "knitr::knit('$PWD/4_results.Rmd')"

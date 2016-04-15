@@ -356,12 +356,62 @@ nrepeats.inn <- 1
 
 
 ```r
-# write out combinations of datasets for running on cluster
+# For cluster jobs, write out full combinations of double nested CV parameters
+param.inn <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
+                         seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
+                         seq(nfolds.inn * nrepeats.inn), nfolds.inn, nrepeats.inn, # inner CV folds for tuning predictor
+                         KEEP.OUT.ATTRS = FALSE)
+dim(param.inn)
+```
+
+```
+## [1] 47250     9
+```
+
+```r
+head(param.inn)
+```
+
+```
+##               Var1       Var2         Var3 Var4 Var5 Var6 Var7 Var8 Var9
+## 1         eff.vals basal.grps predictorGBM    1    5   10    1    5    1
+## 2         fun.vals basal.grps predictorGBM    1    5   10    1    5    1
+## 3       genes.vals basal.grps predictorGBM    1    5   10    1    5    1
+## 4          go.vals basal.grps predictorGBM    1    5   10    1    5    1
+## 5  mini.genes.vals basal.grps predictorGBM    1    5   10    1    5    1
+## 6 other.genes.vals basal.grps predictorGBM    1    5   10    1    5    1
+```
+
+```r
+write.table(param.inn, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
+
+# For cluster jobs, write out simplified combinations of CV parameters
 param <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
                      seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
-                     seq(nfolds.inn * nrepeats.inn), nfolds.inn, nrepeats.inn, # inner CV folds for tuning predictor
                      KEEP.OUT.ATTRS = FALSE)
-write.table(param, file = 'cluster_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE, sep = ' ')
+dim(param)
+```
+
+```
+## [1] 9450    6
+```
+
+```r
+head(param)
+```
+
+```
+##               Var1       Var2         Var3 Var4 Var5 Var6
+## 1         eff.vals basal.grps predictorGBM    1    5   10
+## 2         fun.vals basal.grps predictorGBM    1    5   10
+## 3       genes.vals basal.grps predictorGBM    1    5   10
+## 4          go.vals basal.grps predictorGBM    1    5   10
+## 5  mini.genes.vals basal.grps predictorGBM    1    5   10
+## 6 other.genes.vals basal.grps predictorGBM    1    5   10
+```
+
+```r
+write.table(param, file = '3_selectPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
 
 # save entire image to be loaded later
 save(list = c(xlist, ylist), file = 'dat.RData')
@@ -389,10 +439,7 @@ sessionInfo()
 ## attached base packages:
 ## [1] methods   stats     graphics  grDevices utils     datasets  base     
 ## 
-## other attached packages:
-## [1] knitr_1.12.3
-## 
 ## loaded via a namespace (and not attached):
 ## [1] magrittr_1.5   formatR_1.3    tools_3.2.1    stringi_1.0-1 
-## [5] stringr_1.0.0  evaluate_0.8.3
+## [5] knitr_1.12.3   stringr_1.0.0  evaluate_0.8.3
 ```

@@ -155,7 +155,7 @@ param.inn <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
                          KEEP.OUT.ATTRS = FALSE)
 dim(param.inn)
 head(param.inn)
-write.table(param.inn, file = '2_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE, sep = ' ')
+write.table(param.inn, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
 
 # For cluster jobs, write out simplified combinations of CV parameters
 param <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
@@ -163,7 +163,7 @@ param <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
                      KEEP.OUT.ATTRS = FALSE)
 dim(param)
 head(param)
-write.table(param, file = '3_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE, sep = ' ')
+write.table(param, file = '3_selectPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
 
 # save entire image to be loaded later
 save(list = c(xlist, ylist), file = 'dat.RData')
