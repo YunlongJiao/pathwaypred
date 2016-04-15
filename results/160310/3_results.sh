@@ -13,4 +13,4 @@
 #$ -e logs
 
 source $HOME/.bashrc
-Rscript -e "knitr::knit('$PWD/4_results.Rmd')"
+Rscript -e "knitr::knit('$PWD/3_results.Rmd')"

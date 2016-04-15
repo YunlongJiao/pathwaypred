@@ -164,25 +164,25 @@ nrepeats.inn <- 1
 ## Save up !!
 
 ```{r save}
-# save entire image to be loaded later
-save(list = c(xlist, ylist), file = 'dat.RData')
-
-# For cluster jobs, write out full combinations of double nested CV parameters
-param.inn <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
-                         seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
-                         seq(nfolds.inn * nrepeats.inn), nfolds.inn, nrepeats.inn, # inner CV folds for tuning predictor
-                         KEEP.OUT.ATTRS = FALSE)
-write.table(param.inn, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
-# preview
-str(param.inn)
-
-# For cluster jobs, write out simplified combinations of CV parameters
-param <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
-                     seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
-                     KEEP.OUT.ATTRS = FALSE)
-write.table(param, file = '3_selectPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
+# for cluster jobs, write out full combinations of double nested CV parameters
+# - for outter loop, 1:(nfolds * nrepeats) denotes index for outter CV
+# - for inner loop, 0 indicates running outter loop evaluation, 1:(nfolds.inn * nrepeats.inn) indicates index for inner CV
+param <- expand.grid(as.character(xlist), # feature
+                     as.character(ylist), # group
+                     as.character(prlist), # predictor
+                     as.integer(1:(nfolds * nrepeats)), # outter CV folds index for evaluation
+                     as.integer(nfolds), 
+                     as.integer(nrepeats), 
+                     as.integer(0:(nfolds.inn * nrepeats.inn)), # inner CV folds for tuning predictor
+                     as.integer(nfolds.inn), 
+                     as.integer(nrepeats.inn), 
+                     KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+write.table(param, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
 # preview
 str(param)
+
+# save entire image to be loaded later
+save(list = c(xlist, ylist), file = 'dat.RData')
 ```
 
 # Session info

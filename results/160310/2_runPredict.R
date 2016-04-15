@@ -16,7 +16,11 @@ nrepeats.inn <- as.integer(ags[9]) # inner number of repeats
 
 message("\nRunning ...\n", paste(ags, collapse = "\t"),"\n")
 
-objname <- paste0("cvres_", paste(ags, collapse = '_'))
+if (i.fold.inn == 0) {
+  objname <- paste0('res_', paste(ags, collapse = '_'))
+} else {
+  objname <- paste0('cvres_', paste(ags, collapse = '_'))
+}
 objpath <- paste0('Robj/', objname, '.RData')
 if (file.exists(objpath)) {
   message('job already done !!')
@@ -40,15 +44,21 @@ message('Sample size = ', length(samplelist))
 xtr <- xtr[samplelist,]
 ytr <- ytr[samplelist]
 
-# create cv folds
+# create cv folds for model evaluation
 set.seed(94151402)
 foldIndices <- caret::createMultiFolds(1:nrow(xtr), k=nfolds, times=nrepeats)
 fold <- foldIndices[[i.fold]]
 # create inner cv folds to select predictor
 set.seed(19817919)
 foldIndices.inn <- caret::createMultiFolds(fold, k=nfolds.inn, times=nrepeats.inn)
-train.fold <- fold[foldIndices.inn[[i.fold.inn]]]
-test.fold <- setdiff(fold, train.fold)
+# set train-test split
+if (i.fold.inn == 0) {
+  train.fold <- fold
+  test.fold <- setdiff(1:nrow(xtr), train.fold)
+} else {
+  train.fold <- fold[foldIndices.inn[[i.fold.inn]]]
+  test.fold <- setdiff(fold, train.fold)
+}
 
 message('train and predict ... ')
 assign(objname, 
