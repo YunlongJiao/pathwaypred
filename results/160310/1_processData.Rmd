@@ -148,12 +148,22 @@ nrepeats.inn <- 1
 # Save up !!
 
 ```{r save}
-# write out combinations of datasets for running on cluster
+# For cluster jobs, write out full combinations of double nested CV parameters
+param.inn <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
+                         seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
+                         seq(nfolds.inn * nrepeats.inn), nfolds.inn, nrepeats.inn, # inner CV folds for tuning predictor
+                         KEEP.OUT.ATTRS = FALSE)
+dim(param.inn)
+head(param.inn)
+write.table(param.inn, file = '2_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE, sep = ' ')
+
+# For cluster jobs, write out simplified combinations of CV parameters
 param <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
                      seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
-                     seq(nfolds.inn * nrepeats.inn), nfolds.inn, nrepeats.inn, # inner CV folds for tuning predictor
                      KEEP.OUT.ATTRS = FALSE)
-write.table(param, file = 'cluster_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE, sep = ' ')
+dim(param)
+head(param)
+write.table(param, file = '3_param.txt', quote = FALSE, row.names = TRUE, col.names = FALSE, sep = ' ')
 
 # save entire image to be loaded later
 save(list = c(xlist, ylist), file = 'dat.RData')

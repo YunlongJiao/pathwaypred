@@ -1,6 +1,6 @@
 # run this script on crom01 for prediction results
 
-# read nclust from bash command line
+# read cluster parameters from bash command line
 ags <- commandArgs(trailingOnly = TRUE)
 stopifnot(length(ags) == 9)
 xname <- as.character(ags[1]) # feature matrix
@@ -22,9 +22,6 @@ if (file.exists(objpath)) {
   quit(save = 'no')
 }
 
-
-quit(save='no')
-
 # start! ------------------------------------------------------------------
 
 message("loading features and groups ...")
@@ -34,6 +31,8 @@ source("../../src/func.R") # complementary functions for kernel kmeans for top-k
 # get R objects
 xtr <- get(xname)
 ytr <- get(yname)
+# rm other un-used objects
+rm(list = ls(pattern = '[.](grps|vals)$'))
 # keep only samples for which label info is available
 samplelist <- intersect(rownames(xtr), names(ytr))
 message('Sample size = ', length(samplelist))
@@ -44,11 +43,16 @@ ytr <- ytr[samplelist]
 set.seed(94151402)
 foldIndices <- caret::createMultiFolds(1:nrow(xtr), k=nfolds, times=nrepeats)
 fold <- foldIndices[[i.fold]]
+# create inner cv folds to select predictor
+set.seed(19817919)
+foldIndices.inn <- caret::createMultiFolds(fold, k=nfolds.inn, times=nrepeats.inn)
+train.fold <- fold[foldIndices.inn[[i.fold.inn]]]
+test.fold <- setdiff(fold, train.fold)
 
 message('train and predict ... ')
 assign(objname, 
-       indepValidation(xtr = xtr[fold, , drop=F], ytr = ytr[fold], 
-                       xtst = xtr[-fold, , drop=F], ytst = ytr[-fold], 
+       indepValidation(xtr = xtr[train.fold, , drop=F], ytr = ytr[train.fold], 
+                       xtst = xtr[test.fold, , drop=F], ytst = ytr[test.fold], 
                        predictor = prname))
 if (!dir.exists('Robj')) dir.create('Robj')
 save(list = objname, file = objpath)

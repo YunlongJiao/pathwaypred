@@ -21,7 +21,7 @@
 
 source $HOME/.bashrc
 
-FILE=$PWD/cluster_param.txt
+FILE=$PWD/2_param.txt
 FIELD1=$(grep "^$SGE_TASK_ID " $FILE | cut -d' ' -f2)
 FIELD2=$(grep "^$SGE_TASK_ID " $FILE | cut -d' ' -f3)
 FIELD3=$(grep "^$SGE_TASK_ID " $FILE | cut -d' ' -f4)
