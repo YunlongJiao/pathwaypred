@@ -16,7 +16,7 @@ nrepeats.inn <- as.integer(ags[9]) # inner number of repeats
 
 message("\nRunning ...\n", paste(ags, collapse = "\t"),"\n")
 
-objname <- paste(ags, collapse = '_')
+objname <- paste0("cvres_", paste(ags, collapse = '_'))
 objpath <- paste0('Robj/', objname, '.RData')
 if (file.exists(objpath)) {
   message('job already done !!')
