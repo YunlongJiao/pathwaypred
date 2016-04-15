@@ -15,6 +15,7 @@
 *.RData
 *.html
 *logs*
+*temp*
 doc/
 data/
 results/160310/figures/

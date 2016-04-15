@@ -12,15 +12,24 @@ library(ggplot2)
 
 # Read in scores
 
-```{r scores}
+```{r scores, cache=TRUE}
+# read in parameters
 param <- read.table("cluster_param.txt", header = FALSE, row.names = NULL, col.names = c("idx", "xname", "yname", "prname", "rep", "nfolds", "nrepeats"))
 xlist <- unique(param$xname)
+xlist
 ylist <- unique(param$yname)
+ylist
 prlist <- unique(param$prname)
-nfolds <- unique(param$nfolds); stopifnot(length(nfolds) == 1)
-nrepeats <- unique(param$nrepeats); stopifnot(length(nrepeats) == 1)
+prlist
+nfolds <- unique(param$nfolds)
+stopifnot(length(nfolds) == 1)
+nfolds
+nrepeats <- unique(param$nrepeats)
+stopifnot(length(nrepeats) == 1)
+nrepeats
 slist <- c("acc","fpr","tpr","ppv","fval","concordance.index","auroc")
-
+slist
+# gather scores
 scores <- list()
 for (xname in xlist) {
   for (yname in ylist){
@@ -51,7 +60,7 @@ for (xname in xlist) {
 }
 scores <- do.call('rbind', scores)
 rownames(scores) <- seq(nrow(scores))
-# write out
+# write out scores
 write.table(scores, file = "scores.txt", row.names = TRUE, col.names = TRUE, sep = '\t')
 # a bit more pruning for plotting
 scores <- subset(scores, scores$score != "concordance.index")
@@ -62,6 +71,8 @@ head(scores)
 # Overview
 
 We show the score values for different each feature types (with variance of boxplots across different methods in boxplot).
+
+Each plot corresponds to predicting for one type of phenotypic responses. Along x-axis we have different feature matrices, along y-axis we have different evaluation measures, the barplot shows the maximum cv scores from different predictors.
 
 ```{r overview}
 # plot each grps in a separate figure
@@ -83,10 +94,10 @@ As we see that class sizes are unbalanced so that we focus on AUROC to evaluate 
 
 ```{r auroc}
 # focus only one type of scores
-key <- "auroc"
+sname <- "auroc"
 # plot each grps in a separate figure
 for (yname in ylist) {
-  d <- subset(scores, scores$score == key & scores$y == yname)
+  d <- subset(scores, scores$score == sname & scores$y == yname)
   yrange <- c(min(d$value)*0.95, 1)
   p1 <- ggplot(d, aes(x = x, y = value)) + 
     geom_bar(aes(fill = x), stat = "identity", position = "dodge") + 
@@ -94,7 +105,7 @@ for (yname in ylist) {
               position = position_dodge(0.9), size = 4) + 
     facet_wrap(~predictor) + 
     coord_cartesian(ylim = yrange) + 
-    ggtitle(paste0(key, " for predicting ", yname)) + 
+    ggtitle(paste0(sname, " for predicting ", yname)) + 
     theme(axis.text.x = element_blank())
   plot(p1)
 }
