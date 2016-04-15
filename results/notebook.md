@@ -41,8 +41,11 @@
 
 ## TODO
 
-- negative control experiments over: a) random network to generate pathway features; b) random functionality coding to exclude the potential of random projection of pathway features onto lower dimensionality
-- other cancer survival datasets for indep validation so that predictor can be a parameter to tune with (or simply pick one algorithm that overall works well)
+- plot results
 - Wilcoxon tests to quantitatively address the superiority in terms of performance
-- other labels to predict
+- other labels to predict: 5-year relapse, subtypes
+
+## Future work
+
+- negative control experiments over: a) random network to generate pathway features; b) random functionality coding to exclude the potential of random projection of pathway features onto lower dimensionality
 

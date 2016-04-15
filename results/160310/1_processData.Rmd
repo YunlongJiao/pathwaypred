@@ -10,7 +10,7 @@ source("../../src/func.R")
 datapath <- '../../data/BRCA_saved_data/'
 ```
 
-# Features
+## Features
 
 Feature matrices are stored at `crom01:/fsclinic/common/analisis/data/BRCA_saved_data/`. Note that all feature matrices have to be initially provided by features in rows and patients in cols (to facilitate processing in a universal style). These matrix objects should have a name ending with `[.]vals$`.
 
@@ -28,9 +28,8 @@ load(paste0(datapath, '110_hipathia_matrices.RData'))
 stopifnot(rownames(mini.genes.vals) %in% rownames(genes.vals))
 other.genes.vals <- genes.vals[setdiff(rownames(genes.vals), rownames(mini.genes.vals)), ]
 
-# show all feature matrices
+# get all feature matrices
 xlist <- ls(pattern = '[.]vals$')
-xlist
 for (xname in xlist) {
   # process each feature matrices
   x <- get(xname)
@@ -45,7 +44,8 @@ for (xname in xlist) {
   # assign back
   assign(xname, x)
   # preview
-  cat('\n-------------> ', xname, ' <-------------\n')
+  cat('\n-------------> \t preview \t <-------------\n')
+  cat('\n-------------> \t ', xname, ' \t <-------------\n')
   print(str(get(xname)))
   cat('\n')
 }
@@ -54,14 +54,17 @@ samplelist <- unique(lapply(xlist, function(xname) rownames(get(xname))))
 stopifnot(length(samplelist) == 1)
 samplelist <- unlist(samplelist)
 nsample <- length(samplelist)
+# show all feature matrices
+xlist
 ```
 
-# Groups (binary)
+## Groups (binary only)
 
 Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
 
-```{r groups, message = FALSE}
-# basal type
+#### Basal vs Non-basal
+
+```{r basal}
 y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
 head(y$V2)
 basal.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$V2), levels = c("Not_Basal", "Basal"), labels = c("neg_NonBasal", "pos_Basal"))
@@ -70,9 +73,13 @@ names(basal.grps) <- y$V1
 head(basal.grps)
 # sample size (how many labels are available in the sample cohort)
 length(sl <- intersect(samplelist, names(basal.grps)))
+# contrasting class size
 table(basal.grps[sl])
+```
 
-# phenotype tumor
+#### Tumor vs Normal
+
+```{r tumor}
 y <- read.table(paste0(datapath, 'TCGA_phenotype.txt'), header = TRUE)
 head(y$cancer)
 tumor.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$cancer), levels = c("Normal", "Tumor"), labels = c("neg_Normal", "pos_Tumor"))
@@ -81,9 +88,13 @@ names(tumor.grps) <- rownames(y)
 head(tumor.grps)
 # sample size (how many labels are available in the sample cohort)
 length(sl <- intersect(samplelist, names(tumor.grps)))
+# contrasting class size
 table(tumor.grps[sl])
+```
 
-# survival
+#### Alive vs Deceased (overall survival)
+
+```{r surv, message=FALSE}
 alignmat <- read.table(paste0(datapath, 'clinical_info_sample.txt'), sep = "\t", quote = "\"", header = TRUE)
 y <- read.table(paste0(datapath, 'clinical_info_donor.txt'), sep = "\t", quote = "\"", header = TRUE)
 alignid <- data.frame(sample = samplelist, 
@@ -115,17 +126,22 @@ head(surv.grps)
 # sample size (how many labels are available in the sample cohort)
 length(sl <- intersect(samplelist, names(surv.grps)))
 table(surv.grps[sl])
+```
 
-# show all label vectors
+#### Summary
+
+```{r groups}
+# get all groups
 ylist <- ls(pattern = '[.]grps$')
-ylist
 # check for now to deal with binary classification only
 for (yname in ylist) {
   stopifnot(length(levels(get(yname))) == 2)
 }
+# show all groups
+ylist
 ```
 
-# Predictors
+## Predictors
 
 See `../../src/func.R` for all predictors implemented. These function objects should all have a name starting with `^predictor`.
 
@@ -134,7 +150,7 @@ prlist <- ls(pattern = '^predictor.')
 prlist
 ```
 
-# Cross validation parameters
+## (Nested) cross validation parameters
 
 ```{r cv}
 # CV folds for evaluation
@@ -145,28 +161,28 @@ nfolds.inn <- 5
 nrepeats.inn <- 1
 ```
 
-# Save up !!
+## Save up !!
 
 ```{r save}
+# save entire image to be loaded later
+save(list = c(xlist, ylist), file = 'dat.RData')
+
 # For cluster jobs, write out full combinations of double nested CV parameters
 param.inn <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
                          seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
                          seq(nfolds.inn * nrepeats.inn), nfolds.inn, nrepeats.inn, # inner CV folds for tuning predictor
                          KEEP.OUT.ATTRS = FALSE)
-dim(param.inn)
-head(param.inn)
 write.table(param.inn, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
+# preview
+str(param.inn)
 
 # For cluster jobs, write out simplified combinations of CV parameters
 param <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
                      seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
                      KEEP.OUT.ATTRS = FALSE)
-dim(param)
-head(param)
 write.table(param, file = '3_selectPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
-
-# save entire image to be loaded later
-save(list = c(xlist, ylist), file = 'dat.RData')
+# preview
+str(param)
 ```
 
 # Session info
