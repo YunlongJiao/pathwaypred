@@ -377,50 +377,40 @@ nrepeats.inn <- 1
 
 
 ```r
-# save entire image to be loaded later
-save(list = c(xlist, ylist), file = 'dat.RData')
-
-# For cluster jobs, write out full combinations of double nested CV parameters
-param.inn <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
-                         seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
-                         seq(nfolds.inn * nrepeats.inn), nfolds.inn, nrepeats.inn, # inner CV folds for tuning predictor
-                         KEEP.OUT.ATTRS = FALSE)
-write.table(param.inn, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
-# preview
-str(param.inn)
-```
-
-```
-## 'data.frame':	47250 obs. of  9 variables:
-##  $ Var1: Factor w/ 7 levels "eff.vals","fun.vals",..: 1 2 3 4 5 6 7 1 2 3 ...
-##  $ Var2: Factor w/ 3 levels "basal.grps","surv.grps",..: 1 1 1 1 1 1 1 2 2 2 ...
-##  $ Var3: Factor w/ 9 levels "predictorGBM",..: 1 1 1 1 1 1 1 1 1 1 ...
-##  $ Var4: int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ Var5: num  5 5 5 5 5 5 5 5 5 5 ...
-##  $ Var6: num  10 10 10 10 10 10 10 10 10 10 ...
-##  $ Var7: int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ Var8: num  5 5 5 5 5 5 5 5 5 5 ...
-##  $ Var9: num  1 1 1 1 1 1 1 1 1 1 ...
-```
-
-```r
-# For cluster jobs, write out simplified combinations of CV parameters
-param <- expand.grid(xlist, ylist, prlist, # feature, label, predictor
-                     seq(nfolds * nrepeats), nfolds, nrepeats, # CV folds for evaluation
-                     KEEP.OUT.ATTRS = FALSE)
-write.table(param, file = '3_selectPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
+# for cluster jobs, write out full combinations of double nested CV parameters
+# - for outter loop, 1:(nfolds * nrepeats) denotes index for outter CV
+# - for inner loop, 0 indicates running outter loop evaluation, 1:(nfolds.inn * nrepeats.inn) indicates index for inner CV
+param <- expand.grid(as.character(xlist), # feature
+                     as.character(ylist), # group
+                     as.character(prlist), # predictor
+                     as.integer(1:(nfolds * nrepeats)), # outter CV folds index for evaluation
+                     as.integer(nfolds), 
+                     as.integer(nrepeats), 
+                     as.integer(0:(nfolds.inn * nrepeats.inn)), # inner CV folds for tuning predictor
+                     as.integer(nfolds.inn), 
+                     as.integer(nrepeats.inn), 
+                     KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+write.table(param, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
 # preview
 str(param)
 ```
 
 ```
-## 'data.frame':	9450 obs. of  6 variables:
-##  $ Var1: Factor w/ 7 levels "eff.vals","fun.vals",..: 1 2 3 4 5 6 7 1 2 3 ...
-##  $ Var2: Factor w/ 3 levels "basal.grps","surv.grps",..: 1 1 1 1 1 1 1 2 2 2 ...
-##  $ Var3: Factor w/ 9 levels "predictorGBM",..: 1 1 1 1 1 1 1 1 1 1 ...
+## 'data.frame':	56700 obs. of  9 variables:
+##  $ Var1: chr  "eff.vals" "fun.vals" "genes.vals" "go.vals" ...
+##  $ Var2: chr  "basal.grps" "basal.grps" "basal.grps" "basal.grps" ...
+##  $ Var3: chr  "predictorGBM" "predictorGBM" "predictorGBM" "predictorGBM" ...
 ##  $ Var4: int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ Var5: num  5 5 5 5 5 5 5 5 5 5 ...
-##  $ Var6: num  10 10 10 10 10 10 10 10 10 10 ...
+##  $ Var5: int  5 5 5 5 5 5 5 5 5 5 ...
+##  $ Var6: int  10 10 10 10 10 10 10 10 10 10 ...
+##  $ Var7: int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Var8: int  5 5 5 5 5 5 5 5 5 5 ...
+##  $ Var9: int  1 1 1 1 1 1 1 1 1 1 ...
+```
+
+```r
+# save entire image to be loaded later
+save(list = c(xlist, ylist), file = 'dat.RData')
 ```
 
 # Session info
