@@ -41,10 +41,6 @@
 
 ## TODO
 
-- collect survival time info and build survival predictors
-
-## Questions
-
 - negative control experiments over: a) random network to generate pathway features; b) random functionality coding to exclude the potential of random projection of pathway features onto lower dimensionality
 - other cancer survival datasets for indep validation so that predictor can be a parameter to tune with (or simply pick one algorithm that overall works well)
 - Wilcoxon tests to quantitatively address the superiority in terms of performance

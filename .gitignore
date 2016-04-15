@@ -16,6 +16,7 @@
 *.html
 *logs*
 *temp*
+*cache*
 doc/
 data/
 results/160310/figures/
