@@ -41,9 +41,10 @@
 
 ## TODO
 
-- plot results
-- Wilcoxon tests to quantitatively address the superiority in terms of performance
-- other labels to predict: 5-year relapse, subtypes
+- plot results and do Wilcoxon test or t-test to quantitatively address the superiority in terms of performance
+- other labels to predict: 5-year relapse, subtypes (multi-class)
+- how to build predictors for highly-correlated features
+- how to use the network to guide prediction when features have strong correlation based on graphs
 
 ## Future work
 

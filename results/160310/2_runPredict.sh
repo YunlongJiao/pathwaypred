@@ -11,8 +11,8 @@
 #$ -cwd
 ## Merge the standard out and standard error to one file in one folder
 #$ -j y
-#$ -o logs
-#$ -e logs
+#$ -o /dev/null
+#$ -e /dev/null
 
 ## set up distributed jobs for nclust range
 #$ -t 1-56700
