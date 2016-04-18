@@ -17,7 +17,7 @@ nrepeats.inn <- as.integer(ags[9]) # inner number of repeats
 message("\nRunning ...\n", paste(ags, collapse = "\t"),"\n")
 
 if (i.fold.inn == 0) {
-  objname <- paste0('res_', paste(ags, collapse = '_'))
+  objname <- paste0('ivres_', paste(ags, collapse = '_'))
 } else {
   objname <- paste0('cvres_', paste(ags, collapse = '_'))
 }
