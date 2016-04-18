@@ -11,6 +11,7 @@
 #$ -cwd
 ## Merge the standard out and standard error to one file in one folder
 #$ -j y
+## Disable log output
 #$ -o /dev/null
 #$ -e /dev/null
 
