@@ -63,10 +63,11 @@ In order to avoid overfitting with the choice of prediction algorithm used, acro
 ```{r prepare, cache=TRUE, message=FALSE}
 # gather scores
 scores <- list()
-for (yname in ylist) {
-  for (xname in xlist){
-    for (i.fold in seq(nfolds*nrepeats)) {
-      message('.', appendLF = FALSE)
+for (i.fold in seq(nfolds*nrepeats)) {
+  message("\n", i.fold, "-th fold out of ", nfolds*nrepeats, " folds ", appendLF = FALSE)
+  for (yname in ylist) {
+    for (xname in xlist) {
+      message(".", appendLF = FALSE)
       # read nested cv res
       cvres <- list()
       for (prname in prlist) {
