@@ -61,12 +61,9 @@ if (i.fold.inn == 0) {
 }
 
 message('train and predict ... ')
-pt <- system.time(
-  res <- indepValidation(xtr = xtr[train.fold, , drop=F], ytr = ytr[train.fold], 
-                         xtst = xtr[test.fold, , drop=F], ytst = ytr[test.fold], 
-                         predictor = prname))
-res[["system_time"]] <- pt
-assign(objname, res)
+assign(objname, indepValidation(xtr = xtr[train.fold, , drop=F], ytr = ytr[train.fold], 
+                                xtst = xtr[test.fold, , drop=F], ytst = ytr[test.fold], 
+                                predictor = prname))
 if (!dir.exists('Robj')) dir.create('Robj')
 save(list = objname, file = objpath)
 message('new job saved up !!')

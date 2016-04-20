@@ -201,13 +201,16 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
 		featlist <- colnames(xtr)
 	}
 	
-	# model and predict
+	# model and predict and record system time as well
   FUN <- get(predictor, mode = "function")
-	pred <- FUN(xtr=xtr, xtst=xtst, ytr=ytr, ...)
+  pt <- system.time(
+    pred <- FUN(xtr=xtr, xtst=xtst, ytr=ytr, ...)
+  )[["user.self"]]
 	
 	# evaluation and result list
 	res <- c(list(validation="seqVal", predictor=predictor, cutoff=pred$cutoff, featlist=featlist, 
-	              true.surv=ysurv, true.class=ytst, test.class=pred$class, test.prob=pred$prob), 
+	              true.surv=ysurv, true.class=ytst, test.class=pred$class, test.prob=pred$prob, 
+	              system_time = pt), 
 	         evaluatePred(pred=pred, ytst=ytst, ysurv=ysurv, pos.label = pos.label, ...))
 	
 	if(save.model){
@@ -245,7 +248,7 @@ crossValidation <- function(xtr, ytr, ..., seed=61215942, nfolds=5, nrepeats=10)
 
 
 crossValidationCombineResults <- function(foldres, 
-                                          elem_ave=c("acc","fpr","tpr","ppv","fval","concordance.index","auroc"), 
+                                          elem_ave=c("acc","fpr","tpr","ppv","fval","concordance.index","auroc","system_time"), 
                                           elem_keepfold=c("true.surv","true.class","test.class","test.prob","featlist"),
                                           elem_inherit=c("predictor", "cutoff"))
 {
@@ -253,16 +256,21 @@ crossValidationCombineResults <- function(foldres,
   # elem_keepfold are those to keep as they come from each fold
   # elem_inherit are those to inherit some parameters from res of subfold as in ensembleResults()
   
-  if (is.null(foldres) || (is.list(foldres) && length(foldres) == 0))
-    return(list())
-  
   cvres <- list(validation=paste0(nrepeats,"_repeats_",nfolds,"_fold_cross_validation"))
-  cvres <- c(cvres,foldres[[1]][elem_inherit])
-  for(elem in elem_keepfold){
-    cvres[[elem]] <- lapply(foldres, function(u){u[[elem]]})
-  }
-  for(elem in elem_ave){
-    cvres[[elem]] <- mean(sapply(foldres, function(u){u[[elem]]}), na.rm=TRUE)
+  
+  if (is.null(foldres) || (is.list(foldres) && length(foldres) == 0)) {
+    cvres <- list()
+    for (elem in c(elem_inherit, elem_keepfold, elem_ave)) {
+      cvres[[elem]] <- NA
+    }
+  } else {
+    cvres <- c(cvres,foldres[[1]][elem_inherit])
+    for(elem in elem_keepfold){
+      cvres[[elem]] <- lapply(foldres, function(u){u[[elem]]})
+    }
+    for(elem in elem_ave){
+      cvres[[elem]] <- mean(sapply(foldres, function(u){u[[elem]]}), na.rm=TRUE)
+    }
   }
   
   return(cvres)
