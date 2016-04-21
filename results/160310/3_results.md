@@ -468,7 +468,7 @@ for (yname in ylist) {
   # test now
   for (i in xlist.ordered) {
     for (j in xlist.ordered) {
-      tt <- t.test(x = d[[i]], y = d[[j]], alternative = 'greater', mu = 0)
+      tt <- t.test(x = d[[i]], y = d[[j]], alternative = 'greater', mu = 0, paired = TRUE)
       pmatrix[i,j] <- round(tt$p.value, 4)
     }
   }
@@ -484,98 +484,98 @@ for (yname in ylist) {
 ## 
 ## ------> 	 predicting for  basal.grps  	 <------
 ##                  fun.vals go.vals eff.vals path.vals mini.genes.vals
-## fun.vals           0.5000  0.8583   0.9381    0.8788          0.8377
-## go.vals            0.1417  0.5000   0.7522    0.6198          0.5210
-## eff.vals           0.0619  0.2478   0.5000    0.3783          0.2876
-## path.vals          0.1212  0.3802   0.6217    0.5000          0.4095
-## mini.genes.vals    0.1623  0.4790   0.7124    0.5905          0.5000
-## other.genes.vals   0.0714  0.2715   0.5233    0.4009          0.3097
-## genes.vals         0.1031  0.3367   0.5787    0.4583          0.3688
+## fun.vals              NaN  0.9664   0.9997    0.9852          0.9505
+## go.vals            0.0336     NaN   0.8949    0.6859          0.5321
+## eff.vals           0.0003  0.1051      NaN    0.2200          0.1633
+## path.vals          0.0148  0.3141   0.7800       NaN          0.3440
+## mini.genes.vals    0.0495  0.4679   0.8367    0.6560             NaN
+## other.genes.vals   0.0056  0.1612   0.5437    0.3518          0.1989
+## genes.vals         0.0210  0.2669   0.6370    0.4382          0.2678
 ##                  other.genes.vals genes.vals
-## fun.vals                   0.9286     0.8969
-## go.vals                    0.7285     0.6633
-## eff.vals                   0.4767     0.4213
-## path.vals                  0.5991     0.5417
-## mini.genes.vals            0.6903     0.6312
-## other.genes.vals           0.5000     0.4439
-## genes.vals                 0.5561     0.5000
+## fun.vals                   0.9944     0.9790
+## go.vals                    0.8388     0.7331
+## eff.vals                   0.4563     0.3630
+## path.vals                  0.6482     0.5618
+## mini.genes.vals            0.8011     0.7322
+## other.genes.vals              NaN     0.3223
+## genes.vals                 0.6777        NaN
 ## Simplify by thresholding at p-value < 0.05 
 ##                  fun.vals go.vals eff.vals path.vals mini.genes.vals
-## fun.vals            FALSE   FALSE    FALSE     FALSE           FALSE
-## go.vals             FALSE   FALSE    FALSE     FALSE           FALSE
-## eff.vals            FALSE   FALSE    FALSE     FALSE           FALSE
-## path.vals           FALSE   FALSE    FALSE     FALSE           FALSE
-## mini.genes.vals     FALSE   FALSE    FALSE     FALSE           FALSE
-## other.genes.vals    FALSE   FALSE    FALSE     FALSE           FALSE
-## genes.vals          FALSE   FALSE    FALSE     FALSE           FALSE
+## fun.vals               NA   FALSE    FALSE     FALSE           FALSE
+## go.vals              TRUE      NA    FALSE     FALSE           FALSE
+## eff.vals             TRUE   FALSE       NA     FALSE           FALSE
+## path.vals            TRUE   FALSE    FALSE        NA           FALSE
+## mini.genes.vals      TRUE   FALSE    FALSE     FALSE              NA
+## other.genes.vals     TRUE   FALSE    FALSE     FALSE           FALSE
+## genes.vals           TRUE   FALSE    FALSE     FALSE           FALSE
 ##                  other.genes.vals genes.vals
 ## fun.vals                    FALSE      FALSE
 ## go.vals                     FALSE      FALSE
 ## eff.vals                    FALSE      FALSE
 ## path.vals                   FALSE      FALSE
 ## mini.genes.vals             FALSE      FALSE
-## other.genes.vals            FALSE      FALSE
-## genes.vals                  FALSE      FALSE
+## other.genes.vals               NA      FALSE
+## genes.vals                  FALSE         NA
 ## 
 ## ------> 	 predicting for  surv.grps  	 <------
 ##                  fun.vals go.vals eff.vals path.vals mini.genes.vals
-## fun.vals           0.5000  0.1194   0.8132    0.9653          0.3963
-## go.vals            0.8806  0.5000   0.9809    0.9977          0.8306
-## eff.vals           0.1868  0.0191   0.5000    0.8595          0.1166
-## path.vals          0.0347  0.0023   0.1405    0.5000          0.0179
-## mini.genes.vals    0.6037  0.1694   0.8834    0.9821          0.5000
-## other.genes.vals   0.1870  0.0197   0.4956    0.8546          0.1176
-## genes.vals         0.1660  0.0168   0.4569    0.8313          0.1027
+## fun.vals              NaN  0.0433   0.9395    0.9959          0.3448
+## go.vals            0.9567     NaN   0.9998    1.0000          0.9392
+## eff.vals           0.0605  0.0002      NaN    0.9776          0.0151
+## path.vals          0.0041  0.0000   0.0224       NaN          0.0009
+## mini.genes.vals    0.6552  0.0608   0.9849    0.9991             NaN
+## other.genes.vals   0.1010  0.0025   0.4927    0.9421          0.0027
+## genes.vals         0.0816  0.0016   0.4285    0.9287          0.0009
 ##                  other.genes.vals genes.vals
-## fun.vals                   0.8130     0.8340
-## go.vals                    0.9803     0.9832
-## eff.vals                   0.5044     0.5431
-## path.vals                  0.1454     0.1687
-## mini.genes.vals            0.8824     0.8973
-## other.genes.vals           0.5000     0.5383
-## genes.vals                 0.4617     0.5000
+## fun.vals                   0.8990     0.9184
+## go.vals                    0.9975     0.9984
+## eff.vals                   0.5073     0.5715
+## path.vals                  0.0579     0.0713
+## mini.genes.vals            0.9973     0.9991
+## other.genes.vals              NaN     0.8408
+## genes.vals                 0.1592        NaN
 ## Simplify by thresholding at p-value < 0.05 
 ##                  fun.vals go.vals eff.vals path.vals mini.genes.vals
-## fun.vals            FALSE   FALSE    FALSE     FALSE           FALSE
-## go.vals             FALSE   FALSE    FALSE     FALSE           FALSE
-## eff.vals            FALSE    TRUE    FALSE     FALSE           FALSE
-## path.vals            TRUE    TRUE    FALSE     FALSE            TRUE
-## mini.genes.vals     FALSE   FALSE    FALSE     FALSE           FALSE
-## other.genes.vals    FALSE    TRUE    FALSE     FALSE           FALSE
-## genes.vals          FALSE    TRUE    FALSE     FALSE           FALSE
+## fun.vals               NA    TRUE    FALSE     FALSE           FALSE
+## go.vals             FALSE      NA    FALSE     FALSE           FALSE
+## eff.vals            FALSE    TRUE       NA     FALSE            TRUE
+## path.vals            TRUE    TRUE     TRUE        NA            TRUE
+## mini.genes.vals     FALSE   FALSE    FALSE     FALSE              NA
+## other.genes.vals    FALSE    TRUE    FALSE     FALSE            TRUE
+## genes.vals          FALSE    TRUE    FALSE     FALSE            TRUE
 ##                  other.genes.vals genes.vals
 ## fun.vals                    FALSE      FALSE
 ## go.vals                     FALSE      FALSE
 ## eff.vals                    FALSE      FALSE
 ## path.vals                   FALSE      FALSE
 ## mini.genes.vals             FALSE      FALSE
-## other.genes.vals            FALSE      FALSE
-## genes.vals                  FALSE      FALSE
+## other.genes.vals               NA      FALSE
+## genes.vals                  FALSE         NA
 ## 
 ## ------> 	 predicting for  tumor.grps  	 <------
 ##                  fun.vals go.vals eff.vals path.vals mini.genes.vals
-## fun.vals           0.5000  0.9239   0.9990    0.9611          0.9999
-## go.vals            0.0761  0.5000   0.8495    0.5275          0.9653
-## eff.vals           0.0010  0.1505   0.5000    0.0914          0.9929
-## path.vals          0.0389  0.4725   0.9086    0.5000          0.9920
-## mini.genes.vals    0.0001  0.0347   0.0071    0.0080          0.5000
-## other.genes.vals   0.0000  0.0135   0.0000    0.0013          0.0557
-## genes.vals         0.0000  0.0188   0.0000    0.0025          0.1709
+## fun.vals              NaN  0.9646   0.9995    0.9856          1.0000
+## go.vals            0.0354     NaN   0.8701    0.5310          0.9733
+## eff.vals           0.0005  0.1299      NaN    0.0678          0.9968
+## path.vals          0.0144  0.4690   0.9322       NaN          0.9948
+## mini.genes.vals    0.0000  0.0267   0.0032    0.0052             NaN
+## other.genes.vals   0.0000  0.0134   0.0000    0.0013          0.0553
+## genes.vals         0.0000  0.0193   0.0001    0.0025          0.1750
 ##                  other.genes.vals genes.vals
 ## fun.vals                   1.0000     1.0000
-## go.vals                    0.9865     0.9812
-## eff.vals                   1.0000     1.0000
+## go.vals                    0.9866     0.9807
+## eff.vals                   1.0000     0.9999
 ## path.vals                  0.9987     0.9975
-## mini.genes.vals            0.9443     0.8291
-## other.genes.vals           0.5000     0.1152
-## genes.vals                 0.8848     0.5000
+## mini.genes.vals            0.9447     0.8250
+## other.genes.vals              NaN     0.1134
+## genes.vals                 0.8866        NaN
 ## Simplify by thresholding at p-value < 0.05 
 ##                  fun.vals go.vals eff.vals path.vals mini.genes.vals
-## fun.vals            FALSE   FALSE    FALSE     FALSE           FALSE
-## go.vals             FALSE   FALSE    FALSE     FALSE           FALSE
-## eff.vals             TRUE   FALSE    FALSE     FALSE           FALSE
-## path.vals            TRUE   FALSE    FALSE     FALSE           FALSE
-## mini.genes.vals      TRUE    TRUE     TRUE      TRUE           FALSE
+## fun.vals               NA   FALSE    FALSE     FALSE           FALSE
+## go.vals              TRUE      NA    FALSE     FALSE           FALSE
+## eff.vals             TRUE   FALSE       NA     FALSE           FALSE
+## path.vals            TRUE   FALSE    FALSE        NA           FALSE
+## mini.genes.vals      TRUE    TRUE     TRUE      TRUE              NA
 ## other.genes.vals     TRUE    TRUE     TRUE      TRUE           FALSE
 ## genes.vals           TRUE    TRUE     TRUE      TRUE           FALSE
 ##                  other.genes.vals genes.vals
@@ -584,8 +584,8 @@ for (yname in ylist) {
 ## eff.vals                    FALSE      FALSE
 ## path.vals                   FALSE      FALSE
 ## mini.genes.vals             FALSE      FALSE
-## other.genes.vals            FALSE      FALSE
-## genes.vals                  FALSE      FALSE
+## other.genes.vals               NA      FALSE
+## genes.vals                  FALSE         NA
 ```
 
 ## Session info
