@@ -217,7 +217,7 @@ for (yname in ylist) {
     }
   }
   print(pmatrix)
-  cat('Simplify by thresholding at p-value <', thres)
+  cat('Simplify by thresholding at p-value <', thres, '\n')
   print(pmatrix < thres)
 }
 ```
