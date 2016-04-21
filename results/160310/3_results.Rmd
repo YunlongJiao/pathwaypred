@@ -212,7 +212,7 @@ for (yname in ylist) {
   # test now
   for (i in xlist.ordered) {
     for (j in xlist.ordered) {
-      tt <- t.test(x = d[[i]], y = d[[j]], alternative = 'greater', mu = 0)
+      tt <- t.test(x = d[[i]], y = d[[j]], alternative = 'greater', mu = 0, paired = TRUE)
       pmatrix[i,j] <- round(tt$p.value, 4)
     }
   }

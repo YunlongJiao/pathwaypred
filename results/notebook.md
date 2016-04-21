@@ -41,7 +41,7 @@
 
 ## TODO
 
-- plot results (change yrange to 0.5 and order features for ease of reading) and do Wilcoxon test or t-test to quantitatively address the superiority in terms of performance
+- multi-class for predictorNB and predictors afterwards, try sending onto cluster with binary labels first! And then with multiple labels check bugs!
 - other labels to predict: 5-year relapse, subtypes (multi-class)
 - how to build predictors for highly-correlated features
 - how to use the network to guide prediction when features have strong correlation based on graphs
