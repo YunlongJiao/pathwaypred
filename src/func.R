@@ -4,11 +4,12 @@
 # library(devtools)
 # library(caret)
 # library(ROCR)
+# library(ggplot2) # needs upgrade!
 # # from Bioconductor
 # library(survcomp)
 # # already exists for 3.2.1-atalas on crom01
 # library(survival)
-# library(ggplot2)
+# library(grid)
 
 # # import classifier libraries in those predictors called
 # # from CRAN
@@ -28,45 +29,49 @@ library(methods) # manually import important BASE packages otherwise error in ca
 options(stringsAsFactors = FALSE)
 
 
+
 # data processing ---------------------------------------------------------
 
 
-normalizeData <- function (xtr, xtst=NULL, do.center=TRUE, do.scale=TRUE, ...)
+
+normalizeData <- function(xtr, xtst=NULL, do.center=TRUE, do.scale=TRUE, ...)
 {
-	# normalizeData() normalizes col-wisely to mean 0 (do.center=T) and sd 1 (do.scale=T)
-	# NOTE: xtst is normalized wrt xtr
-	
-	if(is.vector(xtr)){
-		warning("vector features are coerced to a matrix!")
-		xtr <- matrix(xtr, ncol=1)
-		if(!is.null(xtst)){
-			xtst <- matrix(xtst, ncol=1)
-		}
-	}
-	
+  # normalizeData() normalizes col-wisely to mean 0 (do.center=T) and sd 1 (do.scale=T)
+  # NOTE: xtst is normalized wrt xtr
+  
+  if(is.vector(xtr)){
+    warning("vector features are coerced to a matrix!")
+    xtr <- matrix(xtr, ncol=1)
+    if(!is.null(xtst)){
+      xtst <- matrix(xtst, ncol=1)
+    }
+  }
+  
   # only normalize numeric cols
-	numid <- sapply(as.data.frame(xtr), is.numeric)
-	t <- scale(xtr[,numid], center=do.center, scale=do.scale)
-	xtr[,numid] <- t
-	
-	if(is.null(xtst)){
-		return(xtr)
-	} else{
-		if(do.center){
-			xtst[,numid] <- sweep(xtst[,numid], 2, attr(t,"scaled:center"), FUN="-")
-		}
-		if(do.scale){
-			xtst[,numid] <- sweep(xtst[,numid], 2, attr(t,"scaled:scale"), FUN="/")
-		}
-		return(list(xtr=xtr, xtst=xtst))
-	}
+  numid <- sapply(as.data.frame(xtr), is.numeric)
+  t <- scale(xtr[,numid], center=do.center, scale=do.scale)
+  xtr[,numid] <- t
+  
+  if(is.null(xtst)){
+    return(xtr)
+  } else{
+    if(do.center){
+      xtst[,numid] <- sweep(xtst[,numid], 2, attr(t,"scaled:center"), FUN="-")
+    }
+    if(do.scale){
+      xtst[,numid] <- sweep(xtst[,numid], 2, attr(t,"scaled:scale"), FUN="/")
+    }
+    return(list(xtr=xtr, xtst=xtst))
+  }
 }
 
-removeConst <- function (xtr, xtst=NULL, tol=1e-6)
+
+
+removeConst <- function(xtr, xtst=NULL, tol2const=1e-6, ...)
 {
   numid <- which(sapply(as.data.frame(xtr), is.numeric))
   constid <- apply(xtr[,numid], 2, function(u){
-    (mean(u, na.rm = TRUE) < tol && diff(range(u, na.rm = TRUE)) < tol) || (diff(range(u, na.rm = TRUE)) / mean(u, na.rm = TRUE) < tol)
+    (mean(u, na.rm = TRUE) < tol2const && diff(range(u, na.rm = TRUE)) < tol2const) || (diff(range(u, na.rm = TRUE)) / mean(u, na.rm = TRUE) < tol2const)
   })
   xtr <- xtr[ , numid[!constid], drop = F]
   if(is.null(xtst)){
@@ -78,18 +83,20 @@ removeConst <- function (xtr, xtst=NULL, tol=1e-6)
 }
 
 
+
 # validation --------------------------------------------------------------
+
 
 
 evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = tail(names(table(ytst)),1), 
                          savepath = NULL, beta = 1, ...)
 {
-	# pred results from calling predictorXXX(), ess. a list containing $class and $prob of which class must be factor or character
-	# ytst is true (binary or multi) class indicators
-	# ysurv is of class Surv containing true surv.time and surv.event, defaulted unavailable
+  # pred results from calling predictorXXX(), ess. a list containing $class and $prob of which class must be factor or character
+  # ytst is true (binary or multi) class indicators
+  # ysurv is of class Surv containing true surv.time and surv.event, defaulted unavailable
   # pos.label defines positive label(s) in case of computing tpr, fpr, etc, defaulted the last level in ytst
-	# NOTE large pred$prob should be associated with short survival time!!
-	# NOTE F(beta=1) is used by default while F(beta=0.5) can emphasize on precision more than recall, i.e. reduce FPR
+  # NOTE large pred$prob should be associated with short survival time!!
+  # NOTE F(beta=1) is used by default while F(beta=0.5) can emphasize on precision more than recall, i.e. reduce FPR
   
   library(ROCR)
   library(survival)
@@ -115,18 +122,18 @@ evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = tail(names(table(
     stop("Indefinite predicted response type!")
   }
   
-	if(length(pred$class) != length(ytst)){
-		stop("Inconsistent prediction length!")
-	}
+  if(length(pred$class) != length(ytst)){
+    stop("Inconsistent prediction length!")
+  }
   
   # remove NAs in ytst
-	if(NA %in% ytst){
-		id <- is.na(ytst)
-		ytst <- ytst[!id]
-		pred$class <- pred$class[!id]
-		pred$prob <- pred$prob[!id, ]
-	}
-	
+  if(NA %in% ytst){
+    id <- is.na(ytst)
+    ytst <- ytst[!id]
+    pred$class <- pred$class[!id]
+    pred$prob <- pred$prob[!id, ]
+  }
+  
   # quantitative criteria
   acc <- mean(pred$class==ytst, na.rm=TRUE)
   ppv <- sapply(pos.label, ppv_measure, pred.class = pred$class, ytst = ytst)
@@ -169,29 +176,30 @@ evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = tail(names(table(
 }
 
 
+
 indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL, 
                             pos.label = tail(names(table(ytst)),1), 
                             remove.const = TRUE, 
                             pthres = 0, method = "wilcox.test", 
                             ..., save.model = FALSE, seed = 53359292)
 {
-	# xtr, xtst are n*p feature matrices and ytr, ytst are label vectors
-	# predictor is a char denoting the predictor function name (starting with '^predictor.*')
+  # xtr, xtst are n*p feature matrices and ytr, ytst are label vectors
+  # predictor is a char denoting the predictor function name (starting with '^predictor.*')
   # pos.label is a single or a vector of characters indicating the positive label(s) in ytst, defaulted the last level in ytst
   # remove.const defaulted TRUE to remove constant feature columns in xtr
   # pthres defaulted 0 does no indep signif feature reduction
-	# indepValidation() returns model performances validated against test set which have been trained on training set
+  # indepValidation() returns model performances validated against test set which have been trained on training set
   
   library(survival)
   
   if (!is.null(seed)) set.seed(seed)
   
   # adjust correp rows and cols position in case they do not match
-	if (!is.null(dimnames(xtr)) && !is.null(dimnames(xtst)) && !is.null(names(ytr)) && !is.null(names(ytst))) {
-	  ytr <- ytr[rownames(xtr)]
-	  ytst <- ytst[rownames(xtst)]
-	  xtst <- xtst[ ,colnames(xtr),drop=F]
-	}
+  if (!is.null(dimnames(xtr)) && !is.null(dimnames(xtst)) && !is.null(names(ytr)) && !is.null(names(ytst))) {
+    ytr <- ytr[rownames(xtr)]
+    ytst <- ytst[rownames(xtst)]
+    xtst <- xtst[ ,colnames(xtr),drop=F]
+  }
   
   # remove NAs in ytr
   if(NA %in% ytr){
@@ -199,28 +207,28 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
     ytr <- ytr[!id]
     xtr <- xtr[!id, ]
   }
-	
+  
   # remove constant features
   if (remove.const) {
-    d <- removeConst(xtr=xtr, xtst=xtst)
+    d <- removeConst(xtr=xtr, xtst=xtst, ...)
     xtr <- d$xtr
     xtst <- d$xtst
   }
   
-	# indep signif test for feature reduction
-	if(pthres > 0){
-		plist <- indepSignif(xtr=xtr, ytr=ytr, method = method, ...)
-		featlist <- names(plist)[plist < pthres]
-		if(length(featlist) == 0){
-			warning("No features survived after independence significance test hence no feature reduction is reserved!")
-		  featlist <- colnames(xtr)
-		}
-		xtr <- xtr[,featlist,drop=F]
-		xtst <- xtst[,featlist,drop=F]
-	} else{
-		featlist <- colnames(xtr)
-	}
-	
+  # indep signif test for feature reduction
+  if(pthres > 0){
+    plist <- indepSignif(xtr=xtr, ytr=ytr, method = method, ...)
+    featlist <- names(plist)[plist < pthres]
+    if(length(featlist) == 0){
+      warning("No features survived after independence significance test hence no feature reduction is reserved!")
+      featlist <- colnames(xtr)
+    }
+    xtr <- xtr[,featlist,drop=F]
+    xtst <- xtst[,featlist,drop=F]
+  } else{
+    featlist <- colnames(xtr)
+  }
+  
   # model and predict and record system time as well
   
   pt <- proc.time()
@@ -235,42 +243,42 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
   }
   pt <- (proc.time() - pt)[["user.self"]]
   
-	# evaluation and result list
-	res <- c(list(validation="seqVal", predictor=predictor, cutoff=pred$cutoff, featlist=featlist, 
-	              true.surv=ysurv, true.class=ytst, test.class=pred$class, test.prob=pred$prob, 
-	              pos.label = pos.label, system_time = pt), 
-	         evaluatePred(pred=pred, ytst=ytst, ysurv=ysurv, pos.label = pos.label, ...))
-	
-	if(save.model){
-	  res$model <- pred$model
-	}
-	
-	return(res)
+  # evaluation and result list
+  res <- c(list(validation="seqVal", predictor=predictor, cutoff=pred$cutoff, featlist=featlist, 
+                true.surv=ysurv, true.class=ytst, test.class=pred$class, test.prob=pred$prob, 
+                pos.label = pos.label, system_time = pt), 
+           evaluatePred(pred=pred, ytst=ytst, ysurv=ysurv, pos.label = pos.label, ...))
+  
+  if(save.model){
+    res$model <- pred$model
+  }
+  
+  return(res)
 }
 
 
 
 crossValidation <- function(xtr, ytr, ..., seed=61215942, nfolds=5, nrepeats=10)
 {
-	# nfolds, nrepeats are used to generate nrepeats simultaneous training splits each being nfolds
-	# crossValidation() returns cross validated results from a single dataset
+  # nfolds, nrepeats are used to generate nrepeats simultaneous training splits each being nfolds
+  # crossValidation() returns cross validated results from a single dataset
   
   library(caret)
   
-	# data split
+  # data split
   if (!is.null(seed)) set.seed(seed)
-	foldIndices <- createMultiFolds(1:nrow(xtr), k=nfolds, times=nrepeats)
-	
-	message(nrepeats," repeated experiments of ",nfolds, "-fold cross validation!")
-	foldres <- lapply(foldIndices, function(fold){
-		message("New fold started...")
-		ivres <- indepValidation(xtr=xtr[fold,,drop=F], ytr=ytr[fold], xtst=xtr[-fold,,drop=F], ytst=ytr[-fold], ..., save.model=FALSE)
-		return(ivres)
-	})
-	
-	cvres <- crossValidationCombineResults(foldres)
-	
-	return(cvres)
+  foldIndices <- createMultiFolds(1:nrow(xtr), k=nfolds, times=nrepeats)
+  
+  message(nrepeats," repeated experiments of ",nfolds, "-fold cross validation!")
+  foldres <- lapply(foldIndices, function(fold){
+    message("New fold started...")
+    ivres <- indepValidation(xtr=xtr[fold,,drop=F], ytr=ytr[fold], xtst=xtr[-fold,,drop=F], ytst=ytr[-fold], ..., save.model=FALSE)
+    return(ivres)
+  })
+  
+  cvres <- crossValidationCombineResults(foldres)
+  
+  return(cvres)
 }
 
 
@@ -308,7 +316,7 @@ crossValidationCombineResults <- function(foldres,
 
 plotROCcv <- function(res, savepath, pos.label = tail(res$pos.label, 1), beta = 1)
 {
-	# res is the result list from calling indepValidation() or crossValidation(), ess a list having the following as elements 
+  # res is the result list from calling indepValidation() or crossValidation(), ess a list having the following as elements 
   # true.class a vector of predicted class labels (can be cross-fold result given by list)
   # test.prob a matrix of predicted prob for each obs (in rows) indicating membership prob belonging to each class (in cols), or a list of such matrices for cv results
   # pos.label giving positive labels, must be a single character string for ROC to plot in this function
@@ -331,74 +339,78 @@ plotROCcv <- function(res, savepath, pos.label = tail(res$pos.label, 1), beta = 
     stop("res$test.prob should be a matrix or a list of matrix")
   }
   
-	alpha <- function(b){return(1/(1+b*b))}
-	
-	if (!grepl("[.]pdf$", savepath)) savepath <- paste0(savepath, "_ROC_.pdf")
-	
-	pdf(savepath, height=10, width=15)
-	
-	predROCR <- prediction(res$test.prob, res$true.class)
-	
-	par(mfrow=c(2,2))
-	
-	acccurve <- performance(predROCR, "acc")
-	plot(acccurve, lwd=2, main="Classification accuracy")
-	grid()
-	
-	fcurve <- performance(predROCR, "f", alpha=alpha(b=beta))
-	plot(fcurve, lwd=2, main=paste0("F-measure (beta=",beta,")"))
-	grid()
-	
-	roccurve <- performance(predROCR, "tpr", "fpr")
-	plot(roccurve, lwd=2, main="ROC curve")
-	grid()
-	
-# 	tprcurve <- performance(predROCR, "tpr")
-# 	plot(tprcurve, lwd=2, main="True Positive Rate (Recall or Sensitivity)")
-# 	grid()
-	
-# 	fprcurve <- performance(predROCR, "fpr")
-# 	plot(fprcurve, lwd=2, main="False Positive Rate (Fallout)")
-# 	grid()
-	
-# 	liftcurve <- performance(predROCR, "lift", "rpp")
-# 	plot(liftcurve, lwd=2, main="Lift Chart")
-# 	grid()
-	
-# 	ppvcurve <- performance(predROCR, "ppv")
-# 	plot(ppvcurve, lwd=2, main="Positive Predictive Value (Precision)")
-# 	grid()
-	
-	prcurve <- performance(predROCR, "prec", "rec")
-	plot(prcurve, lwd=2, main="Precision/Recall Graph")
-	grid()
-	
-	dev.off()
-	
-	message("plot saved to ", dQuote(savepath))
-	return(savepath)
+  alpha <- function(b){return(1/(1+b*b))}
+  
+  if (!grepl("[.]pdf$", savepath)) savepath <- paste0(savepath, "_ROC_.pdf")
+  
+  pdf(savepath, height=10, width=15)
+  
+  predROCR <- prediction(res$test.prob, res$true.class)
+  
+  par(mfrow=c(2,2))
+  
+  acccurve <- performance(predROCR, "acc")
+  plot(acccurve, lwd=2, main="Classification accuracy")
+  grid()
+  
+  fcurve <- performance(predROCR, "f", alpha=alpha(b=beta))
+  plot(fcurve, lwd=2, main=paste0("F-measure (beta=",beta,")"))
+  grid()
+  
+  roccurve <- performance(predROCR, "tpr", "fpr")
+  plot(roccurve, lwd=2, main="ROC curve")
+  grid()
+  
+  # 	tprcurve <- performance(predROCR, "tpr")
+  # 	plot(tprcurve, lwd=2, main="True Positive Rate (Recall or Sensitivity)")
+  # 	grid()
+  
+  # 	fprcurve <- performance(predROCR, "fpr")
+  # 	plot(fprcurve, lwd=2, main="False Positive Rate (Fallout)")
+  # 	grid()
+  
+  # 	liftcurve <- performance(predROCR, "lift", "rpp")
+  # 	plot(liftcurve, lwd=2, main="Lift Chart")
+  # 	grid()
+  
+  # 	ppvcurve <- performance(predROCR, "ppv")
+  # 	plot(ppvcurve, lwd=2, main="Positive Predictive Value (Precision)")
+  # 	grid()
+  
+  prcurve <- performance(predROCR, "prec", "rec")
+  plot(prcurve, lwd=2, main="Precision/Recall Graph")
+  grid()
+  
+  dev.off()
+  
+  message("plot saved to ", dQuote(savepath))
+  return(savepath)
 }
+
 
 
 # feature reduction -------------------------------------------------------
 
 
+
 indepSignif <- function(xtr, ytr, method = "wilcox.test", ...)
 {
-	# indepSignif() runs feature-by-feature independence significance test between contrasting classes
-	# xtr should be assigned col names and ytr is a vector of labels
-	# method denotes a char from c("t.test","wilcox.test",...)
-	
-	featlist <- colnames(xtr)
-	plist <- sapply(featlist, function(featname){
-		fo <- paste0(featname," ~ y")
-		t <- get(method)(as.formula(fo), 
-		                 data=data.frame(y=as.factor(as.character(ytr)),as.data.frame(xtr)), ...)
-		return(t$p.value)
-	})
-	
-	return(plist)
+  # indepSignif() runs feature-by-feature independence significance test between contrasting classes
+  # xtr should be assigned col names and ytr is a vector of labels
+  # method denotes a char from c("t.test","wilcox.test",...)
+  
+  featlist <- colnames(xtr)
+  plist <- sapply(featlist, function(featname){
+    fo <- paste0(featname," ~ y")
+    t <- get(method)(as.formula(fo), 
+                     data=data.frame(y=as.factor(as.character(ytr)),
+                                     as.data.frame(xtr)), ...)
+    t$p.value
+  })
+  
+  return(plist)
 }
+
 
 
 # classifiers -------------------------------------------------------------
@@ -421,91 +433,96 @@ indepSignif <- function(xtr, ytr, method = "wilcox.test", ...)
 
 
 
-predictorLDA <- function(xtr, xtst, ytr, cutoff = 0.5, do.normalize = TRUE, ...){
+predictorLDA <- function(xtr, xtst, ytr, cutoff = 0.5, do.normalize = TRUE, ...)
+{
   # no feature selection, no parameter tuning
-	
+  
   library(MASS)
   
   classes <- names(tab <- table(ytr))
   classes.eff <- classes[tab > 0]
   stopifnot(length(classes.eff) >= 2)
   
-	if(do.normalize){
-		d <- normalizeData(xtr, xtst, ...)
-		xtr <- d$xtr
-		xtst <- d$xtst
-	}
-	
-	# train
-	model <- lda(x = xtr, grouping = as.factor(as.character(ytr)), ...)
-	# predict
-	pred <- predict(object = model, newdata = xtst, ...)
-	pred.class <- as.character(pred$class)
-	pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
-	                    dimnames = list(rownames(xtst), classes))
-	pred.prob[ , colnames(pred$posterior)] <- pred$posterior
-	
-	res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
-	return(res)
+  if(do.normalize){
+    d <- normalizeData(xtr, xtst, ...)
+    xtr <- d$xtr
+    xtst <- d$xtst
+  }
+  
+  # train
+  model <- lda(x = xtr, grouping = as.factor(as.character(ytr)), ...)
+  # predict
+  pred <- predict(object = model, newdata = xtst, ...)
+  pred.class <- as.character(pred$class)
+  pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
+                      dimnames = list(rownames(xtst), classes))
+  pred.prob[ , colnames(pred$posterior)] <- pred$posterior
+  
+  res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
+  return(res)
 }
 
 
 
-predictorLogitLasso <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, do.normalize = TRUE, ...){
-	# Logit regression with elastic net penalty, default alpha=1, which should not be altered, denotes lasso for feature selection
+predictorLogitLasso <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, do.normalize = TRUE, ...)
+{
+  # Logit regression with elastic net penalty, default alpha=1, which should not be altered, denotes lasso for feature selection
   # parameter tuning as implemented by cv.glmnet()
-	
-	library(glmnet)
+  
+  library(glmnet)
   
   classes <- names(tab <- table(ytr))
   classes.eff <- classes[tab > 0]
   stopifnot(length(classes.eff) >= 2)
   
   # train
-	model <- cv.glmnet(x = as.matrix(xtr), y = as.factor(as.character(ytr)), family = "multinomial", 
-	                   alpha = alpha, standardize = do.normalize, ...)
-	# predict
-	pred <- drop(predict(object = model, newx = as.matrix(xtst), type = "response", ...))
-	pred.class <- colnames(pred)[max.col(pred)]
-	pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
-	                    dimnames = list(rownames(xtst), classes))
-	pred.prob[ , colnames(pred)] <- pred
-	
-	res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
-	return(res)
+  model <- cv.glmnet(x = as.matrix(xtr), y = as.factor(as.character(ytr)), family = "multinomial", 
+                     alpha = alpha, standardize = do.normalize, ...)
+  # predict
+  pred <- drop(predict(object = model, newx = as.matrix(xtst), type = "response", ...))
+  pred.class <- colnames(pred)[max.col(pred)]
+  pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
+                      dimnames = list(rownames(xtst), classes))
+  pred.prob[ , colnames(pred)] <- pred
+  
+  res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
+  return(res)
 }
 
 
 
-predictorLinearSVM <- function(xtr, xtst, ytr, kernel = "linear", cost = 10^(-3:3), cutoff = 0.5, do.normalize = TRUE, cross = 5, ...){
-	# cost is a vector of C parameter grid to tune with, no feature selection
+predictorLinearSVM <- function(xtr, xtst, ytr, kernel = "linear", cost = 10^(-3:3), 
+                               do.normalize = TRUE, cross = 5, cutoff = 0.5, ...)
+{
+  # cost is a vector of C parameter grid to tune with, no feature selection
   # NOTE predictorLinearSVM, though default to linear kernel which should not be altered, is a wrapper function for any kernel methodsm, see predictorRadialSVM()
-	# NOTE cross validation is set to always minimize misclassification error by default of tune.svm arguments despite that it might not be appropriate for largely unbalanced classes
-	
-	library(e1071)
+  # NOTE cross validation is set to always minimize misclassification error by default of tune.svm arguments despite that it might not be appropriate for largely unbalanced classes
+  
+  library(e1071)
   
   classes <- names(tab <- table(ytr))
   classes.eff <- classes[tab > 0]
   stopifnot(length(classes.eff) >= 2)
   
   # train
-	model <- tune.svm(x = xtr, y = as.factor(as.character(ytr)), kernel = kernel, 
-	                  scale = do.normalize, type = "C-classification", probability = TRUE, 
-	                  cost = cost, tunecontrol = tune.control(sampling="cross", cross=cross), ...)
-	# predict
-	pred <- predict(object = model$best.model, newdata = xtst, probability = TRUE, ...)
-	pred.class <- as.character(pred)
-	pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
-	                    dimnames = list(rownames(xtst), classes))
-	pred.prob[ , colnames(attr(pred,"probabilities"))] <- attr(pred,"probabilities")
-	
-	res <- list(model=model$best.model, class=pred.class, prob=pred.prob, cutoff=cutoff)
-	return(res)
+  model <- tune.svm(x = xtr, y = as.factor(as.character(ytr)), kernel = kernel, 
+                    scale = do.normalize, type = "C-classification", probability = TRUE, 
+                    cost = cost, tunecontrol = tune.control(sampling="cross", cross=cross), ...)
+  # predict
+  pred <- predict(object = model$best.model, newdata = xtst, probability = TRUE, ...)
+  pred.class <- as.character(pred)
+  pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
+                      dimnames = list(rownames(xtst), classes))
+  pred.prob[ , colnames(attr(pred,"probabilities"))] <- attr(pred,"probabilities")
+  
+  res <- list(model=model$best.model, class=pred.class, prob=pred.prob, cutoff=cutoff)
+  return(res)
 }
 
 
 
-predictorRadialSVM <- function(xtr, xtst, ytr, do.normalize = TRUE, ...){
+predictorRadialSVM <- function(xtr, xtst, ytr, do.normalize = TRUE, ...)
+{
   # implemented by replacing linear kernel by RBF kernel in predictorLinearSVM()
   # gamma for radial kernel is set with median trick implemented by kernlab:sigest()
   
@@ -516,52 +533,54 @@ predictorRadialSVM <- function(xtr, xtst, ytr, do.normalize = TRUE, ...){
 
 
 
-predictorKNN <- function(xtr, xtst, ytr, k = seq(1,10,2), do.normalize = TRUE, cutoff = 0.5, ...){
+predictorKNN <- function(xtr, xtst, ytr, k = seq(1,10,2), do.normalize = TRUE, cutoff = 0.5, ...)
+{
   # no feature selection, with parameter tuning for k
   # NOTE k takes only odd values to avoid confusion from ties
   # NOTE cross validation is set to minimize misclassification error by default of tune.knn arguments
-	# IMPORTANT for multi-class (>2) case the prob of winning class is the proportion of votes of winning class from neighbours, 
+  # IMPORTANT for multi-class (>2) case the prob of winning class is the proportion of votes of winning class from neighbours, 
   #           and the other classes can take NA values as class::knn has not yet implemented this option
   
-	library(class)
-	library(e1071)
+  library(class)
+  library(e1071)
   
   classes <- names(tab <- table(ytr))
   classes.eff <- classes[tab > 0]
   stopifnot(length(classes.eff) >= 2)
   
-	if(do.normalize){
-		d <- normalizeData(xtr, xtst, ...)
-		xtr <- d$xtr
-		xtst <- d$xtst
-	}
-	
+  if(do.normalize){
+    d <- normalizeData(xtr, xtst, ...)
+    xtr <- d$xtr
+    xtst <- d$xtst
+  }
+  
   # train
-	model <- tune.knn(x = xtr, y = as.factor(as.character(ytr)), k = k, 
-	                  tunecontrol=tune.control(sampling="cross", cross=5), ...)
-	best.k <- model$best.parameters$k
-	# predict
-	pred <- knn(train = xtr, test = xtst, cl = ytr, k = best.k, prob = TRUE, ...)
-	pred.class <- as.character(pred)
-	# IMPORTANT for multi-class (>2) case NA denotes unknown values!!
-	pred.prob <- matrix(ifelse(length(classes.eff) == 2, 0, NA), 
-	                    nrow = nrow(xtst), ncol = length(classes), 
-	                    dimnames = list(rownames(xtst), classes))
-	pred.prob[attr(pred,"prob") == 1, ] <- 0
-	id.col <- match(pred.class, classes)
-	pred.prob[cbind(1:nrow(pred.prob), id.col)] <- attr(pred,"prob")
-	# in case of two effective classes (with at least one obs in such class), fill out the losing.prob by 1-winning.prob
-	if (length(classes.eff) == 2) {
-	  pred.prob[cbind(1:nrow(pred.prob), sum(match(classes.eff, classes)) - id.col)] <- 1 - attr(pred,"prob")
-	}
-	
-	res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
-	return(res)
+  model <- tune.knn(x = xtr, y = as.factor(as.character(ytr)), k = k, 
+                    tunecontrol=tune.control(sampling="cross", cross=5), ...)
+  best.k <- model$best.parameters$k
+  # predict
+  pred <- knn(train = xtr, test = xtst, cl = ytr, k = best.k, prob = TRUE, ...)
+  pred.class <- as.character(pred)
+  # IMPORTANT for multi-class (>2) case NA denotes unknown values!!
+  pred.prob <- matrix(ifelse(length(classes.eff) == 2, 0, NA), 
+                      nrow = nrow(xtst), ncol = length(classes), 
+                      dimnames = list(rownames(xtst), classes))
+  pred.prob[attr(pred,"prob") == 1, ] <- 0
+  id.col <- match(pred.class, classes)
+  pred.prob[cbind(1:nrow(pred.prob), id.col)] <- attr(pred,"prob")
+  # in case of two effective classes (with at least one obs in such class), fill out the losing.prob by 1-winning.prob
+  if (length(classes.eff) == 2) {
+    pred.prob[cbind(1:nrow(pred.prob), sum(match(classes.eff, classes)) - id.col)] <- 1 - attr(pred,"prob")
+  }
+  
+  res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
+  return(res)
 }
 
 
 
-predictorNB <- function(xtr, xtst, ytr, do.normalize = TRUE, cutoff = 0.5, ...){
+predictorNB <- function(xtr, xtst, ytr, do.normalize = TRUE, cutoff = 0.5, ...)
+{
   # no feature selection, no parameter tuning
   
   library(e1071)
@@ -591,101 +610,106 @@ predictorNB <- function(xtr, xtst, ytr, do.normalize = TRUE, cutoff = 0.5, ...){
 
 
 
-predictorGBM <- function(xtr, xtst, ytr, n.trees = 1500, shrinkage = 0.002, interaction.depth = 6, bag.fraction = 1, cutoff = 0.5, ...){
+predictorGBM <- function(xtr, xtst, ytr, n.trees = 1500, shrinkage = 0.002, 
+                         interaction.depth = 6, bag.fraction = 1, cutoff = 0.5, ...)
+{
   # no feature selection
   # NOTE tuning for algorithmic parameters is not yet implemented
   # NOTE no need for do.normalize for base learner DT
   
-	library(gbm)
+  library(gbm)
   
   classes <- names(tab <- table(ytr))
   classes.eff <- classes[tab > 0]
   stopifnot(length(classes.eff) >= 2)
   
   # train
-	model <- gbm.fit(x = xtr, y = as.factor(as.character(ytr)), 
-	                 n.trees = n.trees, shrinkage = shrinkage, interaction.depth = interaction.depth, 
-	                 bag.fraction = bag.fraction, distribution = "multinomial", ...)
-	# predict
-	pred <- drop(predict(object = model, newdata = xtst, n.trees = model$n.trees, type = "response", ...))
-	pred.class <- colnames(pred)[max.col(pred)]
-	pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
-	                    dimnames = list(rownames(xtst), classes))
-	pred.prob[ , colnames(pred)] <- pred
-	
-	res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
-	return(res)
+  model <- gbm.fit(x = xtr, y = as.factor(as.character(ytr)), 
+                   n.trees = n.trees, shrinkage = shrinkage, interaction.depth = interaction.depth, 
+                   bag.fraction = bag.fraction, distribution = "multinomial", ...)
+  # predict
+  pred <- drop(predict(object = model, newdata = xtst, n.trees = model$n.trees, type = "response", ...))
+  pred.class <- colnames(pred)[max.col(pred)]
+  pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
+                      dimnames = list(rownames(xtst), classes))
+  pred.prob[ , colnames(pred)] <- pred
+  
+  res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
+  return(res)
 }
 
 
 
-predictorRF <- function(xtr, xtst, ytr, ntrees = 500, cutoff = 0.5, ...){
+predictorRF <- function(xtr, xtst, ytr, ntrees = 500, cutoff = 0.5, ...)
+{
   # no feature selection
   # NOTE tuning for algorithmic parameters is not yet implemented
   # NOTE no need for do.normalize for base learner DT
-	
-	library(randomForest)
+  
+  library(randomForest)
   
   classes <- names(tab <- table(ytr))
   classes.eff <- classes[tab > 0]
   stopifnot(length(classes.eff) >= 2)
   
   # train
-	model <- randomForest(x = xtr, y = as.factor(as.character(ytr)), ntree = ntrees, ...)
-	# predict
-	pred <- predict(object = model, newdata = xtst, type = "prob", ...)
-	pred.class <- colnames(pred)[max.col(pred)]
-	pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
-	                    dimnames = list(rownames(xtst), classes))
-	pred.prob[ , colnames(pred)] <- pred
-	
-	res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
-	return(res)
+  model <- randomForest(x = xtr, y = as.factor(as.character(ytr)), ntree = ntrees, ...)
+  # predict
+  pred <- predict(object = model, newdata = xtst, type = "prob", ...)
+  pred.class <- colnames(pred)[max.col(pred)]
+  pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
+                      dimnames = list(rownames(xtst), classes))
+  pred.prob[ , colnames(pred)] <- pred
+  
+  res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
+  return(res)
 }
 
 
 
-predictorSparseSVM <- function(xtr, xtst, ytr, cost = 1, cutoff = 0, do.normalize = TRUE, ...){
+predictorSparseSVM <- function(xtr, xtst, ytr, cost = 1, cutoff = 0, do.normalize = TRUE, ...)
+{
   # cost is a single C parameter without being tuned
   # LiblineaR(type=5) L1-regularized L2-loss support vector classification (i.e. with feature selection)
   # NOTE tuning for algorithmic parameters is not yet implemented
-	# IMPORTANT currently the returned entry "prob" in the result list does NOT mean prob indeed as they are in fact margin decision values,
+  # IMPORTANT currently the returned entry "prob" in the result list does NOT mean prob indeed as they are in fact margin decision values,
   #           and thus "cutoff" takes 0 by default and should range over -Inf to Inf,
   #           as LiblineaR has not yet implemented this option but practically doable, in reference to
   #           Wu, T.F., Lin, C.J. and Weng, R.C., "Probability estimates for multi-class classification by pairwise coupling." JMLR 5 (2004): 975-1005.
   
-	library(LiblineaR)
+  library(LiblineaR)
   
   classes <- names(tab <- table(ytr))
   classes.eff <- classes[tab > 0]
   stopifnot(length(classes.eff) >= 2)
   
-	if(do.normalize){
-		d <- normalizeData(xtr, xtst, ...)
-		xtr <- d$xtr
-		xtst <- d$xtst
-	}
-	
+  if(do.normalize){
+    d <- normalizeData(xtr, xtst, ...)
+    xtr <- d$xtr
+    xtst <- d$xtst
+  }
+  
   # train
   # in case of two-class case, ensure that straight zeros are stored for the first case while
   # non-zero margin values are recorded for the second class (considered larger or positive by default)
   o <- order(ytr, decreasing = TRUE)
-	model <- LiblineaR(data = xtr[o, , drop = FALSE], target = as.factor(as.character(ytr))[o], 
-	                   type = 5, cost = cost, ...)
-	# predict
-	pred <- predict(object = model, newx = xtst, decisionValues = TRUE, ...)
-	pred.class <- as.character(pred$predictions)
-	pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
-	                    dimnames = list(rownames(xtst), classes))
-	pred.prob[ , colnames(pred$decisionValues)] <- pred$decisionValues
-	
-	res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
-	return(res)
+  model <- LiblineaR(data = xtr[o, , drop = FALSE], target = as.factor(as.character(ytr))[o], 
+                     type = 5, cost = cost, ...)
+  # predict
+  pred <- predict(object = model, newx = xtst, decisionValues = TRUE, ...)
+  pred.class <- as.character(pred$predictions)
+  pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
+                      dimnames = list(rownames(xtst), classes))
+  pred.prob[ , colnames(pred$decisionValues)] <- pred$decisionValues
+  
+  res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
+  return(res)
 }
 
 
 
-generateConst <- function(xtr, xtst, ytr, cutoff = 0.5, ...){
+generateConst <- function(xtr, xtst, ytr, cutoff = 0.5, ...)
+{
   # predict ytst by a constant class as the modal class in ytr and a constant frequency as that of ytr
   # NOTE indeed an error control predictor
   
@@ -709,8 +733,10 @@ generateConst <- function(xtr, xtst, ytr, cutoff = 0.5, ...){
 # utiles ------------------------------------------------------------------
 
 
+
 # NA proportion function
-NArate <- function(v){
+NArate <- function(v)
+{
   mean(is.na(v))
 }
 
@@ -728,7 +754,8 @@ NArate <- function(v){
 #
 # Taken from http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
 
-multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL){
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL)
+{
   library(grid)
   
   # Make a list from the ... arguments and plotlist
@@ -769,8 +796,8 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL){
 # Taken from http://www.r-bloggers.com/memory-management-in-r-a-few-tips-and-tricks/
 # improved list of objects
 
-.ls.objects <- function(pos = 1, pattern, order.by,
-                         decreasing=FALSE, head=FALSE, n=5){
+.ls.objects <- function(pos = 1, pattern, order.by, decreasing=FALSE, head=FALSE, n=5)
+{
   napply <- function(names, fn) sapply(names, function(x)
     fn(get(x, pos = pos)))
   names <- ls(pos = pos, pattern = pattern)
@@ -794,7 +821,8 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL){
 }
 
 # shorthand
-lsos <- function(..., n=10){
+lsos <- function(..., n=10)
+{
   .ls.objects(..., order.by="Size", decreasing=TRUE, head=TRUE, n=n)
 }
 
