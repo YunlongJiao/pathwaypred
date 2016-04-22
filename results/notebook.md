@@ -41,8 +41,7 @@
 
 ## TODO
 
-- multi-class for predictorNB and predictors afterwards, try sending onto cluster with binary labels first! And then with multiple labels check bugs!
-- other labels to predict: 5-year relapse, subtypes (multi-class)
+- other labels to predict: 5-year relapse (incomplete info in TCGA as well)
 - how to build predictors for highly-correlated features
 - how to use the network to guide prediction when features have strong correlation based on graphs
 

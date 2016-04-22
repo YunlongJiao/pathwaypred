@@ -1,0 +1,229 @@
+# Results
+# Yunlong Jiao, 25 Apr 2016
+
+This script collects results from earlier run and illustrates with tables and plots.
+
+```{r setup, message = FALSE}
+knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = "pdf", fig.keep = "high", fig.path = "result_figure/", cache.path = "result_cache/")
+set.seed(70236562)
+source("../../src/func.R")
+library(ggplot2)
+```
+
+First read in parameters!
+
+```{r param}
+# read in parameters
+param <- read.table("2_runPredict.txt", header = FALSE, row.names = NULL, col.names = c("xname", "yname", "prname", "i.fold", "nfolds", "nrepeats", "i.fold.inn", "nfolds.inn", "nrepeats.inn"))
+# features
+xlist <- unique(param$xname)
+xlist
+# feature types
+xlist.type <- c("func-wise", "func-wise", 
+                "path-wise", "path-wise", 
+                "gene-wise", "gene-wise", "gene-wise")
+names(xlist.type) <- c("fun.vals", "go.vals", # functionality features
+                       "eff.vals", "path.vals", # pathway features
+                       "mini.genes.vals", "other.genes.vals", "genes.vals") # gene features
+xlist.vline <- c(2.5, 4.5) # cut out types
+stopifnot(length(setdiff(xlist, names(xlist.type))) == 0)
+xlist.type
+# groups
+ylist <- unique(param$yname)
+ylist
+# predictors
+prlist <- unique(param$prname)
+prlist
+# (outter) `nfolds`-fold CV repeated `nrepeats` times for evaluation
+nfolds <- unique(param$nfolds)
+stopifnot(length(nfolds) == 1)
+nfolds
+nrepeats <- unique(param$nrepeats)
+stopifnot(length(nrepeats) == 1)
+nrepeats
+# inner `nfolds.inn`-fold CV repeated `nrepeats.inn` times for tuning predictors
+nfolds.inn <- unique(param$nfolds.inn)
+stopifnot(length(nfolds.inn) == 1)
+nfolds.inn
+nrepeats.inn <- unique(param$nrepeats.inn)
+stopifnot(length(nrepeats.inn) == 1)
+nrepeats.inn
+# evaluation measures
+slist <- c("acc","fpr","tpr","ppv","fval")
+slist
+slist.prefer.large.score <- c(TRUE, FALSE, TRUE, TRUE, TRUE)
+names(slist.prefer.large.score) <- slist
+slist.prefer.large.score
+```
+
+## Tuning predictor
+
+In order to avoid overfitting with the choice of prediction algorithm used, across each feature `xname` X each label group `yname` X each evaluation CV (outter) fold repeat `i.fold`, the predictor `prname` is selected by nested CV (inner) runs and the best prediction performance is reported by each evaluation measure.
+
+```{r prepare, cache=TRUE, message=FALSE}
+# gather scores
+scores <- list()
+for (i.fold in seq(nfolds*nrepeats)) {
+  message("\n", i.fold, "-th fold out of ", nfolds*nrepeats, " folds ", appendLF = FALSE)
+  for (yname in ylist) {
+    for (xname in xlist) {
+      message(".", appendLF = FALSE)
+      # read nested cv res
+      cvres <- list()
+      for (prname in prlist) {
+        res.files <- list.files(path = 'Robj', 
+                                pattern = paste('^cvres', xname, yname, prname, 
+                                                i.fold, nfolds, nrepeats, 
+                                                '[[:digit:]]+', nfolds.inn, nrepeats.inn, 
+                                                sep = '_'), 
+                                full.names = TRUE)
+        res <- lapply(res.files, function(f) get(load(f)))
+        cvres[[prname]] <- crossValidationCombineResults(res)
+      }
+      
+      # generate iv res where predictor has been selected by nested cv
+      ivres <- list()
+      for (sname in slist) {
+        tt <- sapply(cvres, '[[', "system_time")
+        # order scores by increasing system time
+        ss <- sapply(cvres, '[[', sname)[order(tt, decreasing = FALSE)]
+        ss <- ss[!is.na(ss)]
+        # fast algorithm is preferred among those returning equal score values
+        best.prname <- names(ss)[order(ss, decreasing = slist.prefer.large.score[sname])]
+        # get iv res NOTE while loop is to guarantee no iv res is found for such predictor
+        while (length(best.prname) > 0) {
+          best.files <- list.files(path = 'Robj', 
+                                   pattern = paste('^ivres', xname, yname, best.prname[1], 
+                                                   i.fold, nfolds, nrepeats, 
+                                                   '0+', nfolds.inn, nrepeats.inn, 
+                                                   sep = '_'), 
+                                   full.names = TRUE)
+          if (length(best.files) == 0) {
+            best.prname <- best.prname[-1]
+            next
+          } else if (length(best.files) == 1) {
+            best.prname <- best.prname[1]
+            ivres[[sname]] <- get(load(best.files))
+            break
+          } else {
+            stop("multiple ivres files found for ", best.prname[1])
+          }
+        }
+        # in case no ivres files found for any predictors
+        stopifnot(length(best.prname) == 1)
+      }
+      
+      # assign obj
+      objname <- paste('res', xname, yname, i.fold, nfolds, nrepeats, sep = '_')
+      assign(objname, ivres)
+      
+      # record score values
+      scores[[objname]] <- data.frame(y = yname, 
+                                      x = xname, 
+                                      type = xlist.type[xname], 
+                                      predictor = sapply(slist, function(sname) ivres[[sname]][["predictor"]]), 
+                                      rep = i.fold, 
+                                      score = slist, 
+                                      value = sapply(slist, function(sname) ivres[[sname]][[sname]]), 
+                                      row.names = NULL)
+    }
+  }
+}
+scores <- do.call('rbind', scores)
+rownames(scores) <- seq(nrow(scores))
+# write out scores
+write.table(scores, file = "scores.txt", row.names = TRUE, col.names = TRUE, sep = '\t')
+# preview
+head(scores)
+```
+
+## Performance overview
+
+In this section, each plot corresponds to the prediction performance for one specific group of phenotypic response. In each plot, along x-axis we have different feature matrices, along y-axis we have different evaluation measures, the barplot shows the CV scores evaluated against randomly splitted CV folds.
+
+Notes that some evaluation measures (`acc`, `ppv`, etc) do associate with a specific `cutoff` threshold for predicted probability, which is always set to constant 0.5. It might be interesting to tune the threshold in case that the class sizes in training data are unbalanced.
+
+The evaluation measure are the following: `r xlist`. Note that in order to remove confusion, we equivalently rename `TPR` by `Sensitivity`, and plot `Specificity = 1 - FPR` instead of `FPR` values. As a result, for any evaluation measure present in the plot, higher values indicate better performance unanimously.
+
+```{r overview}
+# plot each grps in a separate figure
+for (yname in ylist) {
+  d <- subset(scores, scores$y == yname)
+  # order feature by types
+  d$x <- factor(d$x, levels = names(xlist.type), ordered = TRUE)
+  # change score values by "fpr" to that by "spec"
+  d$value[d$score == "fpr"] <- 1 - d$value[d$score == "fpr"]
+  d$score[d$score == "fpr"] <- "spec"
+  # change score name "tpr" to "sens"
+  d$score[d$score == "tpr"] <- "sens"
+  p1 <- ggplot(d, aes(x = x, y = value)) + 
+    geom_boxplot(aes(fill = x), alpha = 0.8) + 
+    geom_vline(xintercept = xlist.vline, color = "grey", size = 2) + 
+    facet_wrap(~score, scales = "free_y") + 
+    ggtitle(paste0("predicting ", yname)) + 
+    theme(axis.text.x = element_blank())
+  plot(p1)
+}
+```
+
+## Predictor table w.r.t. ACC
+
+We focus on multi-class classification accuracy (ACC) to evaluate performance.
+
+Now we turn to look at which `predictor` suits well in making prediction for a specific group of phenotypic response `yname` using each feature `xname`. We report the frequency of such predictor is selected across `r nfolds*nrepeats` repeats of evaluation CV runs.
+
+```{r predictor, results='hold'}
+# focus only auroc
+sname <- "acc"
+# show each grp separately
+cat('\n---> \t Frequency (%) of predictor being selected \t <---\n')
+for (yname in ylist) {
+  cat('\n---> \t predicting for ', yname, ' using \t <---\n')
+  d <- subset(scores, scores$score == sname & scores$y == yname)
+  d <- split(d, d$x)
+  freq.best.prname <- lapply(d, function(u){
+    s <- sort(table(u$predictor)/length(u$predictor)*100, decreasing = TRUE)
+    formatC(s, format = 'f', digits = 2)
+  })
+  print(freq.best.prname)
+}
+```
+
+## Significance test w.r.t. ACC
+
+Now we look at the significance of the superiority using one feature over the other in terms of performance. For each group of phenotypic response `yname`, we compute a matrix where each entry indicates the p-value of a one-sided `t.test` testing if using the feature matrix in the row is indeed superior to using the feature matrix in the col.
+
+```{r sigtest, results='hold'}
+# significance threshold
+thres <- 0.05
+# focus only auroc
+sname <- "acc"
+cat('\n---> \t p-value of t.test showing row superior to col \t <---\n')
+# show each grp separately
+for (yname in ylist) {
+  cat('\n------> \t predicting for ', yname, ' \t <------\n')
+  # gather perf
+  d <- subset(scores, scores$score == sname & scores$y == yname)
+  d <- lapply(split(d, d$x), "[[", "value")
+  # order xlist
+  xlist.ordered <- as.character(sort(factor(xlist, levels = names(xlist.type), ordered = TRUE)))
+  pmatrix <- matrix(-100, nrow = length(xlist), ncol = length(xlist), 
+                    dimnames = list(xlist.ordered, xlist.ordered))
+  # test now
+  for (i in xlist.ordered) {
+    for (j in xlist.ordered) {
+      tt <- t.test(x = d[[i]], y = d[[j]], alternative = 'greater', mu = 0, paired = TRUE)
+      pmatrix[i,j] <- round(tt$p.value, 4)
+    }
+  }
+  print(pmatrix)
+  cat('Simplify by thresholding at p-value <', thres, '\n')
+  print(pmatrix < thres)
+}
+```
+
+## Session info
+
+```{r session_info}
+sessionInfo()
+```
