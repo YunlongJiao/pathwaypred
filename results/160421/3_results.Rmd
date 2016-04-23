@@ -51,7 +51,7 @@ nrepeats.inn
 # evaluation measures
 slist <- c("acc","fpr","tpr","ppv","fval", "auroc")
 slist
-slist.prefer.large.score <- c(TRUE, FALSE, TRUE, TRUE, TRUE)
+slist.prefer.large.score <- c(TRUE, FALSE, TRUE, TRUE, TRUE, TRUE)
 names(slist.prefer.large.score) <- slist
 slist.prefer.large.score
 ```
