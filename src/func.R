@@ -155,8 +155,13 @@ evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = tail(names(table(
   }
   
   # auroc
-  if(length(names(table(ytst))) == 2 && length(pos.label) == 1){
-    predROCR <- prediction(pred$prob[ , pos.label, drop=TRUE], ytst)
+  if(length(pos.label) == 1){
+    ytst.bin <- as.character(ytst)
+    ytst.bin[ytst == pos.label] <- paste0("pos")
+    ytst.bin[ytst != pos.label] <- paste0("neg")
+    ytst.bin <- factor(ytst.bin, levels = c("neg","pos"), ordered = TRUE)
+    stopifnot(!any(is.na(ytst.bin)))
+    predROCR <- prediction(pred$prob[ , pos.label, drop=TRUE], ytst.bin)
     auroc <- as.numeric(performance(predROCR, "auc")@y.values)
     if(length(auroc)>1){
       warning("Average AUC score computed!")
@@ -164,7 +169,7 @@ evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = tail(names(table(
     }
     # plot ROC curve
     if(!is.null(savepath)){
-      plotROCcv(res=list(test.prob=pred$prob, true.class=ytst, pos.label=pos.label), 
+      plotROCcv(res=list(test.prob=pred$prob, true.class=ytst.bin, pos.label=pos.label), 
                 savepath=savepath, beta = beta)
     }
   } else{
