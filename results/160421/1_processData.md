@@ -239,9 +239,10 @@ prlist
 ```
 
 ```
-## [1] "predictorGBM"        "predictorKNN"        "predictorLDA"       
-## [4] "predictorLinearSVM"  "predictorLogitLasso" "predictorNB"        
-## [7] "predictorRadialSVM"  "predictorRF"         "predictorSparseSVM"
+##  [1] "predictorConstant"   "predictorGBM"        "predictorKendallSVM"
+##  [4] "predictorKNN"        "predictorLDA"        "predictorLinearSVM" 
+##  [7] "predictorLogitLasso" "predictorNB"         "predictorPAM"       
+## [10] "predictorRadialSVM"  "predictorRF"         "predictorSparseSVM"
 ```
 
 ## (Nested) cross validation parameters
@@ -279,10 +280,10 @@ str(param)
 ```
 
 ```
-## 'data.frame':	18900 obs. of  9 variables:
+## 'data.frame':	25200 obs. of  9 variables:
 ##  $ Var1: chr  "eff.vals" "fun.vals" "genes.vals" "go.vals" ...
 ##  $ Var2: chr  "subtype.grps" "subtype.grps" "subtype.grps" "subtype.grps" ...
-##  $ Var3: chr  "predictorGBM" "predictorGBM" "predictorGBM" "predictorGBM" ...
+##  $ Var3: chr  "predictorConstant" "predictorConstant" "predictorConstant" "predictorConstant" ...
 ##  $ Var4: int  1 1 1 1 1 1 1 1 1 1 ...
 ##  $ Var5: int  5 5 5 5 5 5 5 5 5 5 ...
 ##  $ Var6: int  10 10 10 10 10 10 10 10 10 10 ...

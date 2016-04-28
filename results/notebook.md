@@ -50,9 +50,9 @@ Three directions
 
 ## TODO
 
-- more predictors: PAM50, const, kendall kernel svm
-- more features: A+B together
 - feature selection on a GLM with all features and enrichment analysis
+- results from new runs on crom01 cluster
+- more features: A+B together for instance
 - feature selection with pathways and add selected other-genes in there to enhance prediction
 
 ## Future work
