@@ -31,7 +31,7 @@ if (file.exists(objpath)) {
 
 message("loading features and groups ...")
 load('dat.RData')
-source("../../src/func.R") # complementary functions for kernel kmeans for top-k rankings
+source("../../src/func.R")
 
 # get R objects
 xtr <- get(xname)

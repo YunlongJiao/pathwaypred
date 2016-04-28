@@ -38,14 +38,26 @@
 ## 160412 Meeting notes jp 
 
 - boxplots showing variance of performance over different algorithms do not make sense as it is too subjective to 'randomly' choose a predictor
+- correct for multiple testing when comparing pairwisely feature performance
+
+## 160426 Meeting notes with everyone
+
+Three directions
+
+- since we tested feature set y~A and feature set y~B individually why not test y~A+B together?? therefore we could pull all features together and learn a model on y~A+B+C+...+Z and do feature selection to see mostly from which set features survive?
+- we derived pathway features based on mini-genes and lose interesting info from other-genes from the beginning so that we could do feature selection with pathways and add other-genes as predictors. by doing this we benefit from two-folds: interpretation with respect to pathways and identification of important other-genes that enhance prediction
+- **learning of projection of pathway features onto "functionality" features instead of based on biological knowledge, leading to feature reduction due to meta-features
 
 ## TODO
 
-- other labels to predict: 5-year relapse (incomplete info in TCGA as well)
-- how to build predictors for highly-correlated features
-- how to use the network to guide prediction when features have strong correlation based on graphs
+- more predictors: PAM50, const, kendall kernel svm
+- more features: A+B together
+- feature selection on a GLM with all features and enrichment analysis
+- feature selection with pathways and add selected other-genes in there to enhance prediction
 
 ## Future work
 
+- [graph-based fused lasso](http://arxiv.org/abs/1011.6409) for automatic detection of meta-features under GLM framework
+- general: how to build predictors for highly-correlated features? how to use the network to guide prediction when features have strong correlation based on graphs?
 - negative control experiments over: a) random network to generate pathway features; b) random functionality coding to exclude the potential of random projection of pathway features onto lower dimensionality
 

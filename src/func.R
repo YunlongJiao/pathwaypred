@@ -16,7 +16,9 @@
 # library(glmnet) # L1-GLM
 # library(LiblineaR) # L1reg-L2loss-SVM
 # library(gbm) # GBM
-# library(kernlab) # estimate gamma for Gaussian RBF SVM
+# library(kernlab) # kendall kernel svm and estimate gamma for Gaussian RBF SVM
+# library(pcaPP) # kendall kernel pcaPP::cor.fk()
+# library(pamr) # PAM
 # # already exists for 3.2.1-atalas on crom01
 # library(MASS) # LDA
 # library(e1071) # NB, SVM and KNN tuning
@@ -239,7 +241,7 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
   pt <- proc.time()
   if(length(unique(as.character(ytr))) == 1){
     warning("Singe-class for training set!")
-    pred <- generateConst(xtr, xtst, ytr, ...)
+    pred <- predictorConstant(xtr, xtst, ytr, ...)
   } else{
     if(!is.character(predictor))
       stop("Specify predictor with a character!")
@@ -268,11 +270,9 @@ crossValidation <- function(xtr, ytr, ..., seed=61215942, nfolds=5, nrepeats=10)
   # nfolds, nrepeats are used to generate nrepeats simultaneous training splits each being nfolds
   # crossValidation() returns cross validated results from a single dataset
   
-  library(caret)
-  
   # data split
   if (!is.null(seed)) set.seed(seed)
-  foldIndices <- createMultiFolds(1:nrow(xtr), k=nfolds, times=nrepeats)
+  foldIndices <- caret::createMultiFolds(1:nrow(xtr), k=nfolds, times=nrepeats)
   
   message(nrepeats," repeated experiments of ",nfolds, "-fold cross validation!")
   foldres <- lapply(foldIndices, function(fold){
@@ -496,8 +496,9 @@ predictorLogitLasso <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, do.norm
 
 
 
-predictorLinearSVM <- function(xtr, xtst, ytr, kernel = "linear", cost = 10^(-3:3), 
-                               do.normalize = TRUE, cross = 5, cutoff = 0.5, ...)
+predictorLinearSVM <- function(xtr, xtst, ytr, 
+                               kernel = "linear", do.normalize = TRUE, 
+                               cost = 10^(-3:3), cross = 5, cutoff = 0.5, ...)
 {
   # cost is a vector of C parameter grid to tune with, no feature selection
   # NOTE predictorLinearSVM, though default to linear kernel which should not be altered, is a wrapper function for any kernel methodsm, see predictorRadialSVM()
@@ -533,6 +534,52 @@ predictorRadialSVM <- function(xtr, xtst, ytr, do.normalize = TRUE, ...)
   
   gamma <- kernlab::sigest(xtr, scaled = do.normalize)['50%']
   res <- predictorLinearSVM(xtr = xtr, xtst = xtst, ytr = ytr, kernel = "radial", gamma = gamma, do.normalize = do.normalize, ...)
+  return(res)
+}
+
+
+
+predictorKendallSVM <- function(xtr, xtst, ytr, 
+                                kernel = pcaPP::cor.fk, do.normalize = FALSE, 
+                                cost = 10^(-3:3), cross = 5, cutoff = 0.5, ...)
+{
+  # by the concept with default kendall kernel, do.normalize should be set FALSE by default as well!! Be careful when calling with other kernels
+  # kernel is provided as a "function" between two vectors instead of a "character"
+  # cost is a vector of C parameter grid to tune with, no feature selection
+  # NOTE cross validation is set to always minimize misclassification error by default of tune.svm arguments despite that it might not be appropriate for largely unbalanced classes
+  # NOTE this function also is a generic function which uses kernlab implementation and can thus deal with explicit kernel matrix as input with any kernel function 
+  #     and it can be slower for certain kernels (and how cross is done) compared to e1071 implementation (linear kernel for instance)
+  
+  library(kernlab)
+  
+  classes <- names(tab <- table(ytr))
+  classes.eff <- classes[tab > 0]
+  stopifnot(length(classes.eff) >= 2)
+  
+  if (is.character(kernel))
+    stop("kernel needs to be a specific function instead of a character")
+  class(kernel) <- 'kernel'
+  # CV for tuning cost
+  cost <- sort(cost, decreasing = FALSE) # parsimony principle
+  cv.acc <- sapply(cost, function(cpm){
+    cv.model <- ksvm(x = as.matrix(xtr), y = as.factor(as.character(ytr)), 
+                     scaled = do.normalize, kernel = kernel, type = "C-svc", 
+                     C = cpm, cross = cross, prob.model = FALSE, ...)
+    cv.model@cross
+  })
+  best.cpm <- cost[which.min(cv.acc)]
+  # train
+  model <- ksvm(x = as.matrix(xtr), y = as.factor(as.character(ytr)), 
+                scaled = do.normalize, kernel = kernel, type = "C-svc", 
+                C = best.cpm, cross = 0, prob.model = TRUE, ...)
+  # predict
+  pred <- predict(object = model, newdata = xtst, type = "probabilities", ...)
+  pred.class <- colnames(pred)[max.col(pred)]
+  pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
+                      dimnames = list(rownames(xtst), classes))
+  pred.prob[ , colnames(pred)] <- pred
+  
+  res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
   return(res)
 }
 
@@ -713,10 +760,48 @@ predictorSparseSVM <- function(xtr, xtst, ytr, cost = 1, cutoff = 0, do.normaliz
 
 
 
-generateConst <- function(xtr, xtst, ytr, cutoff = 0.5, ...)
+predictorPAM <- function(xtr, xtst, ytr, do.normalize = TRUE, cross = 5, cutoff = 0.5, ...)
 {
-  # predict ytst by a constant class as the modal class in ytr and a constant frequency as that of ytr
-  # NOTE indeed an error control predictor
+  # known as nearest shrunken centroid classifier
+  # feature selection by thresholding centroids
+  # parameter tuning for best threshold implemented by pamr.cv()
+  # NOTE returned model has one more entry recording best threshold from cv runs
+  
+  library(pamr)
+  
+  classes <- names(tab <- table(ytr))
+  classes.eff <- classes[tab > 0]
+  stopifnot(length(classes.eff) >= 2)
+  
+  if(do.normalize){
+    d <- normalizeData(xtr, xtst, ...)
+    xtr <- d$xtr
+    xtst <- d$xtst
+  }
+  
+  # train
+  dat <- list(x = t(xtr), y = as.factor(as.character(ytr)))
+  model <- pamr.train(data = dat, ...)
+  model.cv <- pamr.cv(fit = model, data = dat, nfold = cross, ...)
+  model$best.thres <- model.cv$threshold[which.max(model.cv$loglik)]
+  # predict
+  pred <- pamr.predict(fit = model, newx = t(xtst), 
+                       threshold = model$best.thres, type = "posterior", ...)
+  pred.class <- colnames(pred)[max.col(pred)]
+  pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
+                      dimnames = list(rownames(xtst), classes))
+  pred.prob[ , colnames(pred)] <- pred
+  
+  res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
+  return(res)
+}
+
+
+
+predictorConstant <- function(xtr, xtst, ytr, cutoff = 0.5, ...)
+{
+  # predict ytst by a constant class as the modal class in ytr and a constant frequency as the proportion present in ytr
+  # NOTE indeed a baseline predictor and an error control for other predictors when only one class is present effectively
   
   classes <- names(tab <- table(ytr))
   classes.eff <- classes[tab > 0]
