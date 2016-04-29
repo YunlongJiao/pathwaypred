@@ -195,7 +195,7 @@ Now we look at the significance of the superiority using one feature over the ot
 
 ```{r sigtest, results='hold'}
 # significance threshold with Bonferroni correction for multiple testing
-thres <- 0.05/choose(length(xlist), 2)
+thres <- 0.05/(length(xlist)*(length(xlist)-1))
 # focus only auroc
 sname <- "auroc"
 cat('\n---> \t p-value of t.test showing row superior to col \t <---\n')
