@@ -68,7 +68,8 @@ for (xname in xlist2combn) {
 }
 x <- do.call('cbind', x)
 assign(paste0(xlist2combn, collapse = "_"), x)
-xlist <- paste0(xlist2combn, collapse = "_")
+xlist <- c(xlist2combn, "genes.vals", 
+           paste0(xlist2combn, collapse = "_"))
 # show all feature matrices NEWLY created by combining different feature types
 xlist
 ```
