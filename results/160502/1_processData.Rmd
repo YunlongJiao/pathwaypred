@@ -1,0 +1,192 @@
+# Process ICGC BRCA data
+# Yunlong Jiao, 10 March 2016
+
+This script processes data and generates matrices for naive models later to make predictions.
+
+```{r setup}
+knitr::opts_chunk$set(error = FALSE)
+set.seed(35875954)
+source("../../src/func.R")
+datapath <- '../../data/BRCA_saved_data/'
+```
+
+## Features
+
+Feature matrices are stored at `crom01:/fsclinic/common/analisis/data/BRCA_saved_data/`. Note that all feature matrices have to be initially provided by features in rows and patients in cols (to facilitate processing in a universal style). These matrix objects should have a name ending with `[.]vals$`.
+
+```{r features}
+# gene expression
+load(paste0(datapath, '110_genes_vals.RData'))
+
+# gene expression wrt those present in pathways
+load(paste0(datapath, '110_mini_genes_vals.RData'))
+
+# pathway-wise features
+load(paste0(datapath, '110_hipathia_matrices.RData'))
+
+# complement of mini.genes from all.genes
+stopifnot(rownames(mini.genes.vals) %in% rownames(genes.vals))
+other.genes.vals <- genes.vals[setdiff(rownames(genes.vals), rownames(mini.genes.vals)), ]
+
+# get all feature matrices
+xlist <- ls(pattern = '[.]vals$')
+for (xname in xlist) {
+  # process each feature matrices
+  x <- get(xname)
+  # check no NA values
+  stopifnot(!any(is.na(x)))
+  # make patients in rows and features in cols
+  x <- t(x)
+  # reform feature names and check for duplicated names
+  colnames(x) <- paste0('X_', gsub('[^[:alnum:]_]', '_', colnames(x)))
+  stopifnot(!any(duplicated(rownames(x))))
+  stopifnot(!any(duplicated(colnames(x))))
+  # assign back
+  assign(xname, x)
+  # preview
+  cat('\n-------------> \t preview \t <-------------\n')
+  cat('\n-------------> \t ', xname, ' \t <-------------\n')
+  print(str(get(xname)))
+  cat('\n')
+}
+# set samples
+samplelist <- unique(lapply(xlist, function(xname) rownames(get(xname))))
+stopifnot(length(samplelist) == 1)
+samplelist <- unlist(samplelist)
+nsample <- length(samplelist)
+# show all feature matrices
+xlist
+```
+
+## Groups (binary only)
+
+Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
+
+#### Basal vs Non-basal
+
+```{r basal}
+y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
+head(y$V2)
+basal.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$V2), levels = c("Not_Basal", "Basal"), labels = c("neg_NonBasal", "pos_Basal"))
+stopifnot(!any(is.na(basal.grps)))
+names(basal.grps) <- y$V1
+head(basal.grps)
+# sample size (how many labels are available in the sample cohort)
+length(sl <- intersect(samplelist, names(basal.grps)))
+# contrasting class size
+table(basal.grps[sl])
+```
+
+#### Tumor vs Normal
+
+```{r tumor}
+y <- read.table(paste0(datapath, 'TCGA_phenotype.txt'), header = TRUE)
+head(y$cancer)
+tumor.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$cancer), levels = c("Normal", "Tumor"), labels = c("neg_Normal", "pos_Tumor"))
+stopifnot(!any(is.na(tumor.grps)))
+names(tumor.grps) <- rownames(y)
+head(tumor.grps)
+# sample size (how many labels are available in the sample cohort)
+length(sl <- intersect(samplelist, names(tumor.grps)))
+# contrasting class size
+table(tumor.grps[sl])
+```
+
+#### Alive vs Deceased (overall survival)
+
+```{r surv, message=FALSE}
+alignmat <- read.table(paste0(datapath, 'clinical_info_sample.txt'), sep = "\t", quote = "\"", header = TRUE)
+y <- read.table(paste0(datapath, 'clinical_info_donor.txt'), sep = "\t", quote = "\"", header = TRUE)
+alignid <- data.frame(sample = samplelist, 
+                      donor = sapply(samplelist, function(id){
+                        message(".", appendLF = FALSE)
+                        i <- grep(id, alignmat$submitted_sample_id)
+                        if (length(i) == 1) {
+                          return(alignmat$icgc_donor_id[i])
+                        } else if (length(i) == 0) {
+                          return(NA)
+                        } else {
+                          stop(id, " has more than 1 alignment!")
+                        }
+                      }))
+# number of samples before pruning
+nrow(alignid)
+alignid <- subset(alignid, !is.na(alignid$donor))
+id <- match(alignid$donor, y$icgc_donor_id)
+alignid <- alignid[!is.na(id), ]
+id <- id[!is.na(id)]
+y <- y[id, ]
+# number of samples after pruning
+nrow(alignid)
+head(y$donor_vital_status)
+surv.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$donor_vital_status), levels = c("alive", "deceased"), labels = c("neg_alive", "pos_deceased"))
+stopifnot(!any(is.na(surv.grps)))
+names(surv.grps) <- alignid$sample
+head(surv.grps)
+# sample size (how many labels are available in the sample cohort)
+length(sl <- intersect(samplelist, names(surv.grps)))
+table(surv.grps[sl])
+```
+
+#### Summary
+
+```{r groups}
+# get all groups
+ylist <- ls(pattern = '[.]grps$')
+# check for now to deal with binary classification only
+for (yname in ylist) {
+  stopifnot(length(levels(get(yname))) == 2)
+}
+# show all groups
+ylist
+```
+
+## Predictors
+
+See `../../src/func.R` for all predictors implemented. These function objects should all have a name starting with `^predictor`.
+
+```{r predictors}
+prlist <- ls(pattern = '^predictor.')
+prlist
+```
+
+## (Nested) cross validation parameters
+
+```{r cv}
+# CV folds for evaluation
+nfolds <- 5
+nrepeats <- 10
+# inner CV folds for tuning predictor
+nfolds.inn <- 5
+nrepeats.inn <- 1
+```
+
+## Save up !!
+
+```{r save}
+# for cluster jobs, write out full combinations of double nested CV parameters
+# - for outter loop, 1:(nfolds * nrepeats) denotes index for outter CV
+# - for inner loop, 0 indicates running outter loop evaluation, 1:(nfolds.inn * nrepeats.inn) indicates index for inner CV
+param <- expand.grid(as.character(xlist), # feature
+                     as.character(ylist), # group
+                     as.character(prlist), # predictor
+                     as.integer(1:(nfolds * nrepeats)), # outter CV folds index for evaluation
+                     as.integer(nfolds), 
+                     as.integer(nrepeats), 
+                     as.integer(0:(nfolds.inn * nrepeats.inn)), # inner CV folds for tuning predictor
+                     as.integer(nfolds.inn), 
+                     as.integer(nrepeats.inn), 
+                     KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+write.table(param, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
+# preview
+str(param)
+
+# save entire image to be loaded later
+save(list = c(xlist, ylist), file = 'dat.RData')
+```
+
+# Session info
+
+```{r session_info}
+sessionInfo()
+```
