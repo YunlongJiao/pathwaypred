@@ -58,6 +58,21 @@ nsample <- length(samplelist)
 xlist
 ```
 
+Now we pull different feature types and combine them to a big feature matrix. To avoid high degree of co-linearity, we choose finally only (decomposed) pathway values and gene values together as the other feature matrices are designed simply by combining pathway values linearly.
+
+```{r feat_combn}
+xlist2combn <- c("path.vals", "mini.genes.vals", "other.genes.vals")
+x <- mget(xlist2combn)
+for (xname in xlist2combn) {
+  colnames(x[[xname]]) <- paste(xname, colnames(x[[xname]]), sep = "_")
+}
+x <- do.call('cbind', x)
+assign(paste0(xlist2combn, collapse = "_"), x)
+xlist <- paste0(xlist2combn, collapse = "_")
+# show all feature matrices NEWLY created by combining different feature types
+xlist
+```
+
 ## Groups (binary and multi-class)
 
 Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
@@ -167,6 +182,8 @@ for (yname in ylist) {
 
 See `../../src/func.R` for all predictors implemented. These function objects should all have a name starting with `^predictor`.
 
+**NOTE we are only interested in predictors that are capable of FS in this study.**
+
 ```{r predictors}
 prlist <- ls(pattern = '^predictor.')
 prlist <- grep("(lasso|pam|rf)", prlist, ignore.case = TRUE, value = TRUE)
@@ -174,6 +191,8 @@ prlist
 ```
 
 ## (Nested) cross validation parameters
+
+**NOTE nested CV for tuning predictors is not necessary in this study but we keep it for ease of unified syntax.**
 
 ```{r cv}
 # CV folds for evaluation
