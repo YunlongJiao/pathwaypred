@@ -1,5 +1,5 @@
 # Process ICGC BRCA data
-# Yunlong Jiao, 10 March 2016
+# Yunlong Jiao, 02 May 2016
 
 This script processes data and generates matrices for naive models later to make predictions.
 
@@ -58,7 +58,7 @@ nsample <- length(samplelist)
 xlist
 ```
 
-## Groups (binary only)
+## Groups (binary and multi-class)
 
 Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
 
@@ -128,17 +128,39 @@ length(sl <- intersect(samplelist, names(surv.grps)))
 table(surv.grps[sl])
 ```
 
+Multiple classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
+
+**NOTE always put THE positive group to the last level in the ordered factor as the evaluation measure such as TPR, FPR will be specific to that level.**
+
+#### Luminal vs Her2 vs Basal (subtypes)
+
+```{r subtype}
+y <- read.table(paste0(datapath, 'sampleCancerType.txt'), header = FALSE)
+head(y$V2)
+unique(y$V2)
+subtype.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$V2), levels = c("Luminal", "Her2", "Basal"), labels = c("T1_Luminal", "T2_Her2", "T3_Basal"))
+id.na <- is.na(subtype.grps)
+subtype.grps <- subtype.grps[!id.na]
+names(subtype.grps) <- y$V1[!id.na]
+head(subtype.grps)
+# sample size (how many labels are available in the sample cohort)
+length(sl <- intersect(samplelist, names(subtype.grps)))
+# contrasting class size
+table(subtype.grps[sl])
+```
+
 #### Summary
 
 ```{r groups}
 # get all groups
 ylist <- ls(pattern = '[.]grps$')
-# check for now to deal with binary classification only
+# show all groups and their classes
 for (yname in ylist) {
-  stopifnot(length(levels(get(yname))) == 2)
+  cat('\n-------------> \t summary \t <-------------\n')
+  cat('\n-------------> \t ', yname, ' \t <-------------\n')
+  print(levels(get(yname)))
+  cat('\n')
 }
-# show all groups
-ylist
 ```
 
 ## Predictors
@@ -147,6 +169,7 @@ See `../../src/func.R` for all predictors implemented. These function objects sh
 
 ```{r predictors}
 prlist <- ls(pattern = '^predictor.')
+prlist <- grep("(lasso|pam|rf)", prlist, ignore.case = TRUE, value = TRUE)
 prlist
 ```
 
@@ -173,7 +196,7 @@ param <- expand.grid(as.character(xlist), # feature
                      as.integer(1:(nfolds * nrepeats)), # outter CV folds index for evaluation
                      as.integer(nfolds), 
                      as.integer(nrepeats), 
-                     as.integer(0:(nfolds.inn * nrepeats.inn)), # inner CV folds for tuning predictor
+                     as.integer(0), # inner CV folds for tuning predictor NOT NECESSARY
                      as.integer(nfolds.inn), 
                      as.integer(nrepeats.inn), 
                      KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)

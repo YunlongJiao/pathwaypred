@@ -194,8 +194,8 @@ for (yname in ylist) {
 Now we look at the significance of the superiority using one feature over the other in terms of performance. For each group of phenotypic response `yname`, we compute a matrix where each entry indicates the p-value of a one-sided `t.test` testing if using the feature matrix in the row is indeed superior to using the feature matrix in the col.
 
 ```{r sigtest, results='hold'}
-# significance threshold with Bonferroni correction for multiple testing
-thres <- 0.05/(length(xlist)*(length(xlist)-1))
+# significance threshold
+thres <- 0.05
 # focus only auroc
 sname <- "auroc"
 cat('\n---> \t p-value of t.test showing row superior to col \t <---\n')
@@ -216,6 +216,8 @@ for (yname in ylist) {
       pmatrix[i,j] <- round(tt$p.value, 4)
     }
   }
+  # correct p-value for multiple testing with Benjamini-Hochberg
+  pmatrix <- p.adjust(pmatrix, "BH")
   print(pmatrix)
   cat('Simplify by thresholding at p-value <', thres, '\n')
   print(pmatrix < thres)
