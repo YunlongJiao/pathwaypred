@@ -50,9 +50,8 @@ Three directions
 
 ## TODO
 
-- feature selection on a GLM with all features and enrichment analysis
+- plot FS results in 160502/3_results.Rmd
 - results from new runs on crom01 cluster
-- more features: A+B together for instance
 - feature selection with pathways and add selected other-genes in there to enhance prediction
 
 ## Future work

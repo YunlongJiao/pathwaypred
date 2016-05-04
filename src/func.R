@@ -186,8 +186,7 @@ evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = tail(names(table(
 
 indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL, 
                             pos.label = tail(names(table(ytst)),1), 
-                            remove.const = TRUE, 
-                            pthres = 0, method = "wilcox.test", 
+                            remove.const = TRUE, pthres = 0, 
                             ..., save.model = FALSE, seed = 53359292)
 {
   # xtr, xtst are n*p feature matrices and ytr, ytst are label vectors
@@ -224,11 +223,10 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
   
   # indep signif test for feature reduction
   if(pthres > 0){
-    plist <- indepSignif(xtr=xtr, ytr=ytr, method = method, ...)
-    featlist <- names(plist)[plist < pthres]
+    plist <- featselectIndepSignif(xtr=xtr, ytr=ytr, pthres = pthres, ...)
+    featlist <- names(plist)
     if(length(featlist) == 0){
-      warning("No features survived after independence significance test hence no feature reduction is reserved!")
-      featlist <- colnames(xtr)
+      stop("No features survived after independence significance test hence no feature reduction is reserved!")
     }
     xtr <- xtr[,featlist,drop=F]
     xtst <- xtst[,featlist,drop=F]
@@ -396,31 +394,93 @@ plotROCcv <- function(res, savepath, pos.label = tail(res$pos.label, 1), beta = 
 
 # feature reduction -------------------------------------------------------
 
+# in this section make sure named after featselectXXX where XXX comes from predictorXXX
+# @param see predictorXXX
+# @return A vector named by corresponding features recording appropriate values sorted by decreasing "importance"
 
 
-indepSignif <- function(xtr, ytr, method = "wilcox.test", ...)
+
+featselectIndepSignif <- function(xtr, ytr, pthres = 0.05, test = "t.test", method = "none", ...)
 {
-  # indepSignif() runs feature-by-feature independence significance test between contrasting classes
   # xtr should be assigned col names and ytr is a vector of labels
-  # method denotes a char from c("t.test","wilcox.test",...)
+  # test denotes a char from c("t.test","wilcox.test",...)
+  # method denotes multiple test correction, default "none", see ?p.adjust.methods
+  # featselectIndepSignif() runs feature-by-feature independence significance test between contrasting classes
+  # and returns p-values for each feature
   
   featlist <- colnames(xtr)
   plist <- sapply(featlist, function(featname){
     fo <- paste0(featname," ~ y")
-    t <- get(method)(as.formula(fo), 
-                     data=data.frame(y=as.factor(as.character(ytr)),
-                                     as.data.frame(xtr)), ...)
+    t <- get(test)(formula = as.formula(fo), 
+                   data = data.frame(y=as.factor(as.character(ytr)),as.data.frame(xtr)), 
+                   ...)
     t$p.value
   })
+  names(plist) <- featlist
+  plist <- p.adjust(p = plist, method = method)
+  plist <- plist[plist < pthres]
   
+  plist <- sort(plist, decreasing = FALSE)
   return(plist)
+}
+
+
+
+featselectRF <- function(model = NULL, ...)
+{
+  # returns importance measure of mean decrease in accuracy (type=1) for each feature
+  
+  if (is.null(model))
+    model <- predictorRF(...)$model
+  s <- drop(randomForest::importance(x = model, type = 1))
+  s <- s[s > 0]
+  
+  s <- sort(s, decreasing = TRUE)
+  return(s)
+}
+
+
+
+featselectLogitLasso <- function(model = NULL, ...)
+{
+  # returns absolute values of coefficients of each feature
+  # NOTE pos.label recognized as the last one!
+  
+  if (is.null(model))
+    model <- predictorLogitLasso(...)$model
+  s <- predict(object = model, newx = NULL, type = "coefficients")
+  s <- drop(s[[length(s)]])[-1] # focus on pos.label and remove intercept
+  s <- s[s != 0] # can be strongly positive or negative related!
+  
+  s <- s[order(abs(s), decreasing = TRUE)]
+  return(s)
+}
+
+
+
+featselectPAM <- function(model = NULL, ...)
+{
+  # returns absolute values of coefficients of each feature
+  
+  if (is.null(model))
+    model <- predictorPAM(...)$model
+  i <- which(model$threshold == model$best.thres)
+  centroid <- pamr::pamr.predict(fit = model, newx = NULL, threshold = model$best.thres, type = "centroid")
+  
+  # the following is adapted according to pamr::pamr.predict()
+  delta.shrunk <- (centroid - model$centroid.overall)/model$sd
+  s <- drop(abs(delta.shrunk) %*% rep(1, ncol(model$centroids)))
+  s <- s[s > 0]
+  
+  s <- sort(s, decreasing = TRUE)
+  return(s)
 }
 
 
 
 # classifiers -------------------------------------------------------------
 
-# in this section
+# in this section make sure named after predictorXXX
 # @param xtr/xtst Typically matrices that have ntr/ntst samples in rows, p explanatory variables in cols.
 # @param ytr A ntr-vector of (binary or multi) class labels.
 #   In implementation, "ytr" is always first converted to character in case that "ytr" has some factor level with zero obs.
@@ -692,7 +752,7 @@ predictorGBM <- function(xtr, xtst, ytr, n.trees = 1500, shrinkage = 0.002,
 
 
 
-predictorRF <- function(xtr, xtst, ytr, ntrees = 500, cutoff = 0.5, ...)
+predictorRF <- function(xtr, xtst, ytr, ntrees = 500, importance = TRUE, cutoff = 0.5, ...)
 {
   # no feature selection
   # NOTE tuning for algorithmic parameters is not yet implemented
@@ -705,7 +765,7 @@ predictorRF <- function(xtr, xtst, ytr, ntrees = 500, cutoff = 0.5, ...)
   stopifnot(length(classes.eff) >= 2)
   
   # train
-  model <- randomForest(x = xtr, y = as.factor(as.character(ytr)), ntree = ntrees, ...)
+  model <- randomForest(x = xtr, y = as.factor(as.character(ytr)), ntree = ntrees, importance = importance, ...)
   # predict
   pred <- predict(object = model, newdata = xtst, type = "prob", ...)
   pred.class <- colnames(pred)[max.col(pred)]
