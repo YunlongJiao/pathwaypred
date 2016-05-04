@@ -141,6 +141,31 @@ xlist
 ## [7] "path.vals"
 ```
 
+Now we pull different feature types and combine them to a big feature matrix. To avoid high degree of co-linearity, we choose finally only (decomposed) pathway values and gene values together as the other feature matrices are designed simply by combining pathway values linearly.
+
+
+```r
+xlist2combn <- c("path.vals", "mini.genes.vals", "other.genes.vals")
+x <- mget(xlist2combn)
+for (xname in xlist2combn) {
+  colnames(x[[xname]]) <- paste(xname, colnames(x[[xname]]), sep = "_")
+}
+x <- do.call('cbind', x)
+assign(paste0(xlist2combn, collapse = "_"), x)
+xlist <- c(xlist2combn, "genes.vals", 
+           paste0(xlist2combn, collapse = "_"))
+# show all feature matrices NEWLY created by combining different feature types
+xlist
+```
+
+```
+## [1] "path.vals"                                 
+## [2] "mini.genes.vals"                           
+## [3] "other.genes.vals"                          
+## [4] "genes.vals"                                
+## [5] "path.vals_mini.genes.vals_other.genes.vals"
+```
+
 ## Groups (binary and multi-class)
 
 Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
@@ -434,6 +459,8 @@ for (yname in ylist) {
 
 See `../../src/func.R` for all predictors implemented. These function objects should all have a name starting with `^predictor`.
 
+**NOTE we are only interested in predictors that are capable of FS in this study.**
+
 
 ```r
 prlist <- ls(pattern = '^predictor.')
@@ -446,6 +473,8 @@ prlist
 ```
 
 ## (Nested) cross validation parameters
+
+**NOTE nested CV for tuning predictors is not necessary in this study but we keep it for ease of unified syntax.**
 
 
 ```r
@@ -480,8 +509,8 @@ str(param)
 ```
 
 ```
-## 'data.frame':	4200 obs. of  9 variables:
-##  $ Var1: chr  "eff.vals" "fun.vals" "genes.vals" "go.vals" ...
+## 'data.frame':	3000 obs. of  9 variables:
+##  $ Var1: chr  "path.vals" "mini.genes.vals" "other.genes.vals" "genes.vals" ...
 ##  $ Var2: chr  "basal.grps" "basal.grps" "basal.grps" "basal.grps" ...
 ##  $ Var3: chr  "predictorLogitLasso" "predictorLogitLasso" "predictorLogitLasso" "predictorLogitLasso" ...
 ##  $ Var4: int  1 1 1 1 1 1 1 1 1 1 ...
