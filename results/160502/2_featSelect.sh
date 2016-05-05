@@ -3,7 +3,7 @@
 ## run on crom01 with R version=3.2.1
 
 ## -- our name ---
-#$ -N runPredict
+#$ -N featSelect
 #$ -pe smp 1
 #$ -l h_vmem=8G
 ## Make sure that the .e and .o file arrive in the
@@ -16,7 +16,7 @@
 #$ -e /dev/null
 
 ## set up distributed jobs for nclust range
-#$ -t 1-3000
+#$ -t 1-15000
 ## limit the number of simultaneous jobs
 #$ -tc 100
 
