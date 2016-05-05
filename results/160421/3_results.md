@@ -249,7 +249,8 @@ for (yname in ylist) {
   p1 <- ggplot(d, aes(x = x, y = value)) + 
     geom_boxplot(aes(fill = x), alpha = 0.8) + 
     geom_vline(xintercept = xlist.vline, color = "grey", size = 2) + 
-    facet_wrap(~score, scales = "free_y") + 
+    scale_y_continuous(limits = c(0.75, 1)) + 
+    facet_wrap(~score, scales = "fixed") + 
     ggtitle(paste0("predicting ", yname)) + 
     theme(axis.text.x = element_blank())
   plot(p1)
@@ -257,7 +258,7 @@ for (yname in ylist) {
 ```
 
 ```
-## Warning: Removed 1 rows containing non-finite values (stat_boxplot).
+## Warning: Removed 49 rows containing non-finite values (stat_boxplot).
 ```
 
 ![plot of chunk overview](result_figure/overview-1.pdf)
@@ -420,9 +421,8 @@ sessionInfo()
 ## [1] ggplot2_2.1.0
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.1      codetools_0.2-14 digest_0.6.8     grid_3.2.1      
-##  [5] plyr_1.8.3       gtable_0.1.2     formatR_1.3      magrittr_1.5    
-##  [9] evaluate_0.8.3   scales_0.3.0     stringi_1.0-1    labeling_0.3    
-## [13] tools_3.2.1      stringr_1.0.0    munsell_0.4.2    colorspace_1.2-6
-## [17] knitr_1.12.3
+##  [1] labeling_0.3     colorspace_1.2-6 scales_0.3.0     plyr_1.8.3      
+##  [5] magrittr_1.5     formatR_1.3      tools_3.2.1      gtable_0.1.2    
+##  [9] Rcpp_0.12.1      stringi_1.0-1    grid_3.2.1       knitr_1.12.3    
+## [13] digest_0.6.8     stringr_1.0.0    munsell_0.4.2    evaluate_0.8.3
 ```
