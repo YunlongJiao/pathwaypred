@@ -479,8 +479,6 @@ prlist
 
 ## (Nested) cross validation parameters
 
-**NOTE nested CV for tuning predictors is not necessary in this study but we keep it for ease of unified syntax.**
-
 
 ```r
 # CV folds for evaluation
@@ -504,17 +502,17 @@ param <- expand.grid(as.character(xlist), # feature
                      as.integer(1:(nfolds * nrepeats)), # outter CV folds index for evaluation
                      as.integer(nfolds), 
                      as.integer(nrepeats), 
-                     as.integer(0), # inner CV folds for tuning predictor NOT NECESSARY
+                     as.integer(0:(nfolds.inn * nrepeats.inn)), # inner CV folds for tuning predictor
                      as.integer(nfolds.inn), 
                      as.integer(nrepeats.inn), 
                      KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
-write.table(param, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
+write.table(param, file = '2_featSelect.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
 # preview
 str(param)
 ```
 
 ```
-## 'data.frame':	3000 obs. of  9 variables:
+## 'data.frame':	18000 obs. of  9 variables:
 ##  $ Var1: chr  "path.vals" "mini.genes.vals" "other.genes.vals" "genes.vals" ...
 ##  $ Var2: chr  "basal.grps" "basal.grps" "basal.grps" "basal.grps" ...
 ##  $ Var3: chr  "predictorLogitLasso" "predictorLogitLasso" "predictorLogitLasso" "predictorLogitLasso" ...

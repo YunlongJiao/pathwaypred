@@ -16,13 +16,13 @@
 #$ -e /dev/null
 
 ## set up distributed jobs for nclust range
-#$ -t 1-15000
+#$ -t 1-18000
 ## limit the number of simultaneous jobs
 #$ -tc 100
 
 source $HOME/.bashrc
 
-SEEDFILE=$PWD/2_runPredict.txt
+SEEDFILE=$PWD/2_featSelect.txt
 FIELD1=$(cat $SEEDFILE | head -n $SGE_TASK_ID | tail -n 1 | cut -d' ' -f1)
 FIELD2=$(cat $SEEDFILE | head -n $SGE_TASK_ID | tail -n 1 | cut -d' ' -f2)
 FIELD3=$(cat $SEEDFILE | head -n $SGE_TASK_ID | tail -n 1 | cut -d' ' -f3)
@@ -32,4 +32,4 @@ FIELD6=$(cat $SEEDFILE | head -n $SGE_TASK_ID | tail -n 1 | cut -d' ' -f6)
 FIELD7=$(cat $SEEDFILE | head -n $SGE_TASK_ID | tail -n 1 | cut -d' ' -f7)
 FIELD8=$(cat $SEEDFILE | head -n $SGE_TASK_ID | tail -n 1 | cut -d' ' -f8)
 FIELD9=$(cat $SEEDFILE | head -n $SGE_TASK_ID | tail -n 1 | cut -d' ' -f9)
-Rscript $PWD/2_runPredict.R $FIELD1 $FIELD2 $FIELD3 $FIELD4 $FIELD5 $FIELD6 $FIELD7 $FIELD8 $FIELD9
+Rscript $PWD/2_featSelect.R $FIELD1 $FIELD2 $FIELD3 $FIELD4 $FIELD5 $FIELD6 $FIELD7 $FIELD8 $FIELD9
