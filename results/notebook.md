@@ -50,8 +50,7 @@ Three directions
 
 ## TODO
 
-- plot FS results in 160502/3_results.Rmd
-- results from new runs on crom01 cluster
+- results from new runs of 160310 folder on crom01 cluster
 - feature selection with pathways and add selected other-genes in there to enhance prediction
 
 ## Future work
