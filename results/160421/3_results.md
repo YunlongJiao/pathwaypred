@@ -65,9 +65,10 @@ prlist
 ```
 
 ```
-## [1] "predictorGBM"        "predictorKNN"        "predictorLDA"       
-## [4] "predictorLinearSVM"  "predictorLogitLasso" "predictorNB"        
-## [7] "predictorRadialSVM"  "predictorRF"         "predictorSparseSVM"
+##  [1] "predictorConstant"   "predictorGBM"        "predictorKendallSVM"
+##  [4] "predictorKNN"        "predictorLDA"        "predictorLinearSVM" 
+##  [7] "predictorLogitLasso" "predictorNB"         "predictorPAM"       
+## [10] "predictorRadialSVM"  "predictorRF"         "predictorSparseSVM"
 ```
 
 ```r
@@ -218,10 +219,10 @@ head(scores)
 ```
 ##              y        x      type           predictor rep score     value
 ## 1 subtype.grps eff.vals path-wise  predictorLinearSVM   1   acc 0.8888889
-## 2 subtype.grps eff.vals path-wise predictorLogitLasso   1   fpr 0.0000000
-## 3 subtype.grps eff.vals path-wise         predictorNB   1   tpr 0.8500000
+## 2 subtype.grps eff.vals path-wise   predictorConstant   1   fpr 0.0000000
+## 3 subtype.grps eff.vals path-wise        predictorPAM   1   tpr 0.8500000
 ## 4 subtype.grps eff.vals path-wise  predictorLinearSVM   1   ppv 0.9444444
-## 5 subtype.grps eff.vals path-wise        predictorGBM   1  fval 0.8000000
+## 5 subtype.grps eff.vals path-wise predictorKendallSVM   1  fval 0.8947368
 ## 6 subtype.grps eff.vals path-wise        predictorKNN   1 auroc 0.9615385
 ```
 
@@ -253,6 +254,10 @@ for (yname in ylist) {
     theme(axis.text.x = element_blank())
   plot(p1)
 }
+```
+
+```
+## Warning: Removed 1 rows containing non-finite values (stat_boxplot).
 ```
 
 ![plot of chunk overview](result_figure/overview-1.pdf)
@@ -295,10 +300,10 @@ for (yname in ylist) {
 ## 
 ## $fun.vals
 ## 
-## predictorLinearSVM predictorRadialSVM       predictorLDA 
-##            "66.00"            "28.00"             "4.00" 
-##       predictorGBM 
-##             "2.00" 
+##  predictorLinearSVM  predictorRadialSVM        predictorLDA 
+##             "66.00"             "28.00"              "4.00" 
+## predictorKendallSVM 
+##              "2.00" 
 ## 
 ## $genes.vals
 ## 
@@ -307,10 +312,10 @@ for (yname in ylist) {
 ## 
 ## $go.vals
 ## 
-## predictorLogitLasso  predictorRadialSVM  predictorLinearSVM 
-##             "50.00"             "28.00"             "16.00" 
-##        predictorGBM 
-##              "6.00" 
+## predictorKendallSVM predictorLogitLasso  predictorRadialSVM 
+##             "44.00"             "26.00"             "18.00" 
+##  predictorLinearSVM        predictorGBM 
+##              "8.00"              "4.00" 
 ## 
 ## $mini.genes.vals
 ## 
@@ -358,6 +363,8 @@ for (yname in ylist) {
       pmatrix[i,j] <- round(tt$p.value, 4)
     }
   }
+  # correct p-value for multiple testing with Benjamini-Hochberg
+  pmatrix <- p.adjust(pmatrix, "BH")
   print(pmatrix)
   cat('Simplify by thresholding at p-value <', thres, '\n')
   print(pmatrix < thres)
@@ -369,39 +376,22 @@ for (yname in ylist) {
 ## ---> 	 p-value of t.test showing row superior to col 	 <---
 ## 
 ## ------> 	 predicting for  subtype.grps  	 <------
-##                  fun.vals go.vals eff.vals path.vals mini.genes.vals
-## fun.vals              NaN  0.8146        1    1.0000          1.0000
-## go.vals            0.1854     NaN        1    1.0000          1.0000
-## eff.vals           0.0000  0.0000      NaN    1.0000          1.0000
-## path.vals          0.0000  0.0000        0       NaN          0.9998
-## mini.genes.vals    0.0000  0.0000        0    0.0002             NaN
-## other.genes.vals   0.0000  0.0000        0    0.4262          1.0000
-## genes.vals         0.0000  0.0000        0    0.0048          0.8713
-##                  other.genes.vals genes.vals
-## fun.vals                   1.0000     1.0000
-## go.vals                    1.0000     1.0000
-## eff.vals                   1.0000     1.0000
-## path.vals                  0.5738     0.9952
-## mini.genes.vals            0.0000     0.1287
-## other.genes.vals              NaN     0.9997
-## genes.vals                 0.0003        NaN
+##  [1]          NaN 0.2801400000 0.0000000000 0.0000000000 0.0000000000
+##  [6] 0.0000000000 0.0000000000 1.0000000000          NaN 0.0000000000
+## [11] 0.0000000000 0.0000000000 0.0000000000 0.0000000000 1.0000000000
+## [16] 1.0000000000          NaN 0.0000000000 0.0000000000 0.0000000000
+## [21] 0.0000000000 1.0000000000 1.0000000000 1.0000000000          NaN
+## [26] 0.0005250000 0.8524000000 0.0112000000 1.0000000000 1.0000000000
+## [31] 1.0000000000 1.0000000000          NaN 1.0000000000 1.0000000000
+## [36] 1.0000000000 1.0000000000 1.0000000000 1.0000000000 0.0000000000
+## [41]          NaN 0.0007411765 1.0000000000 1.0000000000 1.0000000000
+## [46] 1.0000000000 0.2801400000 1.0000000000          NaN
 ## Simplify by thresholding at p-value < 0.05 
-##                  fun.vals go.vals eff.vals path.vals mini.genes.vals
-## fun.vals               NA   FALSE    FALSE     FALSE           FALSE
-## go.vals             FALSE      NA    FALSE     FALSE           FALSE
-## eff.vals             TRUE    TRUE       NA     FALSE           FALSE
-## path.vals            TRUE    TRUE     TRUE        NA           FALSE
-## mini.genes.vals      TRUE    TRUE     TRUE      TRUE              NA
-## other.genes.vals     TRUE    TRUE     TRUE     FALSE           FALSE
-## genes.vals           TRUE    TRUE     TRUE      TRUE           FALSE
-##                  other.genes.vals genes.vals
-## fun.vals                    FALSE      FALSE
-## go.vals                     FALSE      FALSE
-## eff.vals                    FALSE      FALSE
-## path.vals                   FALSE      FALSE
-## mini.genes.vals              TRUE      FALSE
-## other.genes.vals               NA      FALSE
-## genes.vals                   TRUE         NA
+##  [1]    NA FALSE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE    NA  TRUE  TRUE
+## [12]  TRUE  TRUE  TRUE FALSE FALSE    NA  TRUE  TRUE  TRUE  TRUE FALSE
+## [23] FALSE FALSE    NA  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE    NA
+## [34] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE    NA  TRUE FALSE FALSE
+## [45] FALSE FALSE FALSE FALSE    NA
 ```
 
 ## Session info
