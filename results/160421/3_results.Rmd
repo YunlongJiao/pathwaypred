@@ -218,10 +218,11 @@ for (yname in ylist) {
     }
   }
   # correct p-value for multiple testing with Benjamini-Hochberg
-  pmatrix <- p.adjust(pmatrix, "BH")
-  print(pmatrix)
-  cat('Simplify by thresholding at p-value <', thres, '\n')
-  print(pmatrix < thres)
+  pmatrix.adj <- p.adjust(pmatrix, "BH")
+  attributes(pmatrix.adj) <- attributes(pmatrix)
+  print(pmatrix.adj)
+  cat('\nSimplify by thresholding at p-value <', thres, '\n')
+  print(pmatrix.adj < thres)
 }
 ```
 

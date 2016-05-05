@@ -365,10 +365,11 @@ for (yname in ylist) {
     }
   }
   # correct p-value for multiple testing with Benjamini-Hochberg
-  pmatrix <- p.adjust(pmatrix, "BH")
-  print(pmatrix)
-  cat('Simplify by thresholding at p-value <', thres, '\n')
-  print(pmatrix < thres)
+  pmatrix.adj <- p.adjust(pmatrix, "BH")
+  attributes(pmatrix.adj) <- attributes(pmatrix)
+  print(pmatrix.adj)
+  cat('\nSimplify by thresholding at p-value <', thres, '\n')
+  print(pmatrix.adj < thres)
 }
 ```
 
@@ -377,22 +378,40 @@ for (yname in ylist) {
 ## ---> 	 p-value of t.test showing row superior to col 	 <---
 ## 
 ## ------> 	 predicting for  subtype.grps  	 <------
-##  [1]          NaN 0.2801400000 0.0000000000 0.0000000000 0.0000000000
-##  [6] 0.0000000000 0.0000000000 1.0000000000          NaN 0.0000000000
-## [11] 0.0000000000 0.0000000000 0.0000000000 0.0000000000 1.0000000000
-## [16] 1.0000000000          NaN 0.0000000000 0.0000000000 0.0000000000
-## [21] 0.0000000000 1.0000000000 1.0000000000 1.0000000000          NaN
-## [26] 0.0005250000 0.8524000000 0.0112000000 1.0000000000 1.0000000000
-## [31] 1.0000000000 1.0000000000          NaN 1.0000000000 1.0000000000
-## [36] 1.0000000000 1.0000000000 1.0000000000 1.0000000000 0.0000000000
-## [41]          NaN 0.0007411765 1.0000000000 1.0000000000 1.0000000000
-## [46] 1.0000000000 0.2801400000 1.0000000000          NaN
+##                  fun.vals go.vals eff.vals path.vals mini.genes.vals
+## fun.vals              NaN       1        1  1.000000               1
+## go.vals           0.28014     NaN        1  1.000000               1
+## eff.vals          0.00000       0      NaN  1.000000               1
+## path.vals         0.00000       0        0       NaN               1
+## mini.genes.vals   0.00000       0        0  0.000525             NaN
+## other.genes.vals  0.00000       0        0  0.852400               1
+## genes.vals        0.00000       0        0  0.011200               1
+##                  other.genes.vals genes.vals
+## fun.vals             1.0000000000    1.00000
+## go.vals              1.0000000000    1.00000
+## eff.vals             1.0000000000    1.00000
+## path.vals            1.0000000000    1.00000
+## mini.genes.vals      0.0000000000    0.28014
+## other.genes.vals              NaN    1.00000
+## genes.vals           0.0007411765        NaN
+## 
 ## Simplify by thresholding at p-value < 0.05 
-##  [1]    NA FALSE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE    NA  TRUE  TRUE
-## [12]  TRUE  TRUE  TRUE FALSE FALSE    NA  TRUE  TRUE  TRUE  TRUE FALSE
-## [23] FALSE FALSE    NA  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE    NA
-## [34] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE    NA  TRUE FALSE FALSE
-## [45] FALSE FALSE FALSE FALSE    NA
+##                  fun.vals go.vals eff.vals path.vals mini.genes.vals
+## fun.vals               NA   FALSE    FALSE     FALSE           FALSE
+## go.vals             FALSE      NA    FALSE     FALSE           FALSE
+## eff.vals             TRUE    TRUE       NA     FALSE           FALSE
+## path.vals            TRUE    TRUE     TRUE        NA           FALSE
+## mini.genes.vals      TRUE    TRUE     TRUE      TRUE              NA
+## other.genes.vals     TRUE    TRUE     TRUE     FALSE           FALSE
+## genes.vals           TRUE    TRUE     TRUE      TRUE           FALSE
+##                  other.genes.vals genes.vals
+## fun.vals                    FALSE      FALSE
+## go.vals                     FALSE      FALSE
+## eff.vals                    FALSE      FALSE
+## path.vals                   FALSE      FALSE
+## mini.genes.vals              TRUE      FALSE
+## other.genes.vals               NA      FALSE
+## genes.vals                   TRUE         NA
 ```
 
 ## Session info
