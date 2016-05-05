@@ -61,17 +61,23 @@ xlist
 Now we pull different feature types and combine them to a big feature matrix. To avoid high degree of co-linearity, we choose finally only (decomposed) pathway values and gene values together as the other feature matrices are designed simply by combining pathway values linearly.
 
 ```{r feat_combn}
-xlist <- c("eff.vals", "path.vals", "mini.genes.vals", "other.genes.vals", "genes.vals")
-xlist2combn <- c("path.vals", "mini.genes.vals", "other.genes.vals")
+# reduce xlist
+xlist <- c("path.vals", "mini.genes.vals", "other.genes.vals")
 for (xname in xlist) {
   x <- get(xname)
-  colnames(x) <- paste(xname, colnames(x), sep = "_")
+  colnames(x) <- gsub("^X", gsub("[.]vals$", "", xname), colnames(x))
   assign(xname, x)
 }
-x <- mget(xlist2combn)
-x <- do.call('cbind', x)
-assign(paste0(xlist2combn, collapse = "_"), x)
-xlist <- c(xlist, paste0(xlist2combn, collapse = "_"))
+
+# combine mini.genes.vals and other.genes.vals aka recreate genes.vals
+xlist2combn <- list("genes.vals" = c("mini.genes.vals", "other.genes.vals"),
+                    "path.and.genes.vals" = c("path.vals", "mini.genes.vals", "other.genes.vals"))
+for (xname in names(xlist2combn)) {
+  x <- mget(xlist2combn[[xname]])
+  x <- do.call("cbind", x)
+  assign(xname, x)
+}
+xlist <- c(xlist, names(xlist2combn))
 # show all feature matrices NEWLY created by combining different feature types
 xlist
 ```

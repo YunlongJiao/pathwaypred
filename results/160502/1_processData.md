@@ -145,27 +145,30 @@ Now we pull different feature types and combine them to a big feature matrix. To
 
 
 ```r
-xlist2combn <- c("eff.vals", "path.vals", "mini.genes.vals", "other.genes.vals", "genes.vals")
-for (xname in xlist2combn) {
+# reduce xlist
+xlist <- c("path.vals", "mini.genes.vals", "other.genes.vals")
+for (xname in xlist) {
   x <- get(xname)
-  colnames(x) <- paste(xname, colnames(x), sep = "_")
+  colnames(x) <- gsub("^X", gsub("[.]vals$", "", xname), colnames(x))
   assign(xname, x)
 }
-x <- mget(setdiff(xlist2combn, c("eff.vals", "genes.vals")))
-x <- do.call('cbind', x)
-assign(paste0(xlist2combn, collapse = "_"), x)
-xlist <- c(xlist2combn, paste0(xlist2combn, collapse = "_"))
+
+# combine mini.genes.vals and other.genes.vals aka recreate genes.vals
+xlist2combn <- list("genes.vals" = c("mini.genes.vals", "other.genes.vals"),
+                    "path.and.genes.vals" = c("path.vals", "mini.genes.vals", "other.genes.vals"))
+for (xname in names(xlist2combn)) {
+  x <- mget(xlist2combn[[xname]])
+  x <- do.call("cbind", x)
+  assign(xname, x)
+}
+xlist <- c(xlist, names(xlist2combn))
 # show all feature matrices NEWLY created by combining different feature types
 xlist
 ```
 
 ```
-## [1] "eff.vals"                                                      
-## [2] "path.vals"                                                     
-## [3] "mini.genes.vals"                                               
-## [4] "other.genes.vals"                                              
-## [5] "genes.vals"                                                    
-## [6] "eff.vals_path.vals_mini.genes.vals_other.genes.vals_genes.vals"
+## [1] "path.vals"           "mini.genes.vals"     "other.genes.vals"   
+## [4] "genes.vals"          "path.and.genes.vals"
 ```
 
 ## Groups (binary and multi-class)
@@ -511,8 +514,8 @@ str(param)
 ```
 
 ```
-## 'data.frame':	3600 obs. of  9 variables:
-##  $ Var1: chr  "eff.vals" "path.vals" "mini.genes.vals" "other.genes.vals" ...
+## 'data.frame':	3000 obs. of  9 variables:
+##  $ Var1: chr  "path.vals" "mini.genes.vals" "other.genes.vals" "genes.vals" ...
 ##  $ Var2: chr  "basal.grps" "basal.grps" "basal.grps" "basal.grps" ...
 ##  $ Var3: chr  "predictorLogitLasso" "predictorLogitLasso" "predictorLogitLasso" "predictorLogitLasso" ...
 ##  $ Var4: int  1 1 1 1 1 1 1 1 1 1 ...
