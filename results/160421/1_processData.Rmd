@@ -1,5 +1,5 @@
 # Process ICGC BRCA data
-# Yunlong Jiao, 10 March 2016
+# Yunlong Jiao, 21 April 2016
 
 This script processes data and generates matrices for naive models later to make predictions.
 
@@ -69,74 +69,27 @@ for (xname in xlist) {
 }
 ```
 
-## Groups (binary only)
+## Groups (multi-class only)
 
-Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
+Multiple classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
 
-#### Basal vs Non-basal
+**NOTE always put THE positive group to the last level in the ordered factor as the evaluation measure such as TPR, FPR will be specific to that level.**
 
-```{r basal}
-y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
+#### Luminal vs Her2 vs Basal (subtypes)
+
+```{r subtype}
+y <- read.table(paste0(datapath, 'sampleCancerType.txt'), header = FALSE)
 head(y$V2)
-basal.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$V2), levels = c("Not_Basal", "Basal"), labels = c("neg_NonBasal", "pos_Basal"))
-stopifnot(!any(is.na(basal.grps)))
-names(basal.grps) <- y$V1
-head(basal.grps)
+unique(y$V2)
+subtype.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$V2), levels = c("Luminal", "Her2", "Basal"), labels = c("T1_Luminal", "T2_Her2", "T3_Basal"))
+id.na <- is.na(subtype.grps)
+subtype.grps <- subtype.grps[!id.na]
+names(subtype.grps) <- y$V1[!id.na]
+head(subtype.grps)
 # sample size (how many labels are available in the sample cohort)
-length(sl <- intersect(samplelist, names(basal.grps)))
+length(sl <- intersect(samplelist, names(subtype.grps)))
 # contrasting class size
-table(basal.grps[sl])
-```
-
-#### Tumor vs Normal
-
-```{r tumor}
-y <- read.table(paste0(datapath, 'TCGA_phenotype.txt'), header = TRUE)
-head(y$cancer)
-tumor.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$cancer), levels = c("Normal", "Tumor"), labels = c("neg_Normal", "pos_Tumor"))
-stopifnot(!any(is.na(tumor.grps)))
-names(tumor.grps) <- rownames(y)
-head(tumor.grps)
-# sample size (how many labels are available in the sample cohort)
-length(sl <- intersect(samplelist, names(tumor.grps)))
-# contrasting class size
-table(tumor.grps[sl])
-```
-
-#### Alive vs Deceased (overall survival)
-
-```{r surv, message=FALSE}
-alignmat <- read.table(paste0(datapath, 'clinical_info_sample.txt'), sep = "\t", quote = "\"", header = TRUE)
-y <- read.table(paste0(datapath, 'clinical_info_donor.txt'), sep = "\t", quote = "\"", header = TRUE)
-alignid <- data.frame(sample = samplelist, 
-                      donor = sapply(samplelist, function(id){
-                        message(".", appendLF = FALSE)
-                        i <- grep(id, alignmat$submitted_sample_id)
-                        if (length(i) == 1) {
-                          return(alignmat$icgc_donor_id[i])
-                        } else if (length(i) == 0) {
-                          return(NA)
-                        } else {
-                          stop(id, " has more than 1 alignment!")
-                        }
-                      }))
-# number of samples before pruning
-nrow(alignid)
-alignid <- subset(alignid, !is.na(alignid$donor))
-id <- match(alignid$donor, y$icgc_donor_id)
-alignid <- alignid[!is.na(id), ]
-id <- id[!is.na(id)]
-y <- y[id, ]
-# number of samples after pruning
-nrow(alignid)
-head(y$donor_vital_status)
-surv.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$donor_vital_status), levels = c("alive", "deceased"), labels = c("neg_alive", "pos_deceased"))
-stopifnot(!any(is.na(surv.grps)))
-names(surv.grps) <- alignid$sample
-head(surv.grps)
-# sample size (how many labels are available in the sample cohort)
-length(sl <- intersect(samplelist, names(surv.grps)))
-table(surv.grps[sl])
+table(subtype.grps[sl])
 ```
 
 #### Summary
@@ -144,12 +97,13 @@ table(surv.grps[sl])
 ```{r groups}
 # get all groups
 ylist <- ls(pattern = '[.]grps$')
-# check for now to deal with binary classification only
+# show all groups and their classes
 for (yname in ylist) {
-  stopifnot(length(levels(get(yname))) == 2)
+  cat('\n-------------> \t summary \t <-------------\n')
+  cat('\n-------------> \t ', yname, ' \t <-------------\n')
+  print(levels(get(yname)))
+  cat('\n')
 }
-# show all groups
-ylist
 ```
 
 ## Predictors

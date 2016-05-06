@@ -13,7 +13,7 @@ datapath <- '../../data/BRCA_saved_data/'
 
 ## Features
 
-Feature matrices are stored at `crom01:/fsclinic/common/analisis/data/BRCA_saved_data/`. Note that all feature matrices have to be initially provided by features in rows and patients in cols (to facilitate processing in a universal style). These matrix objects should have a name ending with `[.]vals$`.
+Feature matrices are stored at ../../data/BRCA_saved_data/. Note that all feature matrices have to be initially provided by features in rows and patients in cols (to facilitate processing in a universal style). These matrix objects should have a name ending with `[.]vals$`.
 
 
 ```r
@@ -45,8 +45,43 @@ for (xname in xlist) {
   stopifnot(!any(duplicated(colnames(x))))
   # assign back
   assign(xname, x)
-  # preview
-  cat('\n-------------> \t preview \t <-------------\n')
+}
+# set samples
+samplelist <- unique(lapply(xlist, function(xname) rownames(get(xname))))
+stopifnot(length(samplelist) == 1)
+samplelist <- unlist(samplelist)
+nsample <- length(samplelist)
+
+# create mixed feature matrices
+xlist2combn <- list("path.and.genes.vals" = c("path.vals", "genes.vals"))
+for (xname in names(xlist2combn)) {
+  x <- mget(xlist2combn[[xname]])
+  x <- do.call("cbind", x)
+  assign(xname, x)
+}
+xlist <- c(xlist, names(xlist2combn))
+
+# show all feature matrices
+xlist
+```
+
+```
+## [1] "eff.vals"            "fun.vals"            "genes.vals"         
+## [4] "go.vals"             "mini.genes.vals"     "other.genes.vals"   
+## [7] "path.vals"           "path.and.genes.vals"
+```
+
+```r
+cat('\n-------------> \t preview \t <-------------\n')
+```
+
+```
+## 
+## -------------> 	 preview 	 <-------------
+```
+
+```r
+for (xname in xlist) {
   cat('\n-------------> \t ', xname, ' \t <-------------\n')
   print(str(get(xname)))
   cat('\n')
@@ -54,8 +89,6 @@ for (xname in xlist) {
 ```
 
 ```
-## 
-## -------------> 	 preview 	 <-------------
 ## 
 ## -------------> 	  eff.vals  	 <-------------
 ##  num [1:881, 1:1038] 0.00407 0.0044 0.00438 0.00426 0.00426 ...
@@ -65,8 +98,6 @@ for (xname in xlist) {
 ## NULL
 ## 
 ## 
-## -------------> 	 preview 	 <-------------
-## 
 ## -------------> 	  fun.vals  	 <-------------
 ##  num [1:881, 1:81] 0.09 0.0865 0.0904 0.0936 0.0929 ...
 ##  - attr(*, "dimnames")=List of 2
@@ -74,8 +105,6 @@ for (xname in xlist) {
 ##   ..$ : chr [1:81] "X_Lipid_degradation" "X_Lipid_metabolism" "X_Transcription_regulation" "X_Apoptosis" ...
 ## NULL
 ## 
-## 
-## -------------> 	 preview 	 <-------------
 ## 
 ## -------------> 	  genes.vals  	 <-------------
 ##  num [1:881, 1:18708] 0.417 0.418 0.418 0.426 0.401 ...
@@ -85,8 +114,6 @@ for (xname in xlist) {
 ## NULL
 ## 
 ## 
-## -------------> 	 preview 	 <-------------
-## 
 ## -------------> 	  go.vals  	 <-------------
 ##  num [1:881, 1:370] 0.0247 0.0262 0.0259 0.0259 0.0265 ...
 ##  - attr(*, "dimnames")=List of 2
@@ -94,8 +121,6 @@ for (xname in xlist) {
 ##   ..$ : chr [1:370] "X_glycerophospholipid_catabolic_process" "X_phospholipid_metabolic_process" "X_multicellular_organismal_lipid_catabolic_process" "X_positive_regulation_of_phospholipase_activity" ...
 ## NULL
 ## 
-## 
-## -------------> 	 preview 	 <-------------
 ## 
 ## -------------> 	  mini.genes.vals  	 <-------------
 ##  num [1:881, 1:2212] 0.513 0.529 0.525 0.505 0.532 ...
@@ -105,8 +130,6 @@ for (xname in xlist) {
 ## NULL
 ## 
 ## 
-## -------------> 	 preview 	 <-------------
-## 
 ## -------------> 	  other.genes.vals  	 <-------------
 ##  num [1:881, 1:16496] 0.417 0.418 0.418 0.426 0.401 ...
 ##  - attr(*, "dimnames")=List of 2
@@ -115,30 +138,20 @@ for (xname in xlist) {
 ## NULL
 ## 
 ## 
-## -------------> 	 preview 	 <-------------
-## 
 ## -------------> 	  path.vals  	 <-------------
 ##  num [1:881, 1:6101] 0.00209 0.0022 0.00205 0.00186 0.00218 ...
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
 ##   ..$ : chr [1:6101] "X_hsa04014__14___42" "X_hsa04014__14___43" "X_hsa04014__14___44" "X_hsa04014__14___33" ...
 ## NULL
-```
-
-```r
-# set samples
-samplelist <- unique(lapply(xlist, function(xname) rownames(get(xname))))
-stopifnot(length(samplelist) == 1)
-samplelist <- unlist(samplelist)
-nsample <- length(samplelist)
-# show all feature matrices
-xlist
-```
-
-```
-## [1] "eff.vals"         "fun.vals"         "genes.vals"      
-## [4] "go.vals"          "mini.genes.vals"  "other.genes.vals"
-## [7] "path.vals"
+## 
+## 
+## -------------> 	  path.and.genes.vals  	 <-------------
+##  num [1:881, 1:24809] 0.00209 0.0022 0.00205 0.00186 0.00218 ...
+##  - attr(*, "dimnames")=List of 2
+##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:24809] "X_hsa04014__14___42" "X_hsa04014__14___43" "X_hsa04014__14___44" "X_hsa04014__14___33" ...
+## NULL
 ```
 
 ## Groups (multi-class only)
@@ -245,6 +258,46 @@ prlist
 ## [10] "predictorRadialSVM"  "predictorRF"         "predictorSparseSVM"
 ```
 
+## Kernel matrices
+
+This section computes kernel matrix to accelerate implementation of `kernlab::ksvm`. These kernel matrices are save at ../../data/BRCA_saved_data/ and named ending with `[.]kmat$`. Specifically we have the following kernel
+- Kendall kernel (Jiao and Vert, 2016) for predictorKendallSVM
+
+**NOTE before we compute kernel here **
+
+
+```r
+# kendall kernel
+prname <- "predictorKendallSVM"
+kernel <- pcaPP::cor.fk
+for (xname in xlist) {
+  kmatname <- paste(prname, xname, "kmat", sep = ".")
+  message(kmatname)
+  kmatpath <- paste0(datapath, kmatname, ".RData")
+  if (file.exists(kmatpath)) {
+    assign(kmatname, get(load(kmatpath)))
+  } else {
+    x <- get(xname)
+    x <- removeConst(x)
+    assign(kmatname, computeKernelMatrix(x = x, kernel = kernel))
+    save(list = kmatname, file = kmatpath)
+  }
+}
+kmatlist <- ls(pattern = '[.]kmat$')
+kmatlist
+```
+
+```
+## [1] "predictorKendallSVM.eff.vals.kmat"           
+## [2] "predictorKendallSVM.fun.vals.kmat"           
+## [3] "predictorKendallSVM.genes.vals.kmat"         
+## [4] "predictorKendallSVM.go.vals.kmat"            
+## [5] "predictorKendallSVM.mini.genes.vals.kmat"    
+## [6] "predictorKendallSVM.other.genes.vals.kmat"   
+## [7] "predictorKendallSVM.path.and.genes.vals.kmat"
+## [8] "predictorKendallSVM.path.vals.kmat"
+```
+
 ## (Nested) cross validation parameters
 
 
@@ -280,7 +333,7 @@ str(param)
 ```
 
 ```
-## 'data.frame':	25200 obs. of  9 variables:
+## 'data.frame':	28800 obs. of  9 variables:
 ##  $ Var1: chr  "eff.vals" "fun.vals" "genes.vals" "go.vals" ...
 ##  $ Var2: chr  "subtype.grps" "subtype.grps" "subtype.grps" "subtype.grps" ...
 ##  $ Var3: chr  "predictorConstant" "predictorConstant" "predictorConstant" "predictorConstant" ...
@@ -294,7 +347,7 @@ str(param)
 
 ```r
 # save entire image to be loaded later
-save(list = c(xlist, ylist), file = 'dat.RData')
+save(list = c(xlist, ylist, kmatlist), file = 'dat.RData')
 ```
 
 # Session info
@@ -320,6 +373,7 @@ sessionInfo()
 ## [1] methods   stats     graphics  grDevices utils     datasets  base     
 ## 
 ## loaded via a namespace (and not attached):
-## [1] magrittr_1.5   formatR_1.3    tools_3.2.1    stringi_1.0-1 
-## [5] knitr_1.12.3   stringr_1.0.0  evaluate_0.8.3
+## [1] magrittr_1.5   formatR_1.3    tools_3.2.1    mvtnorm_1.0-3 
+## [5] stringi_1.0-1  pcaPP_1.9-60   knitr_1.12.3   stringr_1.0.0 
+## [9] evaluate_0.8.3
 ```
