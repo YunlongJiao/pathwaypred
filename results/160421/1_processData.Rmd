@@ -1,5 +1,5 @@
 # Process ICGC BRCA data
-# Yunlong Jiao, 21 April 2016
+# Yunlong Jiao, 10 March 2016
 
 This script processes data and generates matrices for naive models later to make predictions.
 
@@ -12,7 +12,7 @@ datapath <- '../../data/BRCA_saved_data/'
 
 ## Features
 
-Feature matrices are stored at `crom01:/fsclinic/common/analisis/data/BRCA_saved_data/`. Note that all feature matrices have to be initially provided by features in rows and patients in cols (to facilitate processing in a universal style). These matrix objects should have a name ending with `[.]vals$`.
+Feature matrices are stored at `r datapath`. Note that all feature matrices have to be initially provided by features in rows and patients in cols (to facilitate processing in a universal style). These matrix objects should have a name ending with `[.]vals$`.
 
 ```{r features}
 # gene expression
@@ -43,42 +43,100 @@ for (xname in xlist) {
   stopifnot(!any(duplicated(colnames(x))))
   # assign back
   assign(xname, x)
-  # preview
-  cat('\n-------------> \t preview \t <-------------\n')
-  cat('\n-------------> \t ', xname, ' \t <-------------\n')
-  print(str(get(xname)))
-  cat('\n')
 }
 # set samples
 samplelist <- unique(lapply(xlist, function(xname) rownames(get(xname))))
 stopifnot(length(samplelist) == 1)
 samplelist <- unlist(samplelist)
 nsample <- length(samplelist)
+
+# create mixed feature matrices
+xlist2combn <- list("path.and.genes.vals" = c("path.vals", "genes.vals"))
+for (xname in names(xlist2combn)) {
+  x <- mget(xlist2combn[[xname]])
+  x <- do.call("cbind", x)
+  assign(xname, x)
+}
+xlist <- c(xlist, names(xlist2combn))
+
 # show all feature matrices
 xlist
+cat('\n-------------> \t preview \t <-------------\n')
+for (xname in xlist) {
+  cat('\n-------------> \t ', xname, ' \t <-------------\n')
+  print(str(get(xname)))
+  cat('\n')
+}
 ```
 
-## Groups (multi-class only)
+## Groups (binary only)
 
-Multiple classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
+Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
 
-**NOTE always put THE positive group to the last level in the ordered factor as the evaluation measure such as TPR, FPR will be specific to that level.**
+#### Basal vs Non-basal
 
-#### Luminal vs Her2 vs Basal (subtypes)
-
-```{r subtype}
-y <- read.table(paste0(datapath, 'sampleCancerType.txt'), header = FALSE)
+```{r basal}
+y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
 head(y$V2)
-unique(y$V2)
-subtype.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$V2), levels = c("Luminal", "Her2", "Basal"), labels = c("T1_Luminal", "T2_Her2", "T3_Basal"))
-id.na <- is.na(subtype.grps)
-subtype.grps <- subtype.grps[!id.na]
-names(subtype.grps) <- y$V1[!id.na]
-head(subtype.grps)
+basal.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$V2), levels = c("Not_Basal", "Basal"), labels = c("neg_NonBasal", "pos_Basal"))
+stopifnot(!any(is.na(basal.grps)))
+names(basal.grps) <- y$V1
+head(basal.grps)
 # sample size (how many labels are available in the sample cohort)
-length(sl <- intersect(samplelist, names(subtype.grps)))
+length(sl <- intersect(samplelist, names(basal.grps)))
 # contrasting class size
-table(subtype.grps[sl])
+table(basal.grps[sl])
+```
+
+#### Tumor vs Normal
+
+```{r tumor}
+y <- read.table(paste0(datapath, 'TCGA_phenotype.txt'), header = TRUE)
+head(y$cancer)
+tumor.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$cancer), levels = c("Normal", "Tumor"), labels = c("neg_Normal", "pos_Tumor"))
+stopifnot(!any(is.na(tumor.grps)))
+names(tumor.grps) <- rownames(y)
+head(tumor.grps)
+# sample size (how many labels are available in the sample cohort)
+length(sl <- intersect(samplelist, names(tumor.grps)))
+# contrasting class size
+table(tumor.grps[sl])
+```
+
+#### Alive vs Deceased (overall survival)
+
+```{r surv, message=FALSE}
+alignmat <- read.table(paste0(datapath, 'clinical_info_sample.txt'), sep = "\t", quote = "\"", header = TRUE)
+y <- read.table(paste0(datapath, 'clinical_info_donor.txt'), sep = "\t", quote = "\"", header = TRUE)
+alignid <- data.frame(sample = samplelist, 
+                      donor = sapply(samplelist, function(id){
+                        message(".", appendLF = FALSE)
+                        i <- grep(id, alignmat$submitted_sample_id)
+                        if (length(i) == 1) {
+                          return(alignmat$icgc_donor_id[i])
+                        } else if (length(i) == 0) {
+                          return(NA)
+                        } else {
+                          stop(id, " has more than 1 alignment!")
+                        }
+                      }))
+# number of samples before pruning
+nrow(alignid)
+alignid <- subset(alignid, !is.na(alignid$donor))
+id <- match(alignid$donor, y$icgc_donor_id)
+alignid <- alignid[!is.na(id), ]
+id <- id[!is.na(id)]
+y <- y[id, ]
+# number of samples after pruning
+nrow(alignid)
+head(y$donor_vital_status)
+surv.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$donor_vital_status), levels = c("alive", "deceased"), labels = c("neg_alive", "pos_deceased"))
+stopifnot(!any(is.na(surv.grps)))
+names(surv.grps) <- alignid$sample
+head(surv.grps)
+# sample size (how many labels are available in the sample cohort)
+length(sl <- intersect(samplelist, names(surv.grps)))
+table(surv.grps[sl])
 ```
 
 #### Summary
@@ -86,13 +144,12 @@ table(subtype.grps[sl])
 ```{r groups}
 # get all groups
 ylist <- ls(pattern = '[.]grps$')
-# show all groups and their classes
+# check for now to deal with binary classification only
 for (yname in ylist) {
-  cat('\n-------------> \t summary \t <-------------\n')
-  cat('\n-------------> \t ', yname, ' \t <-------------\n')
-  print(levels(get(yname)))
-  cat('\n')
+  stopifnot(length(levels(get(yname))) == 2)
 }
+# show all groups
+ylist
 ```
 
 ## Predictors
@@ -102,6 +159,34 @@ See `../../src/func.R` for all predictors implemented. These function objects sh
 ```{r predictors}
 prlist <- ls(pattern = '^predictor.')
 prlist
+```
+
+## Kernel matrices
+
+This section computes kernel matrix to accelerate implementation of `kernlab::ksvm`. These kernel matrices are save at `r datapath` and named ending with `[.]kmat$`. Specifically we have the following kernel
+- Kendall kernel (Jiao and Vert, 2016) for `r grep("kendall", prlist, ignore.case=T, value=T)`
+
+**NOTE before we compute kernel here **
+
+```{r kmat, message=FALSE}
+# kendall kernel
+prname <- "predictorKendallSVM"
+kernel <- pcaPP::cor.fk
+for (xname in xlist) {
+  kmatname <- paste(prname, xname, "kmat", sep = ".")
+  message(kmatname)
+  kmatpath <- paste0(datapath, kmatname, ".RData")
+  if (file.exists(kmatpath)) {
+    assign(kmatname, get(load(kmatpath)))
+  } else {
+    x <- get(xname)
+    x <- removeConst(x)
+    assign(kmatname, computeKernelMatrix(x = x, kernel = kernel))
+    save(list = kmatname, file = kmatpath)
+  }
+}
+kmatlist <- ls(pattern = '[.]kmat$')
+kmatlist
 ```
 
 ## (Nested) cross validation parameters
@@ -136,7 +221,7 @@ write.table(param, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, 
 str(param)
 
 # save entire image to be loaded later
-save(list = c(xlist, ylist), file = 'dat.RData')
+save(list = c(xlist, ylist, kmatlist), file = 'dat.RData')
 ```
 
 # Session info

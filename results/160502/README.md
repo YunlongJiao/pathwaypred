@@ -1,3 +1,3 @@
 # NOTE
 
-This script runs prediction based on pulled all feature types and uses representative FS algorithms to distinguish features. And finally sees which feature type is more interesting in an overall comparison.
+This script studies feature selection with representative FS algorithms to distinguish importance of features. And finally sees which feature type when a model is learned based on multiple feature types is more interesting in an overall comparison.

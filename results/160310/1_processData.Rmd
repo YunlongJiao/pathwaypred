@@ -12,7 +12,7 @@ datapath <- '../../data/BRCA_saved_data/'
 
 ## Features
 
-Feature matrices are stored at `crom01:/fsclinic/common/analisis/data/BRCA_saved_data/`. Note that all feature matrices have to be initially provided by features in rows and patients in cols (to facilitate processing in a universal style). These matrix objects should have a name ending with `[.]vals$`.
+Feature matrices are stored at `r datapath`. Note that all feature matrices have to be initially provided by features in rows and patients in cols (to facilitate processing in a universal style). These matrix objects should have a name ending with `[.]vals$`.
 
 ```{r features}
 # gene expression
@@ -43,19 +43,30 @@ for (xname in xlist) {
   stopifnot(!any(duplicated(colnames(x))))
   # assign back
   assign(xname, x)
-  # preview
-  cat('\n-------------> \t preview \t <-------------\n')
-  cat('\n-------------> \t ', xname, ' \t <-------------\n')
-  print(str(get(xname)))
-  cat('\n')
 }
 # set samples
 samplelist <- unique(lapply(xlist, function(xname) rownames(get(xname))))
 stopifnot(length(samplelist) == 1)
 samplelist <- unlist(samplelist)
 nsample <- length(samplelist)
+
+# create mixed feature matrices
+xlist2combn <- list("path.and.genes.vals" = c("path.vals", "genes.vals"))
+for (xname in names(xlist2combn)) {
+  x <- mget(xlist2combn[[xname]])
+  x <- do.call("cbind", x)
+  assign(xname, x)
+}
+xlist <- c(xlist, names(xlist2combn))
+
 # show all feature matrices
 xlist
+cat('\n-------------> \t preview \t <-------------\n')
+for (xname in xlist) {
+  cat('\n-------------> \t ', xname, ' \t <-------------\n')
+  print(str(get(xname)))
+  cat('\n')
+}
 ```
 
 ## Groups (binary only)
@@ -150,6 +161,34 @@ prlist <- ls(pattern = '^predictor.')
 prlist
 ```
 
+## Kernel matrices
+
+This section computes kernel matrix to accelerate implementation of `kernlab::ksvm`. These kernel matrices are save at `r datapath` and named ending with `[.]kmat$`. Specifically we have the following kernel
+- Kendall kernel (Jiao and Vert, 2016) for `r grep("kendall", prlist, ignore.case=T, value=T)`
+
+**NOTE before we compute kernel here **
+
+```{r kmat, message=FALSE}
+# kendall kernel
+prname <- "predictorKendallSVM"
+kernel <- pcaPP::cor.fk
+for (xname in xlist) {
+  kmatname <- paste(prname, xname, "kmat", sep = ".")
+  message(kmatname)
+  kmatpath <- paste0(datapath, kmatname, ".RData")
+  if (file.exists(kmatpath)) {
+    assign(kmatname, get(load(kmatpath)))
+  } else {
+    x <- get(xname)
+    x <- removeConst(x)
+    assign(kmatname, computeKernelMatrix(x = x, kernel = kernel))
+    save(list = kmatname, file = kmatpath)
+  }
+}
+kmatlist <- ls(pattern = '[.]kmat$')
+kmatlist
+```
+
 ## (Nested) cross validation parameters
 
 ```{r cv}
@@ -182,7 +221,7 @@ write.table(param, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, 
 str(param)
 
 # save entire image to be loaded later
-save(list = c(xlist, ylist), file = 'dat.RData')
+save(list = c(xlist, ylist, kmatlist), file = 'dat.RData')
 ```
 
 # Session info

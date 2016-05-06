@@ -21,11 +21,13 @@ xlist
 # feature types
 xlist.type <- c("func-wise", "func-wise", 
                 "path-wise", "path-wise", 
-                "gene-wise", "gene-wise", "gene-wise")
+                "gene-wise", "gene-wise", "gene-wise", 
+                "mix-wise")
 names(xlist.type) <- c("fun.vals", "go.vals", # functionality features
                        "eff.vals", "path.vals", # pathway features
-                       "mini.genes.vals", "other.genes.vals", "genes.vals") # gene features
-xlist.vline <- c(2.5, 4.5) # cut out types
+                       "mini.genes.vals", "other.genes.vals", "genes.vals", # gene features
+                       "path.and.genes.vals") # mixed type
+xlist.vline <- c(2.5, 4.5, 7.5) # cut out types
 stopifnot(length(setdiff(xlist, names(xlist.type))) == 0)
 xlist.type
 # groups
@@ -143,7 +145,7 @@ In this section, each plot corresponds to the prediction performance for one spe
 
 Notes that some evaluation measures (`acc`, `ppv`, etc) do associate with a specific `cutoff` threshold for predicted probability, which is always set to constant 0.5. It might be interesting to tune the threshold in case that the class sizes in training data are unbalanced.
 
-The evaluation measure are the following: `r xlist`. Note that in order to remove confusion, we equivalently rename `TPR` by `Sensitivity`, and plot `Specificity = 1 - FPR` instead of `FPR` values. As a result, for any evaluation measure present in the plot, higher values indicate better performance unanimously.
+The evaluation measure are the following: `r slist`. Note that in order to remove confusion, we equivalently rename `TPR` by `Sensitivity`, and plot `Specificity = 1 - FPR` instead of `FPR` values. As a result, for any evaluation measure present in the plot, higher values indicate better performance unanimously.
 
 ```{r overview}
 # plot each grps in a separate figure

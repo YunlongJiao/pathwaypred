@@ -50,8 +50,9 @@ Three directions
 
 ## TODO
 
-- results from new runs of 160310 folder on crom01 cluster
-- feature selection with pathways and add selected other-genes in there to enhance prediction
+- collect finished jobs in both 160310 and 160421 and plot new results
+- look at FS frequencies and do indepSignif test for all features in script 160502/3_results.Rmd
+- feature selection with pathways and add selected other-genes in there to enhance prediction in a new-date folder
 
 ## Future work
 

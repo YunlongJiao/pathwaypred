@@ -86,6 +86,47 @@ removeConst <- function(xtr, xtst=NULL, tol2const=1e-6, ...)
 
 
 
+computeKernelMatrix <- function(x, kernel, ...)
+{
+  # @param x n*p data matrix
+  # @param kenrel must be a function!
+  # @return n*n kernel matrix
+  
+  stopifnot(is.function(kernel))
+  kmat <- kernlab::kernelMatrix(kernel, as.matrix(x))
+  dimnames(kmat) <- list(rownames(x),rownames(x))
+  return(kmat)
+}
+
+
+
+centerScaleKernelMatrix <- function(kmat, train.idx = 1:nrow(kmat), ...)
+{
+  # @param kmat SYMMETRIC kernel matrix
+  # @param train.idx Indices for training set in rows/cols and the others are assumed test set
+  # @return centered and scaled kernel matrix with respect to training set in feature space
+  
+  stopifnot(isSymmetric(kmat))
+  n <- nrow(kmat)
+  ntr <- length(train.idx)
+  
+  #centering
+  ed <- matrix(0, nrow = n, ncol = n, dimnames = dimnames(kmat))
+  ed[train.idx, ] <- 1
+  kmcs <- kmat - t(ed)%*%kmat/ntr - kmat%*%ed/ntr + t(ed)%*%kmat%*%ed/(ntr^2)
+  #scaling
+  dsr <- sqrt(diag(kmcs))
+  kmcs <- sweep(
+    sweep(kmcs, 1, dsr, FUN='/'),
+    2, dsr, FUN='/')
+  dimnames(kmcs) <- dimnames(kmat)
+  kmcs <- kernlab::as.kernelMatrix(kmcs)
+  
+  return(kmcs)
+}
+
+
+
 # validation --------------------------------------------------------------
 
 
@@ -187,7 +228,7 @@ evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = tail(names(table(
 indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL, 
                             pos.label = tail(names(table(ytst)),1), 
                             remove.const = TRUE, pthres = 0, 
-                            ..., save.model = FALSE, seed = 53359292)
+                            ..., save.model = TRUE, seed = 53359292)
 {
   # xtr, xtst are n*p feature matrices and ytr, ytst are label vectors
   # predictor is a char denoting the predictor function name (starting with '^predictor.*')
@@ -434,11 +475,13 @@ featselectIndepSignif <- function(xtr, ytr, pthres = 0.05, test = "t.test", meth
 
 featselectRF <- function(model = NULL, ...)
 {
-  # returns importance measure of mean decrease in accuracy (type=1) for each feature
+  # computes importance measure as mean decrease in accuracy (type=1) for each feature
+  # returns only those with positive importance ordered by decreasing value
+  # NOTE model must be fit with tune.randomForest() instead of randomForest() and with importance set TRUE
   
   if (is.null(model))
     model <- predictorRF(...)$model
-  s <- drop(randomForest::importance(x = model, type = 1))
+  s <- drop(randomForest::importance(x = model$best.model, type = 1))
   s <- s[s > 0]
   
   s <- sort(s, decreasing = TRUE)
@@ -449,16 +492,18 @@ featselectRF <- function(model = NULL, ...)
 
 featselectLogitLasso <- function(model = NULL, ...)
 {
-  # returns absolute values of coefficients of each feature
-  # NOTE pos.label recognized as the last one!
+  # computes absolute value of coefficients for each feature
+  # returns only those with non-zero contribution to at least one of the phenotypes ordered by decreasing sum contribution
+  # NOTE model must be fit with cv.glmnet() instead of glmnet() and only makes sense when do.normalize set TRUE as we do sum contribution
   
   if (is.null(model))
     model <- predictorLogitLasso(...)$model
   s <- predict(object = model, newx = NULL, type = "coefficients")
-  s <- drop(s[[length(s)]])[-1] # focus on pos.label and remove intercept
-  s <- s[s != 0] # can be strongly positive or negative related!
+  s <- do.call('cbind', s)
+  s <- rowSums(abs(s[-1, ])) # remove intercept
+  s <- s[s > 0] # can be strongly positive or negative related!
   
-  s <- s[order(abs(s), decreasing = TRUE)]
+  s <- sort(s, decreasing = TRUE)
   return(s)
 }
 
@@ -466,7 +511,9 @@ featselectLogitLasso <- function(model = NULL, ...)
 
 featselectPAM <- function(model = NULL, ...)
 {
-  # returns absolute values of coefficients of each feature
+  # computes shrunken centroids in absolute values of coefficients for each feature
+  # returns only those with non-zero contribution to at least one of the phenotypes ordered by decreasing sum contribution
+  # NOTE model must be fit with pamr.train() and only makes sense when do.normalize set TRUE as we do sum contribution
   
   if (is.null(model))
     model <- predictorPAM(...)$model
@@ -605,12 +652,13 @@ predictorRadialSVM <- function(xtr, xtst, ytr, do.normalize = TRUE, ...)
 
 
 
-predictorKendallSVM <- function(xtr, xtst, ytr, 
-                                kernel = pcaPP::cor.fk, do.normalize = FALSE, 
+predictorKendallSVM <- function(xtr, xtst, ytr, kernel = pcaPP::cor.fk, do.normalize = FALSE, 
+                                kmat = NULL, 
                                 cost = 10^(-3:3), cross = 5, cutoff = 0.5, ...)
 {
   # by the concept with default kendall kernel, do.normalize should be set FALSE by default as well!! Be careful when calling with other kernels
-  # kernel is provided as a "function" between two vectors instead of a "character"
+  # kernel is provided as a "function" instead of a "character"
+  # kmat is used if provided to accelerate the computation and names must be matched to rows in xtr/xtst to identity tr/tst indices
   # cost is a vector of C parameter grid to tune with, no feature selection
   # NOTE cross validation is set to always minimize misclassification error by default of tune.svm arguments despite that it might not be appropriate for largely unbalanced classes
   # NOTE this function also is a generic function which uses kernlab implementation and can thus deal with explicit kernel matrix as input with any kernel function 
@@ -622,24 +670,40 @@ predictorKendallSVM <- function(xtr, xtst, ytr,
   classes.eff <- classes[tab > 0]
   stopifnot(length(classes.eff) >= 2)
   
-  if (is.character(kernel))
-    stop("kernel needs to be a specific function instead of a character")
-  class(kernel) <- 'kernel'
+  if (is.null(kmat)) {
+    if(do.normalize){
+      d <- normalizeData(xtr, xtst, ...)
+      xtr <- d$xtr
+      xtst <- d$xtst
+    }
+    stopifnot(is.function(kernel))
+    kmat <- computeKernelMatrix(x = rbind(xtr, xtst), kernel = kernel, ...)
+  } else {
+    stopifnot(!is.null(xtr) && !is.null(xtst) && !is.null(dimnames(kmat)))
+    idx <- match(c(rownames(xtr),rownames(xtst)), rownames(kmat))
+    kmat <- kmat[idx,idx]
+  }
+  
   # CV for tuning cost
+  train.idx <- 1:nrow(xtr)
   cost <- sort(cost, decreasing = FALSE) # parsimony principle
   cv.acc <- sapply(cost, function(cpm){
-    cv.model <- ksvm(x = as.matrix(xtr), y = as.factor(as.character(ytr)), 
+    cv.model <- ksvm(x = as.kernelMatrix(kmat[train.idx, train.idx]), 
+                     y = as.factor(as.character(ytr)), 
                      scaled = do.normalize, kernel = kernel, type = "C-svc", 
                      C = cpm, cross = cross, prob.model = FALSE, ...)
     cv.model@cross
   })
   best.cpm <- cost[which.min(cv.acc)]
   # train
-  model <- ksvm(x = as.matrix(xtr), y = as.factor(as.character(ytr)), 
+  model <- ksvm(x = as.kernelMatrix(kmat[train.idx, train.idx]), 
+                y = as.factor(as.character(ytr)), 
                 scaled = do.normalize, kernel = kernel, type = "C-svc", 
                 C = best.cpm, cross = 0, prob.model = TRUE, ...)
   # predict
-  pred <- predict(object = model, newdata = xtst, type = "probabilities", ...)
+  pred <- predict(object = model, 
+                  newdata = as.kernelMatrix(kmat[-train.idx,train.idx,drop=F][,SVindex(model),drop=F]), 
+                  type = "probabilities", ...)
   pred.class <- colnames(pred)[max.col(pred)]
   pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                       dimnames = list(rownames(xtst), classes))
@@ -732,8 +796,8 @@ predictorGBM <- function(xtr, xtst, ytr, n.trees = 1500, shrinkage = 0.002,
                          interaction.depth = 6, bag.fraction = 1, cutoff = 0.5, ...)
 {
   # no feature selection
-  # NOTE tuning for algorithmic parameters is not yet implemented
   # NOTE no need for do.normalize for base learner DT
+  # NOTE tuning for algorithmic parameters is not yet implemented
   
   library(gbm)
   
@@ -758,22 +822,25 @@ predictorGBM <- function(xtr, xtst, ytr, n.trees = 1500, shrinkage = 0.002,
 
 
 
-predictorRF <- function(xtr, xtst, ytr, ntrees = 500, importance = TRUE, cutoff = 0.5, ...)
+predictorRF <- function(xtr, xtst, ytr, ntree = 500*(1:3), importance = TRUE, cross = 5, cutoff = 0.5, ...)
 {
-  # no feature selection
-  # NOTE tuning for algorithmic parameters is not yet implemented
+  # ntree is a vector of parameter grid to tune with, random feature selection
+  # NOTE cross validation is set to always minimize misclassification error by default of tune.svm arguments despite that it might not be appropriate for largely unbalanced classes
   # NOTE no need for do.normalize for base learner DT
   
   library(randomForest)
+  library(e1071)
   
   classes <- names(tab <- table(ytr))
   classes.eff <- classes[tab > 0]
   stopifnot(length(classes.eff) >= 2)
   
   # train
-  model <- randomForest(x = xtr, y = as.factor(as.character(ytr)), ntree = ntrees, importance = importance, ...)
+  model <- tune.randomForest(x = xtr, y = as.factor(as.character(ytr)), 
+                             ntree = ntree, importance = importance, 
+                             tunecontrol = tune.control(sampling="cross", cross=cross), ...)
   # predict
-  pred <- predict(object = model, newdata = xtst, type = "prob", ...)
+  pred <- predict(object = model$best.model, newdata = xtst, type = "prob", ...)
   pred.class <- colnames(pred)[max.col(pred)]
   pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                       dimnames = list(rownames(xtst), classes))
