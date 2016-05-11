@@ -51,7 +51,10 @@ samplelist <- unlist(samplelist)
 nsample <- length(samplelist)
 
 # create mixed feature matrices
-xlist2combn <- list("path.and.genes.vals" = c("path.vals", "genes.vals"))
+
+xlist2combn <- list("eff.and.other.genes.vals" = c("eff.vals", "other.genes.vals"), 
+                    "path.and.other.genes.vals" = c("path.vals", "other.genes.vals"), 
+                    "path.and.genes.vals" = c("path.vals", "genes.vals"))
 for (xname in names(xlist2combn)) {
   x <- mget(xlist2combn[[xname]])
   x <- do.call("cbind", x)
@@ -75,7 +78,7 @@ Binary classes are created from clinical info for classification. There vector o
 
 #### Basal vs Non-basal
 
-```{r basal}
+```{r basal, eval=FALSE}
 y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
 head(y$V2)
 basal.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$V2), levels = c("Not_Basal", "Basal"), labels = c("neg_NonBasal", "pos_Basal"))
@@ -90,7 +93,7 @@ table(basal.grps[sl])
 
 #### Tumor vs Normal
 
-```{r tumor}
+```{r tumor, eval=FALSE}
 y <- read.table(paste0(datapath, 'TCGA_phenotype.txt'), header = TRUE)
 head(y$cancer)
 tumor.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$cancer), levels = c("Normal", "Tumor"), labels = c("neg_Normal", "pos_Tumor"))

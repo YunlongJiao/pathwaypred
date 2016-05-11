@@ -51,7 +51,9 @@ samplelist <- unlist(samplelist)
 nsample <- length(samplelist)
 
 # create mixed feature matrices
-xlist2combn <- list("path.and.genes.vals" = c("path.vals", "genes.vals"))
+xlist2combn <- list("eff.and.other.genes.vals" = c("eff.vals", "other.genes.vals"), 
+                    "path.and.other.genes.vals" = c("path.vals", "other.genes.vals"), 
+                    "path.and.genes.vals" = c("path.vals", "genes.vals"))
 for (xname in names(xlist2combn)) {
   x <- mget(xlist2combn[[xname]])
   x <- do.call("cbind", x)
