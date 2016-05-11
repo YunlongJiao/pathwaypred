@@ -16,7 +16,7 @@
 #$ -e /dev/null
 
 ## set up distributed jobs for nclust range
-#$ -t 1-28800
+#$ -t 1-36000
 ## limit the number of simultaneous jobs
 #$ -tc 100
 

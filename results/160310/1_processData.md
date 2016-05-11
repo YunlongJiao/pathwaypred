@@ -53,7 +53,10 @@ samplelist <- unlist(samplelist)
 nsample <- length(samplelist)
 
 # create mixed feature matrices
-xlist2combn <- list("path.and.genes.vals" = c("path.vals", "genes.vals"))
+
+xlist2combn <- list("eff.and.other.genes.vals" = c("eff.vals", "other.genes.vals"), 
+                    "path.and.other.genes.vals" = c("path.vals", "other.genes.vals"), 
+                    "path.and.genes.vals" = c("path.vals", "genes.vals"))
 for (xname in names(xlist2combn)) {
   x <- mget(xlist2combn[[xname]])
   x <- do.call("cbind", x)
@@ -66,9 +69,11 @@ xlist
 ```
 
 ```
-## [1] "eff.vals"            "fun.vals"            "genes.vals"         
-## [4] "go.vals"             "mini.genes.vals"     "other.genes.vals"   
-## [7] "path.vals"           "path.and.genes.vals"
+##  [1] "eff.vals"                  "fun.vals"                 
+##  [3] "genes.vals"                "go.vals"                  
+##  [5] "mini.genes.vals"           "other.genes.vals"         
+##  [7] "path.vals"                 "eff.and.other.genes.vals" 
+##  [9] "path.and.other.genes.vals" "path.and.genes.vals"
 ```
 
 ```r
@@ -146,6 +151,22 @@ for (xname in xlist) {
 ## NULL
 ## 
 ## 
+## -------------> 	  eff.and.other.genes.vals  	 <-------------
+##  num [1:881, 1:17534] 0.00407 0.0044 0.00438 0.00426 0.00426 ...
+##  - attr(*, "dimnames")=List of 2
+##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:17534] "X_hsa04014__42" "X_hsa04014__43" "X_hsa04014__44" "X_hsa04014__33" ...
+## NULL
+## 
+## 
+## -------------> 	  path.and.other.genes.vals  	 <-------------
+##  num [1:881, 1:22597] 0.00209 0.0022 0.00205 0.00186 0.00218 ...
+##  - attr(*, "dimnames")=List of 2
+##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:22597] "X_hsa04014__14___42" "X_hsa04014__14___43" "X_hsa04014__14___44" "X_hsa04014__14___33" ...
+## NULL
+## 
+## 
 ## -------------> 	  path.and.genes.vals  	 <-------------
 ##  num [1:881, 1:24809] 0.00209 0.0022 0.00205 0.00186 0.00218 ...
 ##  - attr(*, "dimnames")=List of 2
@@ -164,47 +185,14 @@ Binary classes are created from clinical info for classification. There vector o
 ```r
 y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
 head(y$V2)
-```
-
-```
-## [1] "Basal" "Basal" "Basal" "Basal" "Basal" "Basal"
-```
-
-```r
 basal.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$V2), levels = c("Not_Basal", "Basal"), labels = c("neg_NonBasal", "pos_Basal"))
 stopifnot(!any(is.na(basal.grps)))
 names(basal.grps) <- y$V1
 head(basal.grps)
-```
-
-```
-## TCGA.A2.A0T2.01A.11R.A084.07 TCGA.A1.A0SK.01A.12R.A084.07 
-##                    pos_Basal                    pos_Basal 
-## TCGA.A2.A0CM.01A.31R.A034.07 TCGA.AR.A1AR.01A.31R.A137.07 
-##                    pos_Basal                    pos_Basal 
-## TCGA.BH.A18V.11A.52R.A12D.07 TCGA.BH.A18V.01A.11R.A12D.07 
-##                    pos_Basal                    pos_Basal 
-## Levels: neg_NonBasal < pos_Basal
-```
-
-```r
 # sample size (how many labels are available in the sample cohort)
 length(sl <- intersect(samplelist, names(basal.grps)))
-```
-
-```
-## [1] 495
-```
-
-```r
 # contrasting class size
 table(basal.grps[sl])
-```
-
-```
-## 
-## neg_NonBasal    pos_Basal 
-##          401           94
 ```
 
 #### Tumor vs Normal
@@ -213,47 +201,14 @@ table(basal.grps[sl])
 ```r
 y <- read.table(paste0(datapath, 'TCGA_phenotype.txt'), header = TRUE)
 head(y$cancer)
-```
-
-```
-## [1] "Tumor" "Tumor" "Tumor" "Tumor" "Tumor" "Tumor"
-```
-
-```r
 tumor.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$cancer), levels = c("Normal", "Tumor"), labels = c("neg_Normal", "pos_Tumor"))
 stopifnot(!any(is.na(tumor.grps)))
 names(tumor.grps) <- rownames(y)
 head(tumor.grps)
-```
-
-```
-## TCGA.C4.A0F0.01A.12R.A10U.07 TCGA.C4.A0F6.01A.11R.A10U.07 
-##                    pos_Tumor                    pos_Tumor 
-## TCGA.BL.A0C8.01A.11R.A10U.07 TCGA.BL.A13J.01A.11R.A10U.07 
-##                    pos_Tumor                    pos_Tumor 
-## TCGA.BT.A20J.01A.11R.A14Y.07 TCGA.BT.A20N.01A.11R.A14Y.07 
-##                    pos_Tumor                    pos_Tumor 
-## Levels: neg_Normal < pos_Tumor
-```
-
-```r
 # sample size (how many labels are available in the sample cohort)
 length(sl <- intersect(samplelist, names(tumor.grps)))
-```
-
-```
-## [1] 881
-```
-
-```r
 # contrasting class size
 table(tumor.grps[sl])
-```
-
-```
-## 
-## neg_Normal  pos_Tumor 
-##        102        779
 ```
 
 #### Alive vs Deceased (overall survival)
@@ -355,7 +310,7 @@ ylist
 ```
 
 ```
-## [1] "basal.grps" "surv.grps"  "tumor.grps"
+## [1] "surv.grps"
 ```
 
 ## Predictors
@@ -405,14 +360,16 @@ kmatlist
 ```
 
 ```
-## [1] "predictorKendallSVM.eff.vals.kmat"           
-## [2] "predictorKendallSVM.fun.vals.kmat"           
-## [3] "predictorKendallSVM.genes.vals.kmat"         
-## [4] "predictorKendallSVM.go.vals.kmat"            
-## [5] "predictorKendallSVM.mini.genes.vals.kmat"    
-## [6] "predictorKendallSVM.other.genes.vals.kmat"   
-## [7] "predictorKendallSVM.path.and.genes.vals.kmat"
-## [8] "predictorKendallSVM.path.vals.kmat"
+##  [1] "predictorKendallSVM.eff.and.other.genes.vals.kmat" 
+##  [2] "predictorKendallSVM.eff.vals.kmat"                 
+##  [3] "predictorKendallSVM.fun.vals.kmat"                 
+##  [4] "predictorKendallSVM.genes.vals.kmat"               
+##  [5] "predictorKendallSVM.go.vals.kmat"                  
+##  [6] "predictorKendallSVM.mini.genes.vals.kmat"          
+##  [7] "predictorKendallSVM.other.genes.vals.kmat"         
+##  [8] "predictorKendallSVM.path.and.genes.vals.kmat"      
+##  [9] "predictorKendallSVM.path.and.other.genes.vals.kmat"
+## [10] "predictorKendallSVM.path.vals.kmat"
 ```
 
 ## (Nested) cross validation parameters
@@ -450,9 +407,9 @@ str(param)
 ```
 
 ```
-## 'data.frame':	86400 obs. of  9 variables:
+## 'data.frame':	36000 obs. of  9 variables:
 ##  $ Var1: chr  "eff.vals" "fun.vals" "genes.vals" "go.vals" ...
-##  $ Var2: chr  "basal.grps" "basal.grps" "basal.grps" "basal.grps" ...
+##  $ Var2: chr  "surv.grps" "surv.grps" "surv.grps" "surv.grps" ...
 ##  $ Var3: chr  "predictorConstant" "predictorConstant" "predictorConstant" "predictorConstant" ...
 ##  $ Var4: int  1 1 1 1 1 1 1 1 1 1 ...
 ##  $ Var5: int  5 5 5 5 5 5 5 5 5 5 ...

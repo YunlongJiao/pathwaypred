@@ -53,7 +53,9 @@ samplelist <- unlist(samplelist)
 nsample <- length(samplelist)
 
 # create mixed feature matrices
-xlist2combn <- list("path.and.genes.vals" = c("path.vals", "genes.vals"))
+xlist2combn <- list("eff.and.other.genes.vals" = c("eff.vals", "other.genes.vals"), 
+                    "path.and.other.genes.vals" = c("path.vals", "other.genes.vals"), 
+                    "path.and.genes.vals" = c("path.vals", "genes.vals"))
 for (xname in names(xlist2combn)) {
   x <- mget(xlist2combn[[xname]])
   x <- do.call("cbind", x)
@@ -66,9 +68,11 @@ xlist
 ```
 
 ```
-## [1] "eff.vals"            "fun.vals"            "genes.vals"         
-## [4] "go.vals"             "mini.genes.vals"     "other.genes.vals"   
-## [7] "path.vals"           "path.and.genes.vals"
+##  [1] "eff.vals"                  "fun.vals"                 
+##  [3] "genes.vals"                "go.vals"                  
+##  [5] "mini.genes.vals"           "other.genes.vals"         
+##  [7] "path.vals"                 "eff.and.other.genes.vals" 
+##  [9] "path.and.other.genes.vals" "path.and.genes.vals"
 ```
 
 ```r
@@ -143,6 +147,22 @@ for (xname in xlist) {
 ##  - attr(*, "dimnames")=List of 2
 ##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
 ##   ..$ : chr [1:6101] "X_hsa04014__14___42" "X_hsa04014__14___43" "X_hsa04014__14___44" "X_hsa04014__14___33" ...
+## NULL
+## 
+## 
+## -------------> 	  eff.and.other.genes.vals  	 <-------------
+##  num [1:881, 1:17534] 0.00407 0.0044 0.00438 0.00426 0.00426 ...
+##  - attr(*, "dimnames")=List of 2
+##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:17534] "X_hsa04014__42" "X_hsa04014__43" "X_hsa04014__44" "X_hsa04014__33" ...
+## NULL
+## 
+## 
+## -------------> 	  path.and.other.genes.vals  	 <-------------
+##  num [1:881, 1:22597] 0.00209 0.0022 0.00205 0.00186 0.00218 ...
+##  - attr(*, "dimnames")=List of 2
+##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:22597] "X_hsa04014__14___42" "X_hsa04014__14___43" "X_hsa04014__14___44" "X_hsa04014__14___33" ...
 ## NULL
 ## 
 ## 
@@ -288,14 +308,16 @@ kmatlist
 ```
 
 ```
-## [1] "predictorKendallSVM.eff.vals.kmat"           
-## [2] "predictorKendallSVM.fun.vals.kmat"           
-## [3] "predictorKendallSVM.genes.vals.kmat"         
-## [4] "predictorKendallSVM.go.vals.kmat"            
-## [5] "predictorKendallSVM.mini.genes.vals.kmat"    
-## [6] "predictorKendallSVM.other.genes.vals.kmat"   
-## [7] "predictorKendallSVM.path.and.genes.vals.kmat"
-## [8] "predictorKendallSVM.path.vals.kmat"
+##  [1] "predictorKendallSVM.eff.and.other.genes.vals.kmat" 
+##  [2] "predictorKendallSVM.eff.vals.kmat"                 
+##  [3] "predictorKendallSVM.fun.vals.kmat"                 
+##  [4] "predictorKendallSVM.genes.vals.kmat"               
+##  [5] "predictorKendallSVM.go.vals.kmat"                  
+##  [6] "predictorKendallSVM.mini.genes.vals.kmat"          
+##  [7] "predictorKendallSVM.other.genes.vals.kmat"         
+##  [8] "predictorKendallSVM.path.and.genes.vals.kmat"      
+##  [9] "predictorKendallSVM.path.and.other.genes.vals.kmat"
+## [10] "predictorKendallSVM.path.vals.kmat"
 ```
 
 ## (Nested) cross validation parameters
@@ -333,7 +355,7 @@ str(param)
 ```
 
 ```
-## 'data.frame':	28800 obs. of  9 variables:
+## 'data.frame':	36000 obs. of  9 variables:
 ##  $ Var1: chr  "eff.vals" "fun.vals" "genes.vals" "go.vals" ...
 ##  $ Var2: chr  "subtype.grps" "subtype.grps" "subtype.grps" "subtype.grps" ...
 ##  $ Var3: chr  "predictorConstant" "predictorConstant" "predictorConstant" "predictorConstant" ...
