@@ -40,8 +40,6 @@ source("../../src/func.R")
 # get R objects
 xtr <- get(xname)
 ytr <- get(yname)
-# rm other un-used objects
-rm(list = ls(pattern = '[.](grps|vals|kmat)$'))
 # keep only samples for which label info is available
 samplelist <- intersect(rownames(xtr), names(ytr))
 message('Sample size = ', length(samplelist))
@@ -52,6 +50,9 @@ ytr <- ytr[samplelist]
 if (prname %in% prlist2kmat)
   formals(predictorKendallSVM)$kmat <- get(paste(prname, xname, "kmat", sep = "."))
 
+# rm other un-used objects
+rm(list = ls(pattern = '[.](grps|vals|kmat)$'))
+gc()
 
 message("creating data split for CV ...")
 set.seed(94151402)
