@@ -3,7 +3,7 @@
 ## run on crom01 with R version=3.2.1
 
 ## -- our name ---
-#$ -N multi_results
+#$ -N featselect
 #$ -l h_vmem=16G
 ## Make sure that the .e and .o file arrive in the
 ## working directory
@@ -14,4 +14,4 @@
 #$ -e logs
 
 source $HOME/.bashrc
-Rscript -e "knitr::knit('$PWD/3_results.Rmd')"
+Rscript -e "knitr::knit('$PWD/5_featselect.Rmd')"

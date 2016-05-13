@@ -452,11 +452,12 @@ plotROCcv <- function(res, savepath, pos.label = tail(res$pos.label, 1), beta = 
 
 # in this section make sure named after featselectXXX where XXX comes from predictorXXX
 # @param see predictorXXX
+# @param keep.signif should only significant features be returned
 # @return A vector named by corresponding features recording appropriate values sorted by decreasing "importance"
 
 
 
-featselectIndepSignif <- function(xtr, ytr, pthres = 0.05, test = "t.test", method = "none",
+featselectIndepSignif <- function(xtr, ytr, pthres = 0.05, test = "t.test", method = "none", keep.signif = TRUE,
                                   pos.label = tail(names(table(ytr)),1), ...)
 {
   # xtr should be assigned col names and ytr is a vector of labels
@@ -492,15 +493,17 @@ featselectIndepSignif <- function(xtr, ytr, pthres = 0.05, test = "t.test", meth
   })
   names(plist) <- featlist
   plist <- p.adjust(p = plist, method = method)
-  plist <- plist[plist < pthres]
   
+  if (keep.signif)
+    plist <- plist[plist < pthres]
   plist <- sort(plist, decreasing = FALSE)
+  
   return(plist)
 }
 
 
 
-featselectRF <- function(model = NULL, ...)
+featselectRF <- function(model = NULL, ..., keep.signif = TRUE)
 {
   # computes importance measure as mean decrease in accuracy (type=1) for each feature
   # returns only those with positive importance ordered by decreasing value
@@ -509,15 +512,17 @@ featselectRF <- function(model = NULL, ...)
   if (is.null(model))
     model <- predictorRF(...)$model
   s <- drop(randomForest::importance(x = model$best.model, type = 1))
-  s <- s[s > 0]
   
+  if (keep.signif)
+    s <- s[s > 0]
   s <- sort(s, decreasing = TRUE)
+  
   return(s)
 }
 
 
 
-featselectLogitLasso <- function(model = NULL, ...)
+featselectLogitLasso <- function(model = NULL, ..., keep.signif = TRUE)
 {
   # computes absolute value of coefficients for each feature
   # returns only those with non-zero contribution to at least one of the phenotypes ordered by decreasing sum contribution
@@ -528,15 +533,17 @@ featselectLogitLasso <- function(model = NULL, ...)
   s <- predict(object = model, newx = NULL, type = "coefficients")
   s <- do.call('cbind', s)
   s <- rowSums(abs(s[-1, ])) # remove intercept
-  s <- s[s > 0] # can be strongly positive or negative related!
   
+  if (keep.signif)
+    s <- s[s > 0] # can be strongly positive or negative related!
   s <- sort(s, decreasing = TRUE)
+  
   return(s)
 }
 
 
 
-featselectPAM <- function(model = NULL, ...)
+featselectPAM <- function(model = NULL, ..., keep.signif = TRUE)
 {
   # computes shrunken centroids in absolute values of coefficients for each feature
   # returns only those with non-zero contribution to at least one of the phenotypes ordered by decreasing sum contribution
@@ -550,9 +557,11 @@ featselectPAM <- function(model = NULL, ...)
   # the following is adapted according to pamr::pamr.predict()
   delta.shrunk <- (centroid - model$centroid.overall)/model$sd
   s <- drop(abs(delta.shrunk) %*% rep(1, ncol(model$centroids)))
-  s <- s[s > 0]
   
+  if (keep.signif)
+    s <- s[s > 0]
   s <- sort(s, decreasing = TRUE)
+  
   return(s)
 }
 

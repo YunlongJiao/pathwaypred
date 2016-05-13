@@ -50,9 +50,9 @@ Three directions
 
 ## TODO
 
-- finish featselect.Rmd
-- collect finished jobs in both 160310 and 160421 and send both 3_results.sh to run
-- feature selection with pathways and add selected other-genes in there to enhance prediction
+- finish 4_featselect.Rmd
+- finish 5_fsPred.Rmd where pathway features are selected and other.genes are then added in there to enhance prediction
+- collect finished jobs in both 160310 and 160421 and send both 3_results.sh and 4_featselect.sh to run
 
 ## Future work
 

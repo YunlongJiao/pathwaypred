@@ -4,7 +4,7 @@
 This script processes data and generates matrices for naive models later to make predictions.
 
 ```{r setup}
-knitr::opts_chunk$set(error = FALSE)
+knitr::opts_chunk$set(error = FALSE, cache.path = "1_processData_cache/")
 set.seed(35875954)
 source("../../src/func.R")
 datapath <- '../../data/BRCA_saved_data/'
@@ -108,7 +108,7 @@ table(tumor.grps[sl])
 
 #### Alive vs Deceased (overall survival)
 
-```{r surv, message=FALSE}
+```{r surv, message=FALSE, cache=TRUE}
 alignmat <- read.table(paste0(datapath, 'clinical_info_sample.txt'), sep = "\t", quote = "\"", header = TRUE)
 y <- read.table(paste0(datapath, 'clinical_info_donor.txt'), sep = "\t", quote = "\"", header = TRUE)
 alignid <- data.frame(sample = samplelist, 
@@ -201,6 +201,10 @@ nrepeats <- 10
 # inner CV folds for tuning predictor
 nfolds.inn <- 5
 nrepeats.inn <- 1
+# indep signif parameters
+pthres <- 0.05
+test <- "t.test"
+method <- "none"
 ```
 
 ## Save up !!
@@ -220,6 +224,20 @@ param <- expand.grid(as.character(xlist), # feature
                      as.integer(nrepeats.inn), 
                      KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
 write.table(param, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
+# preview
+str(param)
+
+xlist.test <- grep("[.]and[.]|^genes", xlist, value = TRUE, invert = TRUE)
+param <- expand.grid(as.character(xlist.test), # feature
+                     as.character(ylist), # group
+                     as.integer(1:(nfolds * nrepeats)), # outter CV folds index for evaluation
+                     as.integer(nfolds), 
+                     as.integer(nrepeats), 
+                     as.numeric(pthres), 
+                     as.character(test), 
+                     as.character(method), 
+                     KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+write.table(param, file = '4_indepsignif.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
 # preview
 str(param)
 
