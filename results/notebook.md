@@ -50,9 +50,9 @@ Three directions
 
 ## TODO
 
-- collect finished jobs in both 160310 and 160421 and plot new results
-- look at FS frequencies and do indepSignif test for all features in script 160502/3_results.Rmd
-- feature selection with pathways and add selected other-genes in there to enhance prediction in a new-date folder
+- finish featselect.Rmd
+- collect finished jobs in both 160310 and 160421 and send both 3_results.sh to run
+- feature selection with pathways and add selected other-genes in there to enhance prediction
 
 ## Future work
 

@@ -242,10 +242,21 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
   if (!is.null(seed)) set.seed(seed)
   
   # adjust correp rows and cols position in case they do not match
-  if (!is.null(dimnames(xtr)) && !is.null(dimnames(xtst)) && !is.null(names(ytr)) && !is.null(names(ytst))) {
-    ytr <- ytr[rownames(xtr)]
-    ytst <- ytst[rownames(xtst)]
-    xtst <- xtst[ ,colnames(xtr),drop=F]
+  if (!is.null(rownames(xtr)) && !is.null(rownames(xtst)) && !is.null(names(ytr)) && !is.null(names(ytst))) {
+    samplelist.tr <- intersect(rownames(xtr), names(ytr))
+    xtr <- xtr[samplelist.tr, ,drop=F]
+    ytr <- ytr[samplelist.tr]
+    
+    samplelist.tst <- intersect(rownames(xtst), names(ytst))
+    xtst <- xtst[samplelist.tst, ,drop=F]
+    ytst <- ytst[samplelist.tst]
+  }
+  if (!is.null(colnames(xtr)) && !is.null(colnames(xtst))) {
+    featlist <- intersect(colnames(xtr), colnames(xtst))
+    xtr <- xtr[ ,featlist,drop=F]
+    xtst <- xtst[ ,featlist,drop=F]
+  } else {
+    featlist <- colnames(xtr)
   }
   
   # remove NAs in ytr
@@ -263,16 +274,14 @@ indepValidation <- function(xtr, ytr, xtst, ytst, predictor, ysurv = NULL,
   }
   
   # indep signif test for feature reduction
-  if(pthres > 0){
-    plist <- featselectIndepSignif(xtr=xtr, ytr=ytr, pthres = pthres, ...)
+  if (pthres > 0) {
+    plist <- featselectIndepSignif(xtr=xtr, ytr=ytr, pthres = pthres, pos.label = pos.label, ...)
     featlist <- names(plist)
-    if(length(featlist) == 0){
+    if (length(featlist) == 0) {
       stop("No features survived after independence significance test hence no feature reduction is reserved!")
     }
-    xtr <- xtr[,featlist,drop=F]
-    xtst <- xtst[,featlist,drop=F]
-  } else{
-    featlist <- colnames(xtr)
+    xtr <- xtr[ ,featlist,drop=F]
+    xtst <- xtst[ ,featlist,drop=F]
   }
   
   # model and predict and record system time as well
@@ -447,19 +456,37 @@ plotROCcv <- function(res, savepath, pos.label = tail(res$pos.label, 1), beta = 
 
 
 
-featselectIndepSignif <- function(xtr, ytr, pthres = 0.05, test = "t.test", method = "none", ...)
+featselectIndepSignif <- function(xtr, ytr, pthres = 0.05, test = "t.test", method = "none",
+                                  pos.label = tail(names(table(ytr)),1), ...)
 {
   # xtr should be assigned col names and ytr is a vector of labels
   # test denotes a char from c("t.test","wilcox.test",...)
   # method denotes multiple test correction, default "none", see ?p.adjust.methods
+  # pos.label is a single character so that in case ytr has more than 2 levels we create a binary label wrt pos.label to perform the test
   # featselectIndepSignif() runs feature-by-feature independence significance test between contrasting classes
   # and returns p-values for each feature
   
+  # remove const
+  xtr <- removeConst(xtr = xtr, ...)
+  # align samples
+  if (!is.null(rownames(xtr)) && !is.null(names(ytr))) {
+    samplelist <- intersect(rownames(xtr), names(ytr))
+    xtr <- xtr[samplelist, ,drop=F]
+    ytr <- ytr[samplelist]
+  }
+  # in case ytr has more than 2 levels
+  stopifnot(length(pos.label) == 1)
+  ytr.bin <- as.character(ytr)
+  ytr.bin[ytr == pos.label] <- paste0("pos")
+  ytr.bin[ytr != pos.label] <- paste0("neg")
+  ytr.bin <- factor(ytr.bin, levels = c("neg","pos"), ordered = TRUE)
+  
+  # perform test
   featlist <- colnames(xtr)
   plist <- sapply(featlist, function(featname){
     fo <- paste0(featname," ~ y")
     t <- get(test)(formula = as.formula(fo), 
-                   data = data.frame(y=as.factor(as.character(ytr)),as.data.frame(xtr)), 
+                   data = data.frame(y=as.factor(as.character(ytr.bin)),as.data.frame(xtr)), 
                    ...)
     t$p.value
   })
