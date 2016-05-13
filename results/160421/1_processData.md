@@ -5,7 +5,7 @@ This script processes data and generates matrices for naive models later to make
 
 
 ```r
-knitr::opts_chunk$set(error = FALSE)
+knitr::opts_chunk$set(error = FALSE, cache.path = "1_processData_cache/")
 set.seed(35875954)
 source("../../src/func.R")
 datapath <- '../../data/BRCA_saved_data/'
@@ -330,6 +330,10 @@ nrepeats <- 10
 # inner CV folds for tuning predictor
 nfolds.inn <- 5
 nrepeats.inn <- 1
+# indep signif parameters
+pthres <- 0.05
+test <- "t.test"
+method <- "none"
 ```
 
 ## Save up !!
@@ -365,6 +369,34 @@ str(param)
 ##  $ Var7: int  0 0 0 0 0 0 0 0 0 0 ...
 ##  $ Var8: int  5 5 5 5 5 5 5 5 5 5 ...
 ##  $ Var9: int  1 1 1 1 1 1 1 1 1 1 ...
+```
+
+```r
+xlist.test <- grep("[.]and[.]|^genes", xlist, value = TRUE, invert = TRUE)
+param <- expand.grid(as.character(xlist.test), # feature
+                     as.character(ylist), # group
+                     as.integer(1:(nfolds * nrepeats)), # outter CV folds index for evaluation
+                     as.integer(nfolds), 
+                     as.integer(nrepeats), 
+                     as.numeric(pthres), 
+                     as.character(test), 
+                     as.character(method), 
+                     KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+write.table(param, file = '4_indepsignif.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
+# preview
+str(param)
+```
+
+```
+## 'data.frame':	300 obs. of  8 variables:
+##  $ Var1: chr  "eff.vals" "fun.vals" "go.vals" "mini.genes.vals" ...
+##  $ Var2: chr  "subtype.grps" "subtype.grps" "subtype.grps" "subtype.grps" ...
+##  $ Var3: int  1 1 1 1 1 1 2 2 2 2 ...
+##  $ Var4: int  5 5 5 5 5 5 5 5 5 5 ...
+##  $ Var5: int  10 10 10 10 10 10 10 10 10 10 ...
+##  $ Var6: num  0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 ...
+##  $ Var7: chr  "t.test" "t.test" "t.test" "t.test" ...
+##  $ Var8: chr  "none" "none" "none" "none" ...
 ```
 
 ```r

@@ -50,9 +50,9 @@ Three directions
 
 ## TODO
 
-- finish 4_featselect.Rmd
-- finish 5_fsPred.Rmd where pathway features are selected and other.genes are then added in there to enhance prediction
-- collect finished jobs in both 160310 and 160421 and send both 3_results.sh and 4_featselect.sh to run
+- finish 5_featselect.Rmd with algorithmic fs counting freq of features being selected
+- finish 6_fsPred.R where, for each fixed algorithm that does FS and prediction simultaneously, pathway features and other.genes are independently selected and then added together to enhance prediction??
+- compare in 7_fsResults.Rmd by each fixed algorithm (mostly RF) to see if prediction is enhanced by this additional step? Then see using FS, compared to without FS but prname tuned out, if prediction is enhanced by FS?
 
 ## Future work
 
