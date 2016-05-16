@@ -238,12 +238,7 @@ for (yname in ylist) {
   })
   names(plist) <- xlist.test
   assign(paste0(yname,"_plist"), plist)
-  rm(res)
 }
-```
-
-```
-## Warning in rm(res): object 'res' not found
 ```
 
 For each `yname` in surv.grps, we have several plots to illustrate the results
@@ -467,8 +462,7 @@ for (yname in ylist) {
   scores$score[scores$score == "tpr"] <- "sens"
   p1 <- ggplot(scores, aes(x = prname, y = value)) + 
     geom_boxplot(aes(fill = prname), alpha = 0.8) + 
-    scale_y_continuous(limits = c(0.75, 1)) + 
-    facet_wrap(~score, scales = "fixed") + 
+    facet_wrap(~score, scales = "free") + 
     ggtitle(paste0("predicting ", yname, " with ", xname)) + 
     theme(axis.text.x = element_blank())
   plot(p1)
@@ -523,6 +517,7 @@ for (yname in ylist) {
   featlist.tab <- lapply(featlist.short, function(u) lapply(u, function(v) 
     sort(table(unlist(v)), decreasing = TRUE)
   ))
+  cat('\nPreview of top 3 most often selected features in each type\n')
   print(lapply(featlist.tab, function(u) lapply(u, head, n=3)))
   
   # count number of times of features from each type being selected over CV runs
@@ -534,8 +529,9 @@ for (yname in ylist) {
   featlist.count <- melt(featlist.count, id.vars = c("prname","xname"))
   p1 <- ggplot(featlist.count, aes(x = variable, y = value)) + 
     geom_bar(aes(fill = xname), stat = "identity", position = "dodge", alpha = 0.8) + 
+    coord_flip() + 
     geom_text(aes(label = value, group = xname), colour = "black", position = position_dodge(0.9), vjust = 0.9) + 
-    facet_wrap(~prname, scales = "free") + 
+    facet_wrap(~prname) + 
     scale_x_discrete(name = paste0("selected times (max ", nfolds*nrepeats, ")")) + 
     scale_y_continuous(name = "count") + 
     ggtitle(paste0("How many times features are selected over all ", nfolds*nrepeats, " CV runs")) + 
@@ -545,7 +541,7 @@ for (yname in ylist) {
 ```
 
 ```
-## Warning: Removed 561 rows containing non-finite values (stat_boxplot).
+## Warning: Removed 204 rows containing non-finite values (stat_boxplot).
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-1.pdf)![plot of chunk featselect](5_featselect_figure/featselect-2.pdf)
@@ -569,6 +565,8 @@ for (yname in ylist) {
 ## Total number of features within each type
 ##  mini.genes.vals other.genes.vals        path.vals 
 ##             2212            16496             6101 
+## 
+## Preview of top 3 most often selected features in each type
 ## $predictorLogitLasso
 ## $predictorLogitLasso$mini.genes.vals
 ## X_353500 
@@ -646,8 +644,8 @@ sessionInfo()
 ## [1] ggplot2_2.1.0  reshape2_1.4.1
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.1      codetools_0.2-14 digest_0.6.8     plyr_1.8.3      
-##  [5] gtable_0.1.2     formatR_1.3      magrittr_1.5     evaluate_0.8.3  
-##  [9] scales_0.3.0     stringi_1.0-1    labeling_0.3     tools_3.2.1     
-## [13] stringr_1.0.0    munsell_0.4.2    colorspace_1.2-6 knitr_1.12.3
+##  [1] Rcpp_0.12.1      digest_0.6.8     plyr_1.8.3       gtable_0.1.2    
+##  [5] formatR_1.3      magrittr_1.5     evaluate_0.8.3   scales_0.3.0    
+##  [9] stringi_1.0-1    labeling_0.3     tools_3.2.1      stringr_1.0.0   
+## [13] munsell_0.4.2    colorspace_1.2-6 knitr_1.12.3
 ```
