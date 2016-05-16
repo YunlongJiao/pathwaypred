@@ -256,8 +256,7 @@ for (yname in ylist) {
   scores$score[scores$score == "tpr"] <- "sens"
   p1 <- ggplot(scores, aes(x = prname, y = value)) + 
     geom_boxplot(aes(fill = prname), alpha = 0.8) + 
-    scale_y_continuous(limits = c(0.75, 1)) + 
-    facet_wrap(~score, scales = "fixed") + 
+    facet_wrap(~score, scales = "free") + 
     ggtitle(paste0("predicting ", yname, " with ", xname)) + 
     theme(axis.text.x = element_blank())
   plot(p1)
@@ -323,6 +322,7 @@ for (yname in ylist) {
   featlist.count <- melt(featlist.count, id.vars = c("prname","xname"))
   p1 <- ggplot(featlist.count, aes(x = variable, y = value)) + 
     geom_bar(aes(fill = xname), stat = "identity", position = "dodge", alpha = 0.8) + 
+    coord_flip() + 
     geom_text(aes(label = value, group = xname), colour = "black", position = position_dodge(0.9), vjust = 0.9) + 
     facet_wrap(~prname, scales = "free") + 
     scale_x_discrete(name = paste0("selected times (max ", nfolds*nrepeats, ")")) + 
