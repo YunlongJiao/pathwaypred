@@ -353,7 +353,7 @@ crossValidationCombineResults <- function(foldres,
       cvres[[elem]] <- NA
     }
   } else {
-    elem_red <- setdiff(names(foldres[[1]]), c(elem_inherit, elem_keepfold, elem_ave))
+    elem_red <- setdiff(names(foldres[[1]]), c(elem_inherit, elem_keepfold, elem_ave, "model"))
     if (length(elem_red) > 0) {
       warning("following elements are not recognized by default and are kept as in folds: ", 
               paste(elem_red, collapse = " , "))
@@ -509,6 +509,8 @@ featselectRF <- function(model = NULL, ..., keep.signif = TRUE)
   # returns only those with positive importance ordered by decreasing value
   # NOTE model must be fit with tune.randomForest() instead of randomForest() and with importance set TRUE
   
+  library(randomForest)
+  
   if (is.null(model))
     model <- predictorRF(...)$model
   s <- drop(randomForest::importance(x = model$best.model, type = 1))
@@ -527,6 +529,8 @@ featselectLogitLasso <- function(model = NULL, ..., keep.signif = TRUE)
   # computes absolute value of coefficients for each feature
   # returns only those with non-zero contribution to at least one of the phenotypes ordered by decreasing sum contribution
   # NOTE model must be fit with cv.glmnet() instead of glmnet() and only makes sense when do.normalize set TRUE as we do sum contribution
+  
+  library(glmnet)
   
   if (is.null(model))
     model <- predictorLogitLasso(...)$model
@@ -548,6 +552,8 @@ featselectPAM <- function(model = NULL, ..., keep.signif = TRUE)
   # computes shrunken centroids in absolute values of coefficients for each feature
   # returns only those with non-zero contribution to at least one of the phenotypes ordered by decreasing sum contribution
   # NOTE model must be fit with pamr.train() and only makes sense when do.normalize set TRUE as we do sum contribution
+  
+  library(pamr)
   
   if (is.null(model))
     model <- predictorPAM(...)$model
