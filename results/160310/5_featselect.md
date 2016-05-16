@@ -529,9 +529,8 @@ for (yname in ylist) {
   featlist.count <- melt(featlist.count, id.vars = c("prname","xname"))
   p1 <- ggplot(featlist.count, aes(x = variable, y = value)) + 
     geom_bar(aes(fill = xname), stat = "identity", position = "dodge", alpha = 0.8) + 
-    coord_flip() + 
     geom_text(aes(label = value, group = xname), colour = "black", position = position_dodge(0.9), vjust = 0.9) + 
-    facet_wrap(~prname) + 
+    facet_wrap(~prname, scales = "free", ncol = 1) + 
     scale_x_discrete(name = paste0("selected times (max ", nfolds*nrepeats, ")")) + 
     scale_y_continuous(name = "count") + 
     ggtitle(paste0("How many times features are selected over all ", nfolds*nrepeats, " CV runs")) + 
