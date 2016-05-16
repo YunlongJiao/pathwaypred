@@ -4,7 +4,7 @@
 
 ## -- our name ---
 #$ -N multi_results
-#$ -l h_vmem=16G
+#$ -l h_vmem=32G
 ## Make sure that the .e and .o file arrive in the
 ## working directory
 #$ -cwd

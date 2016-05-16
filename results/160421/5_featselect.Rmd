@@ -6,7 +6,7 @@ This script studies feature selection with representative FS algorithms to disti
 - look at feature selection results from prediction made with pulled features of path.vals and genes.vals
 
 ```{r setup, message = FALSE}
-knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = "pdf", fig.keep = "high", fig.path = "4_featselect_figure/", cache.path = "4_featselect_cache/")
+knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = "pdf", fig.keep = "high", fig.path = "5_featselect_figure/", cache.path = "5_featselect_cache/")
 set.seed(17766220)
 source("../../src/func.R")
 library(reshape2)
