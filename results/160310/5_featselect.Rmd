@@ -115,7 +115,6 @@ for (yname in ylist) {
   })
   names(plist) <- xlist.test
   assign(paste0(yname,"_plist"), plist)
-  rm(res)
 }
 ```
 
@@ -311,6 +310,7 @@ for (yname in ylist) {
   featlist.tab <- lapply(featlist.short, function(u) lapply(u, function(v) 
     sort(table(unlist(v)), decreasing = TRUE)
   ))
+  cat('\nPreview of top 3 most often selected features in each type\n')
   print(lapply(featlist.tab, function(u) lapply(u, head, n=3)))
   
   # count number of times of features from each type being selected over CV runs
