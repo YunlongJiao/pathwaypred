@@ -8,6 +8,7 @@ knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = "pdf"
 set.seed(70236562)
 source("../../src/func.R")
 library(ggplot2)
+library(reshape2)
 ```
 
 First read in parameters!
@@ -120,8 +121,12 @@ for (i.fold in seq(nfolds*nrepeats)) {
           # in case no ivres files found for any predictors
           stopifnot(length(best.prname) == 1)
         }
+        
+        # save up
+        assign(objname, ivres)
+        save(list = objname, file = objpath)
+        rm(list = c(objname,"cvres"))
       }
-      
       
       # record score values
       scores[[objname]] <- data.frame(y = yname, 
@@ -132,6 +137,7 @@ for (i.fold in seq(nfolds*nrepeats)) {
                                       score = slist, 
                                       value = sapply(slist, function(sname) ivres[[sname]][[sname]]), 
                                       row.names = NULL)
+      rm(ivres)
     }
   }
 }
@@ -229,6 +235,66 @@ for (yname in ylist) {
   print(pmatrix.adj)
   cat('\nSimplify by thresholding at p-value <', thres, '\n')
   print(pmatrix.adj < thres)
+}
+```
+
+## Complementary section: performance with random forest only
+
+This section is complementary to previous section "Performance overview". The difference is that here we do not tune predictor out but fix the predictor to be random forest. Then we compare performance of different feature types wrt various criteria. Generally RF should do a fairly good job in classification while enabling simultaneously feature selection.
+
+```{r perfRF_prepare, message=FALSE}
+prname <- "predictorRF"
+scores <- list()
+for (yname in ylist) {
+  for (xname in xlist) {
+    message(yname, '\t', xname)
+    res.files <- list.files(path = 'Robj', 
+                            pattern = paste('^ivres', xname, yname, prname, 
+                                            '[[:digit:]]+', nfolds, nrepeats, 
+                                            0, nfolds.inn, nrepeats.inn, 
+                                            sep = '_'), 
+                            full.names = TRUE)
+    res <- lapply(res.files, function(f) get(load(f)))
+    names(res) <- paste0("rep",1:length(res))
+    # reduce to only scores and melt
+    res <- lapply(res, '[', slist)
+    res <- melt(res)
+    colnames(res)[colnames(res) == "L1"] <- "rep"
+    colnames(res)[colnames(res) == "L2"] <- "score"
+    
+    # record score values
+    objname <- paste('res', xname, yname, prname, nfolds, nrepeats, sep = '_')
+    scores[[objname]] <- data.frame(y = yname, 
+                                    x = xname, 
+                                    type = xlist.type[xname], 
+                                    predictor = prname, 
+                                    res, 
+                                    row.names = NULL)
+  }
+}
+scores <- do.call('rbind', scores)
+rownames(scores) <- seq(nrow(scores))
+head(scores)
+```
+
+```{r perfRF}
+# plot each grps in a separate figure
+for (yname in ylist) {
+  d <- subset(scores, scores$y == yname)
+  # order feature by types
+  d$x <- factor(d$x, levels = names(xlist.type), ordered = TRUE)
+  # change score values by "fpr" to that by "spec"
+  d$value[d$score == "fpr"] <- 1 - d$value[d$score == "fpr"]
+  d$score[d$score == "fpr"] <- "spec"
+  # change score name "tpr" to "sens"
+  d$score[d$score == "tpr"] <- "sens"
+  p1 <- ggplot(d, aes(x = x, y = value)) + 
+    geom_boxplot(aes(fill = x), alpha = 0.8) + 
+    geom_vline(xintercept = xlist.vline, color = "grey", size = 2) + 
+    facet_wrap(~score, scales = "free") + 
+    ggtitle(paste0("predicting ", yname, " using ", prname)) + 
+    theme(axis.text.x = element_blank())
+  plot(p1)
 }
 ```
 
