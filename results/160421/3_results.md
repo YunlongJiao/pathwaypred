@@ -5,7 +5,7 @@ This script collects results from earlier run and illustrates with tables and pl
 
 
 ```r
-knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = "pdf", fig.keep = "high", fig.path = "result_figure/", cache.path = "result_cache/")
+knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = c("png","pdf"), fig.keep = "high", fig.path = "3_results_figure/", cache.path = "3_results_cache/")
 set.seed(70236562)
 source("../../src/func.R")
 library(ggplot2)
@@ -23,9 +23,11 @@ xlist
 ```
 
 ```
-## [1] "eff.vals"            "fun.vals"            "genes.vals"         
-## [4] "go.vals"             "mini.genes.vals"     "other.genes.vals"   
-## [7] "path.vals"           "path.and.genes.vals"
+##  [1] "eff.vals"                  "fun.vals"                 
+##  [3] "genes.vals"                "go.vals"                  
+##  [5] "mini.genes.vals"           "other.genes.vals"         
+##  [7] "path.vals"                 "eff.and.other.genes.vals" 
+##  [9] "path.and.other.genes.vals" "path.and.genes.vals"
 ```
 
 ```r
@@ -33,23 +35,27 @@ xlist
 xlist.type <- c("func-wise", "func-wise", 
                 "path-wise", "path-wise", 
                 "gene-wise", "gene-wise", "gene-wise", 
-                "mix-wise")
+                "mix-wise", "mix-wise", "mix-wise")
 names(xlist.type) <- c("fun.vals", "go.vals", # functionality features
                        "eff.vals", "path.vals", # pathway features
                        "mini.genes.vals", "other.genes.vals", "genes.vals", # gene features
-                       "path.and.genes.vals") # mixed type
+                       "eff.and.other.genes.vals", "path.and.other.genes.vals", "path.and.genes.vals") # mixed type
 xlist.vline <- c(2.5, 4.5, 7.5) # cut out types
 stopifnot(length(setdiff(xlist, names(xlist.type))) == 0)
 xlist.type
 ```
 
 ```
-##            fun.vals             go.vals            eff.vals 
-##         "func-wise"         "func-wise"         "path-wise" 
-##           path.vals     mini.genes.vals    other.genes.vals 
-##         "path-wise"         "gene-wise"         "gene-wise" 
-##          genes.vals path.and.genes.vals 
-##         "gene-wise"          "mix-wise"
+##                  fun.vals                   go.vals 
+##               "func-wise"               "func-wise" 
+##                  eff.vals                 path.vals 
+##               "path-wise"               "path-wise" 
+##           mini.genes.vals          other.genes.vals 
+##               "gene-wise"               "gene-wise" 
+##                genes.vals  eff.and.other.genes.vals 
+##               "gene-wise"                "mix-wise" 
+## path.and.other.genes.vals       path.and.genes.vals 
+##                "mix-wise"                "mix-wise"
 ```
 
 ```r
@@ -141,6 +147,10 @@ slist.prefer.large.score
 ## Tuning predictor
 
 In order to avoid overfitting with the choice of prediction algorithm used, across each feature `xname` X each label group `yname` X each evaluation CV (outter) fold repeat `i.fold`, the predictor `prname` is selected by nested CV (inner) runs and the best prediction performance is reported by each evaluation measure.
+
+
+
+
 
 
 

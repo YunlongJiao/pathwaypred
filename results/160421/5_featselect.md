@@ -254,6 +254,7 @@ for (yname in ylist) {
   cat('\n---------> \t for ', yname, ' \t <---------\n')
   plist <- get(paste0(yname,"_plist"))
   # show top 10 signif features
+  cat('\nPreview of top 10 most signif features in each type\n')
   print(lapply(plist, head, n = 10))
   plist.melt <- melt(plist, level = 1, value.name = "value")
   colnames(plist.melt)[colnames(plist.melt)=="L1"] <- "xname"
@@ -317,6 +318,8 @@ for (yname in ylist) {
 ## ---> 	 Independent significance t.test 	 <---
 ## 
 ## ---------> 	 for  subtype.grps  	 <---------
+## 
+## Preview of top 10 most signif features in each type
 ## $fun.vals
 ##              X_Exocytosis       X_Calcium_transport 
 ##              1.200861e-16              5.798728e-09 
@@ -530,8 +533,8 @@ for (yname in ylist) {
   featlist.tab <- lapply(featlist.short, function(u) lapply(u, function(v) 
     sort(table(unlist(v)), decreasing = TRUE)
   ))
-  cat('\nPreview of top 3 most often selected features in each type\n')
-  print(lapply(featlist.tab, function(u) lapply(u, head, n=3)))
+  cat('\nPreview of top 10 most often selected features in each type\n')
+  print(lapply(featlist.tab, function(u) lapply(u, head, n=10)))
   
   # count number of times of features from each type being selected over CV runs
   featlist.count <- melt(featlist.tab, level = 1, value.name = "value")
@@ -581,56 +584,84 @@ for (yname in ylist) {
 
 ```
 ## 
-## Preview of top 3 most often selected features in each type
+## Preview of top 10 most often selected features in each type
 ## $predictorLogitLasso
 ## $predictorLogitLasso$mini.genes.vals
 ## 
-## X_2064 X_2099 X_8326 
-##     49     47     15 
+##   X_2064   X_2099   X_8326    X_115   X_4137   X_5564   X_2712   X_6198 
+##       49       47       15       11       11       11       10       10 
+## X_134549   X_3595 
+##        9        8 
 ## 
 ## $predictorLogitLasso$other.genes.vals
 ## 
-## X_10948 X_80139  X_9654 
-##      50      50      50 
+##  X_10948  X_80139   X_9654    X_771 X_203413   X_5167   X_3938  X_27086 
+##       50       50       50       47       46       45       44       43 
+## X_374819   X_7031 
+##       41       40 
 ## 
 ## $predictorLogitLasso$path.vals
 ## 
 ##  X_hsa04066__12___29 X_hsa04010__103___64   X_hsa04010__5___64 
 ##                   31                   14                   14 
+##  X_hsa04520__22___18   X_hsa04520__22___4  X_hsa04066__12___43 
+##                   13                   11                    7 
+##   X_hsa04010__1___64  X_hsa04066__12___55   X_hsa04010__1___58 
+##                    6                    4                    3 
+##   X_hsa04010__5___61 
+##                    2 
 ## 
 ## 
 ## $predictorPAM
 ## $predictorPAM$mini.genes.vals
 ## 
-## X_2064 X_2099 X_2203 
-##     50     50     50 
+##  X_2064  X_2099  X_2203  X_3595   X_367  X_4137  X_5613  X_6584 X_80736 
+##      50      50      50      50      50      50      50      50      50 
+##  X_8326 
+##      50 
 ## 
 ## $predictorPAM$other.genes.vals
 ## 
-##  X_10551  X_10948 X_134147 
-##       50       50       50 
+##  X_10551  X_10948 X_134147 X_140578 X_145837 X_145864 X_149563 X_155465 
+##       50       50       50       50       50       50       50       50 
+## X_161835     X_18 
+##       50       50 
 ## 
 ## $predictorPAM$path.vals
 ## 
-## X_hsa04010__105___14 X_hsa04010__128___14   X_hsa04010__4___14 
-##                   50                   50                   50 
+##  X_hsa04010__105___14  X_hsa04010__128___14    X_hsa04010__4___14 
+##                    50                    50                    50 
+##    X_hsa04520__22___4   X_hsa04919__33___39 X_hsa04520__22___9_57 
+##                    50                    50                    48 
+##   X_hsa05200__27___48   X_hsa04310__39___34  X_hsa05200__27___200 
+##                    48                    47                    47 
+##   X_hsa04010__35___14 
+##                    46 
 ## 
 ## 
 ## $predictorRF
 ## $predictorRF$mini.genes.vals
 ## 
-##  X_115 X_2064 X_2099 
-##     50     50     50 
+##  X_115 X_2064 X_2099  X_367 X_4137 X_5241 X_5613  X_596 X_6584 X_7786 
+##     50     50     50     50     50     50     50     50     50     50 
 ## 
 ## $predictorRF$other.genes.vals
 ## 
-## X_100113390     X_10551     X_10948 
-##          50          50          50 
+## X_100113390     X_10551     X_10948     X_11059     X_11162     X_11240 
+##          50          50          50          50          50          50 
+##    X_134147    X_145837    X_145864    X_147179 
+##          50          50          50          50 
 ## 
 ## $predictorRF$path.vals
 ## 
-## X_hsa04010__105___14  X_hsa04010__41___14  X_hsa04010__43___14 
-##                   50                   50                   50
+##  X_hsa04010__105___14   X_hsa04010__41___14   X_hsa04010__43___14 
+##                    50                    50                    50 
+##    X_hsa04010__7___14 X_hsa04012__11_12___3   X_hsa04066__12___29 
+##                    50                    50                    50 
+##   X_hsa04066__12___30   X_hsa04066__12___42   X_hsa04066__12___43 
+##                    50                    50                    50 
+##   X_hsa04066__12___44 
+##                    50
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-5.png)

@@ -254,6 +254,7 @@ for (yname in ylist) {
   cat('\n---------> \t for ', yname, ' \t <---------\n')
   plist <- get(paste0(yname,"_plist"))
   # show top 10 signif features
+  cat('\nPreview of top 10 most signif features in each type\n')
   print(lapply(plist, head, n = 10))
   plist.melt <- melt(plist, level = 1, value.name = "value")
   colnames(plist.melt)[colnames(plist.melt)=="L1"] <- "xname"
@@ -317,6 +318,8 @@ for (yname in ylist) {
 ## ---> 	 Independent significance t.test 	 <---
 ## 
 ## ---------> 	 for  surv.grps  	 <---------
+## 
+## Preview of top 10 most signif features in each type
 ## $fun.vals
 ##             X_Acute_phase       X_Growth_regulation 
 ##              0.0002748797              0.0015174046 
@@ -522,8 +525,8 @@ for (yname in ylist) {
   featlist.tab <- lapply(featlist.short, function(u) lapply(u, function(v) 
     sort(table(unlist(v)), decreasing = TRUE)
   ))
-  cat('\nPreview of top 3 most often selected features in each type\n')
-  print(lapply(featlist.tab, function(u) lapply(u, head, n=3)))
+  cat('\nPreview of top 10 most often selected features in each type\n')
+  print(lapply(featlist.tab, function(u) lapply(u, head, n=10)))
   
   # count number of times of features from each type being selected over CV runs
   featlist.count <- melt(featlist.tab, level = 1, value.name = "value")
@@ -581,7 +584,7 @@ for (yname in ylist) {
 
 ```
 ## 
-## Preview of top 3 most often selected features in each type
+## Preview of top 10 most often selected features in each type
 ## $predictorLogitLasso
 ## $predictorLogitLasso$mini.genes.vals
 ## X_353500 
@@ -589,8 +592,10 @@ for (yname in ylist) {
 ## 
 ## $predictorLogitLasso$other.genes.vals
 ## 
-## X_340273  X_49854   X_8338 
-##       23       10        8 
+## X_340273  X_49854   X_8338   X_6531   X_8840 X_149647  X_57482   X_6908 
+##       23       10        8        7        7        6        6        4 
+##   X_7071   X_8462 
+##        4        4 
 ## 
 ## $predictorLogitLasso$path.vals
 ## 
@@ -601,35 +606,55 @@ for (yname in ylist) {
 ## $predictorPAM
 ## $predictorPAM$mini.genes.vals
 ## 
-## X_353500   X_2335   X_6356 
-##       10        4        4 
+## X_353500   X_2335   X_6356   X_1301   X_2277   X_1654   X_3164   X_5296 
+##       10        4        4        3        3        2        2        2 
+##   X_3381   X_3569 
+##        1        1 
 ## 
 ## $predictorPAM$other.genes.vals
 ## 
-## X_340273  X_49854   X_8338 
-##       43       25       24 
+## X_340273  X_49854   X_8338   X_8462   X_8840   X_1469 X_149647   X_2706 
+##       43       25       24       24       18       14       14       12 
+##  X_23177  X_57482 
+##       11       11 
 ## 
 ## $predictorPAM$path.vals
 ## 
-## X_hsa04068__79___46 X_hsa04068__79___13 X_hsa04066__72___53 
-##                  21                  20                  14 
+##    X_hsa04068__79___46    X_hsa04068__79___13    X_hsa04066__72___53 
+##                     21                     20                     14 
+##    X_hsa04151__47___36    X_hsa04068__79___45    X_hsa04068__80___46 
+##                     12                     10                     10 
+## X_hsa04151__49_50___36 X_hsa04151__22_81___36    X_hsa04151__59___36 
+##                     10                      9                      9 
+##    X_hsa04151__90___36 
+##                      9 
 ## 
 ## 
 ## $predictorRF
 ## $predictorRF$mini.genes.vals
 ## 
-## X_10411  X_8454  X_4842 
-##      46      46      44 
+## X_10411  X_8454  X_4842  X_3815  X_5346  X_6358 X_64805  X_1739  X_5138 
+##      46      46      44      43      43      41      41      40      40 
+##  X_5257 
+##      40 
 ## 
 ## $predictorRF$other.genes.vals
 ## 
-##   X_1020    X_125 X_340273 
-##       50       50       50 
+##   X_1020    X_125 X_340273   X_2532  X_65992   X_6944  X_84057  X_10188 
+##       50       50       50       49       49       49       49       48 
+## X_150356   X_1960 
+##       48       48 
 ## 
 ## $predictorRF$path.vals
 ## 
-## X_hsa04064__13___133   X_hsa04022__4___65  X_hsa04024__82___21 
-##                   50                   47                   46
+##   X_hsa04064__13___133     X_hsa04022__4___65    X_hsa04024__82___21 
+##                     50                     47                     46 
+##   X_hsa04064__13___129    X_hsa04066__68___58  X_hsa04020__9_53___42 
+##                     46                     46                     45 
+## X_hsa04114__44_45___42 X_hsa04530__43_47___30     X_hsa04920__14___6 
+##                     45                     45                     45 
+##   X_hsa05200__248___75 
+##                     45
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-5.png)
