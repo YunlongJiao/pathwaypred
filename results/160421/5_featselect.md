@@ -5,7 +5,8 @@ This script studies feature selection with representative FS algorithms to disti
 - run independent significance t.test gene-by-gene or pathway-by-pathway and see the p-values from different types of features
 - look at feature selection results from prediction made with pulled features of path.vals and genes.vals
 
-```{r setup, message = FALSE}
+
+```r
 knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = "pdf", fig.keep = "high", fig.path = "5_featselect_figure/", cache.path = "5_featselect_cache/")
 set.seed(17766220)
 source("../../src/func.R")
@@ -15,7 +16,8 @@ library(ggplot2)
 
 First load in workspace and read in parameters!
 
-```{r param}
+
+```r
 # load in workspace
 load("dat.RData")
 rm(list = ls(pattern="[.]kmat$"))
@@ -24,6 +26,17 @@ param <- read.table("2_runPredict.txt", header = FALSE, row.names = NULL, col.na
 # features
 xlist <- unique(param$xname)
 xlist
+```
+
+```
+##  [1] "eff.vals"                  "fun.vals"                 
+##  [3] "genes.vals"                "go.vals"                  
+##  [5] "mini.genes.vals"           "other.genes.vals"         
+##  [7] "path.vals"                 "eff.and.other.genes.vals" 
+##  [9] "path.and.other.genes.vals" "path.and.genes.vals"
+```
+
+```r
 # feature types # the following order is fairly important
 xlist.type <- c("func-wise", "func-wise", 
                 "path-wise", "path-wise", 
@@ -36,47 +49,136 @@ names(xlist.type) <- c("fun.vals", "go.vals", # functionality features
 xlist.vline <- c(2.5, 4.5, 7.5) # cut out types
 stopifnot(length(setdiff(xlist, names(xlist.type))) == 0)
 xlist.type
+```
+
+```
+##                  fun.vals                   go.vals 
+##               "func-wise"               "func-wise" 
+##                  eff.vals                 path.vals 
+##               "path-wise"               "path-wise" 
+##           mini.genes.vals          other.genes.vals 
+##               "gene-wise"               "gene-wise" 
+##                genes.vals  eff.and.other.genes.vals 
+##               "gene-wise"                "mix-wise" 
+## path.and.other.genes.vals       path.and.genes.vals 
+##                "mix-wise"                "mix-wise"
+```
+
+```r
 # features to perform indep signif test
 xlist.test <- grep("[.]and[.]|^genes", xlist, value = TRUE, invert = TRUE)
 xlist.test <- xlist.test[order(match(xlist.test, names(xlist.type)))]
 xlist.test
+```
+
+```
+## [1] "fun.vals"         "go.vals"          "eff.vals"        
+## [4] "path.vals"        "mini.genes.vals"  "other.genes.vals"
+```
+
+```r
 # groups
 ylist <- unique(param$yname)
 ylist
+```
+
+```
+## [1] "subtype.grps"
+```
+
+```r
 # predictors
 prlist <- unique(param$prname)
 prlist
+```
+
+```
+##  [1] "predictorConstant"   "predictorGBM"        "predictorKendallSVM"
+##  [4] "predictorKNN"        "predictorLDA"        "predictorLinearSVM" 
+##  [7] "predictorLogitLasso" "predictorNB"         "predictorPAM"       
+## [10] "predictorRadialSVM"  "predictorRF"         "predictorSparseSVM"
+```
+
+```r
 # predictors that automate feat select
 prlist.fs <- c("predictorLogitLasso","predictorPAM","predictorRF")
 prlist.fs <- prlist.fs[prlist.fs %in% prlist]
 prlist.fs
+```
+
+```
+## [1] "predictorLogitLasso" "predictorPAM"        "predictorRF"
+```
+
+```r
 # (outter) `nfolds`-fold CV repeated `nrepeats` times for evaluation
 nfolds <- unique(param$nfolds)
 stopifnot(length(nfolds) == 1)
 nfolds
+```
+
+```
+## [1] 5
+```
+
+```r
 nrepeats <- unique(param$nrepeats)
 stopifnot(length(nrepeats) == 1)
 nrepeats
+```
+
+```
+## [1] 10
+```
+
+```r
 # inner `nfolds.inn`-fold CV repeated `nrepeats.inn` times for tuning predictors
 nfolds.inn <- unique(param$nfolds.inn)
 stopifnot(length(nfolds.inn) == 1)
 nfolds.inn
+```
+
+```
+## [1] 5
+```
+
+```r
 nrepeats.inn <- unique(param$nrepeats.inn)
 stopifnot(length(nrepeats.inn) == 1)
 nrepeats.inn
+```
+
+```
+## [1] 1
+```
+
+```r
 # evaluation measures
 slist <- c("acc","fpr","tpr","ppv","fval", "auroc")
 slist
+```
+
+```
+## [1] "acc"   "fpr"   "tpr"   "ppv"   "fval"  "auroc"
+```
+
+```r
 slist.prefer.large.score <- c(TRUE, FALSE, TRUE, TRUE, TRUE, TRUE)
 names(slist.prefer.large.score) <- slist
 slist.prefer.large.score
 ```
 
+```
+##   acc   fpr   tpr   ppv  fval auroc 
+##  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+```
+
 ## Independent significance t.test
 
-For each `yname` in `r ylist`, we run independent significance t.test for each pathway and each gene individually and look at the returned p-values. (In case of multiple levels, we run t.test against binary labels that discriminate the last level vs the other levels.) In the end we have several different plots to illustrate the results.
+For each `yname` in subtype.grps, we run independent significance t.test for each pathway and each gene individually and look at the returned p-values. (In case of multiple levels, we run t.test against binary labels that discriminate the last level vs the other levels.) In the end we have several different plots to illustrate the results.
 
-```{r test_prepare, message=FALSE}
+
+```r
 # read in param
 param2 <- read.table("4_indepsignif.txt", header = FALSE, row.names = NULL, col.names = c("xname", "yname", "i.fold", "nfolds", "nrepeats", "pthres", "test", "method"))
 stopifnot(length(setdiff(xlist.test, unique(param2$xname))) == 0)
@@ -87,14 +189,35 @@ stopifnot(all(nrepeats == unique(param2$nrepeats)))
 pthres <- unique(param2$pthres)
 stopifnot(length(pthres) == 1)
 pthres
+```
+
+```
+## [1] 0.05
+```
+
+```r
 # test
 test <- unique(param2$test)
 stopifnot(length(test) == 1)
 test
+```
+
+```
+## [1] "t.test"
+```
+
+```r
 # method for multiple correction
 method <- unique(param2$method)
 stopifnot(length(method) == 1)
 method
+```
+
+```
+## [1] "none"
+```
+
+```r
 # show each grp separately
 for (yname in ylist) {
   plist <- lapply(xlist.test, function(xname){
@@ -118,12 +241,13 @@ for (yname in ylist) {
 }
 ```
 
-For each `yname` in `r ylist`, we have several plots to illustrate the results
+For each `yname` in subtype.grps, we have several plots to illustrate the results
 - Boxplots of p-values of feature-by-feature t.test is used to show the variance of feature significance for different feature types. Two plots correpond to that with all features, or that with only significant features at a p-value less than `pthres`.
 - Lineplot of the accumulated proportion defined by the number of significant features within each type (at increasing p-value thresholds) divided by the total number of features from that specific type. The number on line is the absolute count of number of significant features within each type.
 - Barplot of the proportion defined by the number of significant features within each type divided by the number of significant features of all types pulled together (at increasing p-value thresholds). The number on bar is the absolute count of number of significant features within each type.
 
-```{r test, results='hold'}
+
+```r
 cat('\n---> \t Independent significance', test, '\t <---\n')
 # show each grp separately
 for (yname in ylist) {
@@ -188,11 +312,101 @@ for (yname in ylist) {
 }
 ```
 
+```
+## Warning: Removed 5122 rows containing non-finite values (stat_boxplot).
+```
+
+```
+## Warning: Removed 3794 rows containing non-finite values (stat_boxplot).
+```
+
+![plot of chunk test](5_featselect_figure/test-1.pdf)![plot of chunk test](5_featselect_figure/test-2.pdf)![plot of chunk test](5_featselect_figure/test-3.pdf)
+
+```
+## 
+## ---> 	 Independent significance t.test 	 <---
+## 
+## ---------> 	 for  subtype.grps  	 <---------
+## $fun.vals
+##              X_Exocytosis       X_Calcium_transport 
+##              1.200861e-16              5.798728e-09 
+## X_Sphingolipid_metabolism         X_Lipid_transport 
+##              5.190418e-08              1.710626e-10 
+## X_Ubl_conjugation_pathway                X_Antiport 
+##              1.365735e-10              4.400571e-08 
+##        X_Sodium_transport              X_Glycolysis 
+##              1.124589e-06              1.942662e-07 
+##         X_Stress_response       X_Lipid_degradation 
+##              1.219888e-07              8.070957e-09 
+## 
+## $go.vals
+##                                                    X_JNK_cascade 
+##                                                     8.110585e-20 
+##                          X_microtubule_cytoskeleton_organization 
+##                                                     7.784705e-20 
+##                                   X_superoxide_metabolic_process 
+##                                                     3.951983e-15 
+##                                       X_histone_H3_deacetylation 
+##                                                     1.420415e-15 
+##                                           X_response_to_cytokine 
+##                                                     1.657866e-13 
+##                            X_regulation_of_calcium_ion_transport 
+##                                                     1.568474e-12 
+## X_positive_regulation_of_DNA_templated_transcription__initiation 
+##                                                     7.748809e-14 
+##                                             X_cell_morphogenesis 
+##                                                     2.640687e-13 
+##                            X_quaternary_ammonium_group_transport 
+##                                                     1.875636e-13 
+##                                       X_organic_cation_transport 
+##                                                     1.875636e-13 
+## 
+## $eff.vals
+##  X_hsa04919__39  X_hsa04914__34  X_hsa04914__39 X_hsa05205__103 
+##    1.026319e-22    6.589415e-21    1.311965e-20    2.771597e-19 
+##  X_hsa04010__14  X_hsa04010__61  X_hsa04915__58  X_hsa04010__58 
+##    7.784705e-20    9.944963e-17    2.144038e-17    1.358455e-16 
+##  X_hsa04068__53  X_hsa04010__65 
+##    3.951983e-15    1.420415e-15 
+## 
+## $path.vals
+##  X_hsa04919__33___39  X_hsa04151__43___99 X_hsa05200__35___207 
+##         3.684965e-25         3.826681e-23         3.359441e-22 
+## X_hsa04010__128___14   X_hsa04010__4___14 X_hsa04010__105___14 
+##         1.485739e-20         1.112728e-21         6.776587e-21 
+##  X_hsa04010__41___14  X_hsa04914__37___34  X_hsa04010__35___14 
+##         7.394936e-20         6.589415e-21         1.045585e-19 
+##  X_hsa04914__37___39 
+##         1.311965e-20 
+## 
+## $mini.genes.vals
+##       X_2099       X_3760       X_2925      X_84612      X_50604 
+## 2.376902e-27 4.217083e-26 3.286400e-24 1.526938e-21 5.993268e-22 
+##       X_9254      X_57580       X_5914       X_5613       X_8437 
+## 9.491376e-21 8.089589e-22 3.666512e-20 1.964093e-22 4.330385e-23 
+## 
+## $other.genes.vals
+##          X_9     X_161835       X_9120      X_25823     X_388468 
+## 1.601189e-39 1.039546e-35 4.852067e-34 1.611226e-29 1.074640e-30 
+##      X_79624     X_112714      X_25800      X_53335      X_23784 
+## 5.279954e-33 5.010668e-33 6.168508e-32 2.935878e-29 9.892953e-27 
+## 
+## 
+## Boxplots of p-values of feature-by-feature t.test 
+## 
+## Total number of features within each type
+##         fun.vals          go.vals         eff.vals        path.vals 
+##               81              370             1038             6101 
+##  mini.genes.vals other.genes.vals 
+##             2212            16496
+```
+
 ## Algorithmic feature selection
 
-For each `yname` in `r ylist`, prediction is made with pulled types of features, that is a naive combination of path.vals and genes.vals. We look at the frequency of each type of features being selected automatically.
+For each `yname` in subtype.grps, prediction is made with pulled types of features, that is a naive combination of path.vals and genes.vals. We look at the frequency of each type of features being selected automatically.
 
-```{r featselect_prepare, message=FALSE}
+
+```r
 xname <- "path.and.genes.vals" # do not alter
 xname.list <- c("mini.genes.vals", "other.genes.vals", "path.vals") # do not alter
 featlist.long <- lapply(xname.list, function(u){
@@ -235,12 +449,13 @@ for (yname in ylist) {
 }
 ```
 
-For each `yname` in `r ylist`, we have several plots to illustrate the results
-- Boxplot of prediction performance using pulled feature set `r xname`, wrt different criterion and different prediction algorithm, where variance shows over `r nfolds*nrepeats` CV runs.
-- Three boxplots on the number of selected features from each feature type in `r xname.list`, wrt different algorithms, where variance shows at each CV run. Three of them each correpond to 1) total count of selected features from each type; 2) total count of selected features from each type divided by the total number of selected features of all types; 3) total count of selected features from each type divided by the total number of features from that same type.
-- Histogram of how many times one feature are selected in total over all `r nfolds*nrepeats` CV runs, specific to each type and each algorithm.
+For each `yname` in subtype.grps, we have several plots to illustrate the results
+- Boxplot of prediction performance using pulled feature set path.and.genes.vals, wrt different criterion and different prediction algorithm, where variance shows over 50 CV runs.
+- Three boxplots on the number of selected features from each feature type in mini.genes.vals, other.genes.vals, path.vals, wrt different algorithms, where variance shows at each CV run. Three of them each correpond to 1) total count of selected features from each type; 2) total count of selected features from each type divided by the total number of selected features of all types; 3) total count of selected features from each type divided by the total number of features from that same type.
+- Histogram of how many times one feature are selected in total over all 50 CV runs, specific to each type and each algorithm.
 
-```{r featselect, results='hold'}
+
+```r
 cat('\n---> \t Algorithmic feature selection \t <---\n')
 # show each grp separately
 for (yname in ylist) {
@@ -332,8 +547,103 @@ for (yname in ylist) {
 }
 ```
 
+![plot of chunk featselect](5_featselect_figure/featselect-1.pdf)![plot of chunk featselect](5_featselect_figure/featselect-2.pdf)![plot of chunk featselect](5_featselect_figure/featselect-3.pdf)![plot of chunk featselect](5_featselect_figure/featselect-4.pdf)![plot of chunk featselect](5_featselect_figure/featselect-5.pdf)
+
+```
+## 
+## ---> 	 Algorithmic feature selection 	 <---
+## 
+## ---------> 	 for  subtype.grps  	 <---------
+## 
+## Total number of features selected at each run (averaged over each CV run)
+## predictorLogitLasso        predictorPAM         predictorRF 
+##               46.58              160.56             6844.76 
+## 
+## Total number of features within each type
+##  mini.genes.vals other.genes.vals        path.vals 
+##             2212            16496             6101 
+## 
+## Preview of top 3 most often selected features in each type
+## $predictorLogitLasso
+## $predictorLogitLasso$mini.genes.vals
+## 
+## X_2064 X_2099 X_8326 
+##     49     47     15 
+## 
+## $predictorLogitLasso$other.genes.vals
+## 
+## X_10948 X_80139  X_9654 
+##      50      50      50 
+## 
+## $predictorLogitLasso$path.vals
+## 
+##  X_hsa04066__12___29 X_hsa04010__103___64   X_hsa04010__5___64 
+##                   31                   14                   14 
+## 
+## 
+## $predictorPAM
+## $predictorPAM$mini.genes.vals
+## 
+## X_2064 X_2099 X_2203 
+##     50     50     50 
+## 
+## $predictorPAM$other.genes.vals
+## 
+##  X_10551  X_10948 X_134147 
+##       50       50       50 
+## 
+## $predictorPAM$path.vals
+## 
+## X_hsa04010__105___14 X_hsa04010__128___14   X_hsa04010__4___14 
+##                   50                   50                   50 
+## 
+## 
+## $predictorRF
+## $predictorRF$mini.genes.vals
+## 
+##  X_115 X_2064 X_2099 
+##     50     50     50 
+## 
+## $predictorRF$other.genes.vals
+## 
+## X_100113390     X_10551     X_10948 
+##          50          50          50 
+## 
+## $predictorRF$path.vals
+## 
+## X_hsa04010__105___14  X_hsa04010__41___14  X_hsa04010__43___14 
+##                   50                   50                   50
+```
+
 ## Session info
 
-```{r session_info}
+
+```r
 sessionInfo()
+```
+
+```
+## R version 3.2.1 (2015-06-18)
+## Platform: x86_64-unknown-linux-gnu (64-bit)
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] grid      methods   stats     graphics  grDevices utils     datasets 
+## [8] base     
+## 
+## other attached packages:
+## [1] ggplot2_2.1.0  reshape2_1.4.1
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_0.12.1      digest_0.6.8     plyr_1.8.3       gtable_0.1.2    
+##  [5] formatR_1.3      magrittr_1.5     evaluate_0.8.3   scales_0.3.0    
+##  [9] stringi_1.0-1    labeling_0.3     tools_3.2.1      stringr_1.0.0   
+## [13] munsell_0.4.2    colorspace_1.2-6 knitr_1.12.3
 ```

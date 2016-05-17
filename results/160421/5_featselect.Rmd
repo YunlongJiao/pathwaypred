@@ -76,7 +76,7 @@ slist.prefer.large.score
 
 For each `yname` in `r ylist`, we run independent significance t.test for each pathway and each gene individually and look at the returned p-values. (In case of multiple levels, we run t.test against binary labels that discriminate the last level vs the other levels.) In the end we have several different plots to illustrate the results.
 
-```{r test_prepare, cache=TRUE, message=FALSE}
+```{r test_prepare, message=FALSE}
 # read in param
 param2 <- read.table("4_indepsignif.txt", header = FALSE, row.names = NULL, col.names = c("xname", "yname", "i.fold", "nfolds", "nrepeats", "pthres", "test", "method"))
 stopifnot(length(setdiff(xlist.test, unique(param2$xname))) == 0)
@@ -192,7 +192,7 @@ for (yname in ylist) {
 
 For each `yname` in `r ylist`, prediction is made with pulled types of features, that is a naive combination of path.vals and genes.vals. We look at the frequency of each type of features being selected automatically.
 
-```{r featselect_prepare, cache=TRUE, message=FALSE}
+```{r featselect_prepare, message=FALSE}
 xname <- "path.and.genes.vals" # do not alter
 xname.list <- c("mini.genes.vals", "other.genes.vals", "path.vals") # do not alter
 featlist.long <- lapply(xname.list, function(u){
