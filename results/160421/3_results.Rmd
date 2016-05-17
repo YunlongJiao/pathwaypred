@@ -62,7 +62,7 @@ slist.prefer.large.score
 
 In order to avoid overfitting with the choice of prediction algorithm used, across each feature `xname` X each label group `yname` X each evaluation CV (outter) fold repeat `i.fold`, the predictor `prname` is selected by nested CV (inner) runs and the best prediction performance is reported by each evaluation measure.
 
-```{r prepare, cache=TRUE, message=FALSE}
+```{r prepare, message=FALSE}
 # gather scores
 scores <- list()
 for (i.fold in seq(nfolds*nrepeats)) {
@@ -70,54 +70,58 @@ for (i.fold in seq(nfolds*nrepeats)) {
   for (yname in ylist) {
     for (xname in xlist) {
       message(".", appendLF = FALSE)
-      # read nested cv res
-      cvres <- list()
-      for (prname in prlist) {
-        res.files <- list.files(path = 'Robj', 
-                                pattern = paste('^cvres', xname, yname, prname, 
-                                                i.fold, nfolds, nrepeats, 
-                                                '[[:digit:]]+', nfolds.inn, nrepeats.inn, 
-                                                sep = '_'), 
-                                full.names = TRUE)
-        res <- lapply(res.files, function(f) get(load(f)))
-        cvres[[prname]] <- crossValidationCombineResults(res)
-      }
-      
-      # generate iv res where predictor has been selected by nested cv
-      ivres <- list()
-      for (sname in slist) {
-        tt <- sapply(cvres, '[[', "system_time")
-        # order scores by increasing system time
-        ss <- sapply(cvres, '[[', sname)[order(tt, decreasing = FALSE)]
-        ss <- ss[!is.na(ss)]
-        # fast algorithm is preferred among those returning equal score values
-        best.prname <- names(ss)[order(ss, decreasing = slist.prefer.large.score[sname])]
-        # get iv res NOTE while loop is to guarantee no iv res is found for such predictor
-        while (length(best.prname) > 0) {
-          best.files <- list.files(path = 'Robj', 
-                                   pattern = paste('^ivres', xname, yname, best.prname[1], 
-                                                   i.fold, nfolds, nrepeats, 
-                                                   '0+', nfolds.inn, nrepeats.inn, 
-                                                   sep = '_'), 
-                                   full.names = TRUE)
-          if (length(best.files) == 0) {
-            best.prname <- best.prname[-1]
-            next
-          } else if (length(best.files) == 1) {
-            best.prname <- best.prname[1]
-            ivres[[sname]] <- get(load(best.files))
-            break
-          } else {
-            stop("multiple ivres files found for ", best.prname[1])
-          }
-        }
-        # in case no ivres files found for any predictors
-        stopifnot(length(best.prname) == 1)
-      }
-      
-      # assign obj
+      # get obj
       objname <- paste('res', xname, yname, i.fold, nfolds, nrepeats, sep = '_')
-      # assign(objname, ivres)
+      objpath <- paste0('Robj/',objname,'.RData')
+      if (file.exists(objpath)) {
+        ivres <- get(load(objpath))
+      } else {
+        # read nested cv res
+        cvres <- list()
+        for (prname in prlist) {
+          res.files <- list.files(path = 'Robj', 
+                                  pattern = paste('^cvres', xname, yname, prname, 
+                                                  i.fold, nfolds, nrepeats, 
+                                                  '[[:digit:]]+', nfolds.inn, nrepeats.inn, 
+                                                  sep = '_'), 
+                                  full.names = TRUE)
+          res <- lapply(res.files, function(f) get(load(f)))
+          cvres[[prname]] <- crossValidationCombineResults(res)
+        }
+        
+        # generate iv res where predictor has been selected by nested cv
+        ivres <- list()
+        for (sname in slist) {
+          tt <- sapply(cvres, '[[', "system_time")
+          # order scores by increasing system time
+          ss <- sapply(cvres, '[[', sname)[order(tt, decreasing = FALSE)]
+          ss <- ss[!is.na(ss)]
+          # fast algorithm is preferred among those returning equal score values
+          best.prname <- names(ss)[order(ss, decreasing = slist.prefer.large.score[sname])]
+          # get iv res NOTE while loop is to guarantee no iv res is found for such predictor
+          while (length(best.prname) > 0) {
+            best.files <- list.files(path = 'Robj', 
+                                     pattern = paste('^ivres', xname, yname, best.prname[1], 
+                                                     i.fold, nfolds, nrepeats, 
+                                                     '0+', nfolds.inn, nrepeats.inn, 
+                                                     sep = '_'), 
+                                     full.names = TRUE)
+            if (length(best.files) == 0) {
+              best.prname <- best.prname[-1]
+              next
+            } else if (length(best.files) == 1) {
+              best.prname <- best.prname[1]
+              ivres[[sname]] <- get(load(best.files))
+              break
+            } else {
+              stop("multiple ivres files found for ", best.prname[1])
+            }
+          }
+          # in case no ivres files found for any predictors
+          stopifnot(length(best.prname) == 1)
+        }
+      }
+      
       
       # record score values
       scores[[objname]] <- data.frame(y = yname, 
@@ -128,7 +132,6 @@ for (i.fold in seq(nfolds*nrepeats)) {
                                       score = slist, 
                                       value = sapply(slist, function(sname) ivres[[sname]][[sname]]), 
                                       row.names = NULL)
-      rm(ivres, cvres)
     }
   }
 }
