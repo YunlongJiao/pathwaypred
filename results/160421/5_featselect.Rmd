@@ -6,7 +6,7 @@ This script studies feature selection with representative FS algorithms to disti
 - look at feature selection results from prediction made with pulled features of path.vals and genes.vals
 
 ```{r setup, message = FALSE}
-knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = "pdf", fig.keep = "high", fig.path = "5_featselect_figure/", cache.path = "5_featselect_cache/")
+knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = c("png","pdf"), fig.keep = "high", fig.path = "5_featselect_figure/", cache.path = "5_featselect_cache/")
 set.seed(17766220)
 source("../../src/func.R")
 library(reshape2)
@@ -123,10 +123,10 @@ For each `yname` in `r ylist`, we have several plots to illustrate the results
 - Lineplot of the accumulated proportion defined by the number of significant features within each type (at increasing p-value thresholds) divided by the total number of features from that specific type. The number on line is the absolute count of number of significant features within each type.
 - Barplot of the proportion defined by the number of significant features within each type divided by the number of significant features of all types pulled together (at increasing p-value thresholds). The number on bar is the absolute count of number of significant features within each type.
 
-```{r test, results='hold'}
-cat('\n---> \t Independent significance', test, '\t <---\n')
+```{r test}
 # show each grp separately
 for (yname in ylist) {
+  cat('\n---> \t Independent significance', test, '\t <---\n')
   cat('\n---------> \t for ', yname, ' \t <---------\n')
   plist <- get(paste0(yname,"_plist"))
   # show top 10 signif features
@@ -240,10 +240,10 @@ For each `yname` in `r ylist`, we have several plots to illustrate the results
 - Three boxplots on the number of selected features from each feature type in `r xname.list`, wrt different algorithms, where variance shows at each CV run. Three of them each correpond to 1) total count of selected features from each type; 2) total count of selected features from each type divided by the total number of selected features of all types; 3) total count of selected features from each type divided by the total number of features from that same type.
 - Histogram of how many times one feature are selected in total over all `r nfolds*nrepeats` CV runs, specific to each type and each algorithm.
 
-```{r featselect, results='hold'}
-cat('\n---> \t Algorithmic feature selection \t <---\n')
+```{r featselect}
 # show each grp separately
 for (yname in ylist) {
+  cat('\n---> \t Algorithmic feature selection \t <---\n')
   cat('\n---------> \t for ', yname, ' \t <---------\n')
   # scores
   scores <- lapply(prlist.fs, function(prname){

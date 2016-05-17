@@ -4,7 +4,7 @@
 This script collects results from earlier run and illustrates with tables and plots.
 
 ```{r setup, message = FALSE}
-knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = "pdf", fig.keep = "high", fig.path = "3_results_figure/", cache.path = "3_results_cache/")
+knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = c("png","pdf"), fig.keep = "high", fig.path = "3_results_figure/", cache.path = "3_results_cache/")
 set.seed(70236562)
 source("../../src/func.R")
 library(ggplot2)
@@ -185,12 +185,12 @@ As we see that class sizes are unbalanced so that we focus on AUROC to evaluate 
 
 Now we turn to look at which `predictor` suits well in making prediction for a specific group of phenotypic response `yname` using each feature `xname`. We report the frequency of such predictor is selected across `r nfolds*nrepeats` repeats of evaluation CV runs.
 
-```{r predictor, results='hold'}
+```{r predictor}
 # focus only auroc
 sname <- "auroc"
 # show each grp separately
-cat('\n---> \t Frequency (%) of predictor being selected \t <---\n')
 for (yname in ylist) {
+  cat('\n---> \t Frequency (%) of predictor being selected \t <---\n')
   cat('\n---> \t predicting for ', yname, ' using \t <---\n')
   d <- subset(scores, scores$score == sname & scores$y == yname)
   d <- split(d, d$x)
@@ -206,14 +206,14 @@ for (yname in ylist) {
 
 Now we look at the significance of the superiority using one feature over the other in terms of performance. For each group of phenotypic response `yname`, we compute a matrix where each entry indicates the p-value of a one-sided `t.test` testing if using the feature matrix in the row is indeed superior to using the feature matrix in the col.
 
-```{r sigtest, results='hold'}
+```{r sigtest}
 # significance threshold
 thres <- 0.05
 # focus only auroc
 sname <- "auroc"
-cat('\n---> \t p-value of t.test showing row superior to col \t <---\n')
 # show each grp separately
 for (yname in ylist) {
+  cat('\n---> \t p-value of t.test showing row superior to col \t <---\n')
   cat('\n------> \t predicting for ', yname, ' \t <------\n')
   # gather perf
   d <- subset(scores, scores$score == sname & scores$y == yname)
