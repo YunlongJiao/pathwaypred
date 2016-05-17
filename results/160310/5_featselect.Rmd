@@ -91,9 +91,9 @@ pthres
 test <- unique(param2$test)
 stopifnot(length(test) == 1)
 test
-# method for multiple correction
+# method for multiple correction should be 'none' and correction is left to be done later
 method <- unique(param2$method)
-stopifnot(length(method) == 1)
+stopifnot(all(unique(method) == "none"))
 method
 # show each grp separately
 for (yname in ylist) {
@@ -111,10 +111,20 @@ for (yname in ylist) {
       as.data.frame(t(v)) # convert to data.frame to facilitate further rbind
     })
     res <- do.call('rbind', res)
-    return(colMeans(res)) # averaged p-value over CV splits of data
+    return(res)
   })
-  names(plist) <- xlist.test
+  xlist.factor <- factor(rep(xlist.test, sapply(plist, ncol)), levels = xlist.test)
+  plist <- do.call('cbind', plist)
+  # multiple test correction for each CV run where transpose to maintain same dim
+  plist <- t(apply(plist, 1, p.adjust, method = "BH"))
+  # average p-values over all CV runs
+  plist <- colMeans(plist)
+  # split up to each type of features
+  plist <- split(plist, xlist.factor)
+  # sort by increasing p-value in each group
+  plist <- lapply(plist, sort, decreasing = FALSE)
   assign(paste0(yname,"_plist"), plist)
+  rm(plist)
 }
 ```
 
@@ -141,13 +151,13 @@ for (yname in ylist) {
   p1 <- ggplot(plist.melt, aes(x = xname, y = value)) + 
     geom_boxplot(aes(fill = xname), alpha = 0.8) + 
     scale_x_discrete(name = "x") + 
-    scale_y_continuous(trans = "log10", limits = c(1/1e6, 1), name = "p-value") + 
+    scale_y_continuous(trans = "log10", limits = c(0.01, 1), name = "p-value") + 
     ggtitle("All features") + 
     theme(axis.text.x = element_blank(), legend.title = element_blank(), legend.position = "bottom")
   p2 <- ggplot(subset(plist.melt, value < pthres), aes(x = xname, y = value)) + 
     geom_boxplot(aes(fill = xname), alpha = 0.8) + 
     scale_x_discrete(name = "x") + 
-    scale_y_continuous(trans = "log10", limits = c(pthres/1e6, pthres), name = "p-value") + 
+    scale_y_continuous(limits = c(0.01, pthres), name = "p-value") + 
     ggtitle(paste0("Significant features only (p-value<", pthres, ")")) + 
     theme(axis.text.x = element_blank(), legend.title = element_blank(), legend.position = "bottom")
   multiplot(p1, p2, cols = 2)
@@ -163,13 +173,13 @@ for (yname in ylist) {
   
   # compared within each type
   plist.freq <- melt(plist.tab, varnames = c("pthres", "type"), value.name = "value")
-  n.featlist <- sapply(xlist.test, function(xname) ncol(get(xname)))
+  n.featlist <- sapply(xlist.test, function(xname) length(plist[[xname]]))
   plist.freq$freq <- plist.freq$value/n.featlist[plist.freq$type]
   cat('\nTotal number of features within each type\n')
   print(n.featlist)
   p1 <- ggplot(plist.freq, aes(x = factor(pthres), y = freq)) + 
     geom_line(aes(group = type, colour = type), stat="identity", alpha = 0.8) + 
-    geom_text(aes(label = value, colour = type)) + 
+    geom_text(aes(label = value, colour = type), size = 5) + 
     scale_x_discrete(name = "at p-value threshold (less than)") + 
     scale_y_continuous(name = "Proportion (%)") + 
     ggtitle("Accumulated proportion of signif features within each type (%)")
@@ -323,7 +333,7 @@ for (yname in ylist) {
   featlist.count <- melt(featlist.count, id.vars = c("prname","xname"))
   p1 <- ggplot(featlist.count, aes(x = variable, y = value)) + 
     geom_bar(aes(fill = xname), stat = "identity", position = "dodge", alpha = 0.8) + 
-    geom_text(aes(label = value, group = xname), colour = "black", position = position_dodge(0.9), vjust = 0.9) + 
+    geom_text(aes(label = value, group = xname), size = 2, angle = 45, colour = "black", position = position_dodge(0.9), vjust = 0.9) + 
     facet_wrap(~prname, scales = "free", ncol = 1) + 
     scale_x_discrete(name = paste0("selected times (max ", nfolds*nrepeats, ")")) + 
     scale_y_continuous(name = "count") + 

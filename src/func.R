@@ -457,12 +457,12 @@ plotROCcv <- function(res, savepath, pos.label = tail(res$pos.label, 1), beta = 
 
 
 
-featselectIndepSignif <- function(xtr, ytr, pthres = 0.05, test = "t.test", method = "none", keep.signif = TRUE,
+featselectIndepSignif <- function(xtr, ytr, pthres = 0.05, test = "t.test", method = "BH", keep.signif = TRUE,
                                   pos.label = tail(names(table(ytr)),1), ...)
 {
   # xtr should be assigned col names and ytr is a vector of labels
   # test denotes a char from c("t.test","wilcox.test",...)
-  # method denotes multiple test correction, default "none", see ?p.adjust.methods
+  # method denotes multiple test correction, default "BH", see ?p.adjust.methods
   # pos.label is a single character so that in case ytr has more than 2 levels we create a binary label wrt pos.label to perform the test
   # featselectIndepSignif() runs feature-by-feature independence significance test between contrasting classes
   # and returns p-values for each feature

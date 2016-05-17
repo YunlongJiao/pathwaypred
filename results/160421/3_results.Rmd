@@ -8,6 +8,7 @@ knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = c("pn
 set.seed(70236562)
 source("../../src/func.R")
 library(ggplot2)
+library(reshape2)
 ```
 
 First read in parameters!
@@ -51,7 +52,7 @@ nrepeats.inn <- unique(param$nrepeats.inn)
 stopifnot(length(nrepeats.inn) == 1)
 nrepeats.inn
 # evaluation measures
-slist <- c("acc","fpr","tpr","ppv","fval", "auroc")
+slist <- c("acc","fpr","tpr","ppv","fval","auroc")
 slist
 slist.prefer.large.score <- c(TRUE, FALSE, TRUE, TRUE, TRUE, TRUE)
 names(slist.prefer.large.score) <- slist
