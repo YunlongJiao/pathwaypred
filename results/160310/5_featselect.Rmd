@@ -130,6 +130,7 @@ for (yname in ylist) {
   cat('\n---------> \t for ', yname, ' \t <---------\n')
   plist <- get(paste0(yname,"_plist"))
   # show top 10 signif features
+  cat('\nPreview of top 10 most signif features in each type\n')
   print(lapply(plist, head, n = 10))
   plist.melt <- melt(plist, level = 1, value.name = "value")
   colnames(plist.melt)[colnames(plist.melt)=="L1"] <- "xname"
@@ -310,8 +311,8 @@ for (yname in ylist) {
   featlist.tab <- lapply(featlist.short, function(u) lapply(u, function(v) 
     sort(table(unlist(v)), decreasing = TRUE)
   ))
-  cat('\nPreview of top 3 most often selected features in each type\n')
-  print(lapply(featlist.tab, function(u) lapply(u, head, n=3)))
+  cat('\nPreview of top 10 most often selected features in each type\n')
+  print(lapply(featlist.tab, function(u) lapply(u, head, n=10)))
   
   # count number of times of features from each type being selected over CV runs
   featlist.count <- melt(featlist.tab, level = 1, value.name = "value")
