@@ -191,7 +191,7 @@ for (yname in ylist) {
   plist.pull$freq <- plist.pull$value/n.featsignif[match(plist.pull$pthres, as.numeric(names(n.featsignif)))]
   p1 <- ggplot(plist.pull, aes(x = factor(pthres), y = freq)) + 
     geom_bar(aes(fill = type), stat="identity", position = "stack", alpha = 0.8) + 
-    geom_text(aes(label = value), colour = "black", position = "stack", vjust = 0.9) + 
+    geom_text(aes(label = value), size = 5, colour = "black", position = "stack", vjust = 0.9) + 
     scale_x_discrete(name = "at p-value threshold (less than)") + 
     scale_y_continuous(name = "Proportion (%)") + 
     ggtitle("Accumulated proportion of signif features across different types (%)")

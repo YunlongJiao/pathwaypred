@@ -207,9 +207,9 @@ test
 ```
 
 ```r
-# method for multiple correction
+# method for multiple correction should be 'none' and correction is left to be done later
 method <- unique(param2$method)
-stopifnot(length(method) == 1)
+stopifnot(all(unique(method) == "none"))
 method
 ```
 
@@ -234,10 +234,20 @@ for (yname in ylist) {
       as.data.frame(t(v)) # convert to data.frame to facilitate further rbind
     })
     res <- do.call('rbind', res)
-    return(colMeans(res)) # averaged p-value over CV splits of data
+    return(res)
   })
-  names(plist) <- xlist.test
+  xlist.factor <- factor(rep(xlist.test, sapply(plist, ncol)), levels = xlist.test)
+  plist <- do.call('cbind', plist)
+  # multiple test correction for each CV run where transpose to maintain same dim
+  plist <- t(apply(plist, 1, p.adjust, method = "BH"))
+  # average p-values over all CV runs
+  plist <- colMeans(plist)
+  # split up to each type of features
+  plist <- split(plist, xlist.factor)
+  # sort by increasing p-value in each group
+  plist <- lapply(plist, sort, decreasing = FALSE)
   assign(paste0(yname,"_plist"), plist)
+  rm(plist)
 }
 ```
 
@@ -265,13 +275,13 @@ for (yname in ylist) {
   p1 <- ggplot(plist.melt, aes(x = xname, y = value)) + 
     geom_boxplot(aes(fill = xname), alpha = 0.8) + 
     scale_x_discrete(name = "x") + 
-    scale_y_continuous(trans = "log10", limits = c(1/1e6, 1), name = "p-value") + 
+    scale_y_continuous(trans = "log10", limits = c(0.01, 1), name = "p-value") + 
     ggtitle("All features") + 
     theme(axis.text.x = element_blank(), legend.title = element_blank(), legend.position = "bottom")
   p2 <- ggplot(subset(plist.melt, value < pthres), aes(x = xname, y = value)) + 
     geom_boxplot(aes(fill = xname), alpha = 0.8) + 
     scale_x_discrete(name = "x") + 
-    scale_y_continuous(trans = "log10", limits = c(pthres/1e6, pthres), name = "p-value") + 
+    scale_y_continuous(limits = c(0.01, pthres), name = "p-value") + 
     ggtitle(paste0("Significant features only (p-value<", pthres, ")")) + 
     theme(axis.text.x = element_blank(), legend.title = element_blank(), legend.position = "bottom")
   multiplot(p1, p2, cols = 2)
@@ -287,13 +297,13 @@ for (yname in ylist) {
   
   # compared within each type
   plist.freq <- melt(plist.tab, varnames = c("pthres", "type"), value.name = "value")
-  n.featlist <- sapply(xlist.test, function(xname) ncol(get(xname)))
+  n.featlist <- sapply(xlist.test, function(xname) length(plist[[xname]]))
   plist.freq$freq <- plist.freq$value/n.featlist[plist.freq$type]
   cat('\nTotal number of features within each type\n')
   print(n.featlist)
   p1 <- ggplot(plist.freq, aes(x = factor(pthres), y = freq)) + 
     geom_line(aes(group = type, colour = type), stat="identity", alpha = 0.8) + 
-    geom_text(aes(label = value, colour = type)) + 
+    geom_text(aes(label = value, colour = type), size = 5) + 
     scale_x_discrete(name = "at p-value threshold (less than)") + 
     scale_y_continuous(name = "Proportion (%)") + 
     ggtitle("Accumulated proportion of signif features within each type (%)")
@@ -305,7 +315,7 @@ for (yname in ylist) {
   plist.pull$freq <- plist.pull$value/n.featsignif[match(plist.pull$pthres, as.numeric(names(n.featsignif)))]
   p1 <- ggplot(plist.pull, aes(x = factor(pthres), y = freq)) + 
     geom_bar(aes(fill = type), stat="identity", position = "stack", alpha = 0.8) + 
-    geom_text(aes(label = value), colour = "black", position = "stack", vjust = 0.9) + 
+    geom_text(aes(label = value), size = 5, colour = "black", position = "stack", vjust = 0.9) + 
     scale_x_discrete(name = "at p-value threshold (less than)") + 
     scale_y_continuous(name = "Proportion (%)") + 
     ggtitle("Accumulated proportion of signif features across different types (%)")
@@ -321,79 +331,77 @@ for (yname in ylist) {
 ## 
 ## Preview of top 10 most signif features in each type
 ## $fun.vals
-##              X_Exocytosis       X_Calcium_transport 
-##              1.200861e-16              5.798728e-09 
-## X_Sphingolipid_metabolism         X_Lipid_transport 
-##              5.190418e-08              1.710626e-10 
-## X_Ubl_conjugation_pathway                X_Antiport 
-##              1.365735e-10              4.400571e-08 
-##        X_Sodium_transport              X_Glycolysis 
-##              1.124589e-06              1.942662e-07 
-##         X_Stress_response       X_Lipid_degradation 
-##              1.219888e-07              8.070957e-09 
+##              X_Exocytosis X_Ubl_conjugation_pathway 
+##              3.576248e-15              1.211838e-09 
+##         X_Lipid_transport       X_Calcium_transport 
+##              1.525778e-09              3.634076e-08 
+##       X_Lipid_degradation                X_Antiport 
+##              4.728324e-08              2.406929e-07 
+## X_Sphingolipid_metabolism X_Fatty_acid_biosynthesis 
+##              2.689499e-07              3.583507e-07 
+##         X_Stress_response              X_Glycolysis 
+##              5.859861e-07              8.722341e-07 
 ## 
 ## $go.vals
 ##                                                    X_JNK_cascade 
-##                                                     8.110585e-20 
+##                                                     6.937648e-18 
 ##                          X_microtubule_cytoskeleton_organization 
-##                                                     7.784705e-20 
-##                                   X_superoxide_metabolic_process 
-##                                                     3.951983e-15 
+##                                                     6.985323e-18 
 ##                                       X_histone_H3_deacetylation 
-##                                                     1.420415e-15 
-##                                           X_response_to_cytokine 
-##                                                     1.657866e-13 
-##                            X_regulation_of_calcium_ion_transport 
-##                                                     1.568474e-12 
+##                                                     4.460813e-14 
+##                                   X_superoxide_metabolic_process 
+##                                                     1.150477e-13 
+##                      X_phosphatidylcholine_acyl_chain_remodeling 
+##                                                     6.062780e-13 
+##                         X_positive_regulation_of_GTPase_activity 
+##                                                     1.089602e-12 
 ## X_positive_regulation_of_DNA_templated_transcription__initiation 
-##                                                     7.748809e-14 
-##                                             X_cell_morphogenesis 
-##                                                     2.640687e-13 
-##                            X_quaternary_ammonium_group_transport 
-##                                                     1.875636e-13 
-##                                       X_organic_cation_transport 
-##                                                     1.875636e-13 
+##                                                     1.583364e-12 
+##                                        X_protein_phosphorylation 
+##                                                     1.683775e-12 
+##                          X_glycerophospholipid_catabolic_process 
+##                                                     2.142504e-12 
+##                                           X_response_to_cytokine 
+##                                                     2.860997e-12 
 ## 
 ## $eff.vals
-##  X_hsa04919__39  X_hsa04914__34  X_hsa04914__39 X_hsa05205__103 
-##    1.026319e-22    6.589415e-21    1.311965e-20    2.771597e-19 
-##  X_hsa04010__14  X_hsa04010__61  X_hsa04915__58  X_hsa04010__58 
-##    7.784705e-20    9.944963e-17    2.144038e-17    1.358455e-16 
-##  X_hsa04068__53  X_hsa04010__65 
-##    3.951983e-15    1.420415e-15 
+##  X_hsa04919__39  X_hsa04914__34  X_hsa04914__39  X_hsa04010__14 
+##    1.697419e-20    7.357707e-19    1.316372e-18    6.985323e-18 
+## X_hsa05205__103  X_hsa04915__58  X_hsa04010__61  X_hsa04010__58 
+##    2.174559e-17    8.855212e-16    4.204943e-15    5.760968e-15 
+##  X_hsa04668__38  X_hsa04151__99 
+##    1.590756e-14    1.698098e-14 
 ## 
 ## $path.vals
 ##  X_hsa04919__33___39  X_hsa04151__43___99 X_hsa05200__35___207 
-##         3.684965e-25         3.826681e-23         3.359441e-22 
-## X_hsa04010__128___14   X_hsa04010__4___14 X_hsa04010__105___14 
-##         1.485739e-20         1.112728e-21         6.776587e-21 
-##  X_hsa04010__41___14  X_hsa04914__37___34  X_hsa04010__35___14 
-##         7.394936e-20         6.589415e-21         1.045585e-19 
-##  X_hsa04914__37___39 
-##         1.311965e-20 
+##         1.166098e-22         8.049279e-21         5.069082e-20 
+##   X_hsa04010__4___14  X_hsa04914__37___34 X_hsa04010__105___14 
+##         1.709221e-19         7.357707e-19         8.100432e-19 
+##  X_hsa04914__37___39 X_hsa04010__128___14 X_hsa05200__35___209 
+##         1.316372e-18         1.540677e-18         2.654614e-18 
+##   X_hsa04010__3___14 
+##         5.909348e-18 
 ## 
 ## $mini.genes.vals
-##       X_2099       X_3760       X_2925      X_84612      X_50604 
-## 2.376902e-27 4.217083e-26 3.286400e-24 1.526938e-21 5.993268e-22 
-##       X_9254      X_57580       X_5914       X_5613       X_8437 
-## 9.491376e-21 8.089589e-22 3.666512e-20 1.964093e-22 4.330385e-23 
+##       X_2099       X_3760       X_2925       X_8437       X_5613 
+## 1.736439e-24 1.665528e-23 9.045372e-22 9.395027e-21 3.440422e-20 
+##       X_8326       X_7066       X_8440      X_50604      X_57580 
+## 4.999023e-20 7.998074e-20 9.074077e-20 9.334031e-20 1.243317e-19 
 ## 
 ## $other.genes.vals
-##          X_9     X_161835       X_9120      X_25823     X_388468 
-## 1.601189e-39 1.039546e-35 4.852067e-34 1.611226e-29 1.074640e-30 
-##      X_79624     X_112714      X_25800      X_53335      X_23784 
-## 5.279954e-33 5.010668e-33 6.168508e-32 2.935878e-29 9.892953e-27 
+##          X_9     X_161835       X_9120     X_112714      X_79624 
+## 3.740884e-35 6.626610e-32 3.181627e-30 1.373118e-29 2.350734e-29 
+##      X_25800     X_388468      X_25823      X_53335       X_8537 
+## 1.799662e-28 2.341486e-27 2.681914e-26 4.048322e-26 1.993943e-25 
 ## 
 ## 
 ## Boxplots of p-values of feature-by-feature t.test
 ```
 
 ```
-## Warning: Removed 5122 rows containing non-finite values (stat_boxplot).
-```
+## Warning: Removed 12510 rows containing non-finite values (stat_boxplot).
 
-```
-## Warning: Removed 3794 rows containing non-finite values (stat_boxplot).
+## Warning: Removed 12510 rows containing non-finite values (stat_boxplot).
 ```
 
 ![plot of chunk test](5_featselect_figure/test-1.png)
@@ -402,9 +410,9 @@ for (yname in ylist) {
 ## 
 ## Total number of features within each type
 ##         fun.vals          go.vals         eff.vals        path.vals 
-##               81              370             1038             6101 
+##               81              370             1031             6056 
 ##  mini.genes.vals other.genes.vals 
-##             2212            16496
+##             2142            16496
 ```
 
 ![plot of chunk test](5_featselect_figure/test-2.png)![plot of chunk test](5_featselect_figure/test-3.png)
@@ -545,7 +553,7 @@ for (yname in ylist) {
   featlist.count <- melt(featlist.count, id.vars = c("prname","xname"))
   p1 <- ggplot(featlist.count, aes(x = variable, y = value)) + 
     geom_bar(aes(fill = xname), stat = "identity", position = "dodge", alpha = 0.8) + 
-    geom_text(aes(label = value, group = xname), colour = "black", position = position_dodge(0.9), vjust = 0.9) + 
+    geom_text(aes(label = value, group = xname), size = 2, angle = 45, colour = "black", position = position_dodge(0.9), vjust = 0.9) + 
     facet_wrap(~prname, scales = "free", ncol = 1) + 
     scale_x_discrete(name = paste0("selected times (max ", nfolds*nrepeats, ")")) + 
     scale_y_continuous(name = "count") + 
