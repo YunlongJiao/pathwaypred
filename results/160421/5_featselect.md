@@ -7,7 +7,7 @@ This script studies feature selection with representative FS algorithms to disti
 
 
 ```r
-knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = "pdf", fig.keep = "high", fig.path = "5_featselect_figure/", cache.path = "5_featselect_cache/")
+knitr::opts_chunk$set(error = FALSE, fig.width = 12, fig.height = 8, dev = c("png","pdf"), fig.keep = "high", fig.path = "5_featselect_figure/", cache.path = "5_featselect_cache/")
 set.seed(17766220)
 source("../../src/func.R")
 library(reshape2)
@@ -248,9 +248,9 @@ For each `yname` in subtype.grps, we have several plots to illustrate the result
 
 
 ```r
-cat('\n---> \t Independent significance', test, '\t <---\n')
 # show each grp separately
 for (yname in ylist) {
+  cat('\n---> \t Independent significance', test, '\t <---\n')
   cat('\n---------> \t for ', yname, ' \t <---------\n')
   plist <- get(paste0(yname,"_plist"))
   # show top 10 signif features
@@ -311,16 +311,6 @@ for (yname in ylist) {
   plot(p1)
 }
 ```
-
-```
-## Warning: Removed 5122 rows containing non-finite values (stat_boxplot).
-```
-
-```
-## Warning: Removed 3794 rows containing non-finite values (stat_boxplot).
-```
-
-![plot of chunk test](5_featselect_figure/test-1.pdf)![plot of chunk test](5_featselect_figure/test-2.pdf)![plot of chunk test](5_featselect_figure/test-3.pdf)
 
 ```
 ## 
@@ -392,7 +382,20 @@ for (yname in ylist) {
 ## 5.279954e-33 5.010668e-33 6.168508e-32 2.935878e-29 9.892953e-27 
 ## 
 ## 
-## Boxplots of p-values of feature-by-feature t.test 
+## Boxplots of p-values of feature-by-feature t.test
+```
+
+```
+## Warning: Removed 5122 rows containing non-finite values (stat_boxplot).
+```
+
+```
+## Warning: Removed 3794 rows containing non-finite values (stat_boxplot).
+```
+
+![plot of chunk test](5_featselect_figure/test-1.png)
+
+```
 ## 
 ## Total number of features within each type
 ##         fun.vals          go.vals         eff.vals        path.vals 
@@ -400,6 +403,8 @@ for (yname in ylist) {
 ##  mini.genes.vals other.genes.vals 
 ##             2212            16496
 ```
+
+![plot of chunk test](5_featselect_figure/test-2.png)![plot of chunk test](5_featselect_figure/test-3.png)
 
 ## Algorithmic feature selection
 
@@ -456,9 +461,9 @@ For each `yname` in subtype.grps, we have several plots to illustrate the result
 
 
 ```r
-cat('\n---> \t Algorithmic feature selection \t <---\n')
 # show each grp separately
 for (yname in ylist) {
+  cat('\n---> \t Algorithmic feature selection \t <---\n')
   cat('\n---------> \t for ', yname, ' \t <---------\n')
   # scores
   scores <- lapply(prlist.fs, function(prname){
@@ -547,21 +552,34 @@ for (yname in ylist) {
 }
 ```
 
-![plot of chunk featselect](5_featselect_figure/featselect-1.pdf)![plot of chunk featselect](5_featselect_figure/featselect-2.pdf)![plot of chunk featselect](5_featselect_figure/featselect-3.pdf)![plot of chunk featselect](5_featselect_figure/featselect-4.pdf)![plot of chunk featselect](5_featselect_figure/featselect-5.pdf)
-
 ```
 ## 
 ## ---> 	 Algorithmic feature selection 	 <---
 ## 
 ## ---------> 	 for  subtype.grps  	 <---------
+```
+
+![plot of chunk featselect](5_featselect_figure/featselect-1.png)![plot of chunk featselect](5_featselect_figure/featselect-2.png)
+
+```
 ## 
 ## Total number of features selected at each run (averaged over each CV run)
 ## predictorLogitLasso        predictorPAM         predictorRF 
-##               46.58              160.56             6844.76 
+##               46.58              160.56             6844.76
+```
+
+![plot of chunk featselect](5_featselect_figure/featselect-3.png)
+
+```
 ## 
 ## Total number of features within each type
 ##  mini.genes.vals other.genes.vals        path.vals 
-##             2212            16496             6101 
+##             2212            16496             6101
+```
+
+![plot of chunk featselect](5_featselect_figure/featselect-4.png)
+
+```
 ## 
 ## Preview of top 3 most often selected features in each type
 ## $predictorLogitLasso
@@ -614,6 +632,8 @@ for (yname in ylist) {
 ## X_hsa04010__105___14  X_hsa04010__41___14  X_hsa04010__43___14 
 ##                   50                   50                   50
 ```
+
+![plot of chunk featselect](5_featselect_figure/featselect-5.png)
 
 ## Session info
 
