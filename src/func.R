@@ -353,7 +353,7 @@ crossValidationCombineResults <- function(foldres,
       cvres[[elem]] <- NA
     }
   } else {
-    elem_red <- setdiff(names(foldres[[1]]), c(elem_inherit, elem_keepfold, elem_ave, "model"))
+    elem_red <- setdiff(names(foldres[[1]]), c(elem_inherit, elem_keepfold, elem_ave, "model", "validation"))
     if (length(elem_red) > 0) {
       warning("following elements are not recognized by default and are kept as in folds: ", 
               paste(elem_red, collapse = " , "))
