@@ -63,7 +63,7 @@ slist.prefer.large.score
 
 In order to avoid overfitting with the choice of prediction algorithm used, across each feature `xname` X each label group `yname` X each evaluation CV (outter) fold repeat `i.fold`, the predictor `prname` is selected by nested CV (inner) runs and the best prediction performance is reported by each evaluation measure.
 
-```{r prepare, message=FALSE}
+```{r prepare, message=FALSE, warning=FALSE}
 # gather scores
 scores <- list()
 for (i.fold in seq(nfolds*nrepeats)) {
