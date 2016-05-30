@@ -258,6 +258,7 @@ The evaluation measure are the following: acc, fpr, tpr, ppv, fval, auroc. Note 
 
 
 ```r
+scores <- read.table("scores.txt", header = TRUE, row.names = 1, col.names = c("y", "x", "type", "predictor", "rep", "score", "value"), sep = '\t')
 # plot each grps in a separate figure
 for (yname in ylist) {
   d <- subset(scores, scores$y == yname)
@@ -271,7 +272,6 @@ for (yname in ylist) {
   p1 <- ggplot(d, aes(x = x, y = value)) + 
     geom_boxplot(aes(fill = x), alpha = 0.8) + 
     geom_vline(xintercept = xlist.vline, color = "grey", size = 2) + 
-    scale_y_continuous(limits = c(0.75, 1)) + 
     facet_wrap(~score, scales = "free") + 
     ggtitle(paste0("predicting ", yname)) + 
     theme(axis.text.x = element_blank())
@@ -280,7 +280,7 @@ for (yname in ylist) {
 ```
 
 ```
-## Warning: Removed 67 rows containing non-finite values (stat_boxplot).
+## Warning: Removed 7 rows containing non-finite values (stat_boxplot).
 ```
 
 ![plot of chunk overview](3_results_figure/overview-1.png)
