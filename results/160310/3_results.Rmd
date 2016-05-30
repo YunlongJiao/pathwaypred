@@ -160,6 +160,7 @@ Notes that some evaluation measures (`acc`, `ppv`, etc) do associate with a spec
 The evaluation measure are the following: `r slist`. Note that in order to remove confusion, we equivalently rename `TPR` by `Sensitivity`, and plot `Specificity = 1 - FPR` instead of `FPR` values. As a result, for any evaluation measure present in the plot, higher values indicate better performance unanimously.
 
 ```{r overview}
+scores <- read.table("scores.txt", header = TRUE, row.names = 1, col.names = c("y", "x", "type", "predictor", "rep", "score", "value"), sep = '\t')
 # plot each grps in a separate figure
 for (yname in ylist) {
   d <- subset(scores, scores$y == yname)
@@ -173,7 +174,6 @@ for (yname in ylist) {
   p1 <- ggplot(d, aes(x = x, y = value)) + 
     geom_boxplot(aes(fill = x), alpha = 0.8) + 
     geom_vline(xintercept = xlist.vline, color = "grey", size = 2) + 
-    scale_y_continuous(limits = c(0.75, 1)) + 
     facet_wrap(~score, scales = "free") + 
     ggtitle(paste0("predicting ", yname)) + 
     theme(axis.text.x = element_blank())
