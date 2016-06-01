@@ -507,13 +507,13 @@ featselectRF <- function(model = NULL, ..., keep.signif = TRUE)
 {
   # computes importance measure as mean decrease in accuracy (type=1) for each feature
   # returns only those with positive importance ordered by decreasing value
-  # NOTE model must be fit with tune.randomForest() instead of randomForest() and with importance set TRUE
+  # NOTE model must be fit with randomForest() and with importance set TRUE
   
   library(randomForest)
   
   if (is.null(model))
     model <- predictorRF(...)$model
-  s <- drop(randomForest::importance(x = model$best.model, type = 1))
+  s <- drop(randomForest::importance(x = model, type = 1))
   
   if (keep.signif)
     s <- s[s > 0]
@@ -864,25 +864,23 @@ predictorGBM <- function(xtr, xtst, ytr, n.trees = 1500, shrinkage = 0.002,
 
 
 
-predictorRF <- function(xtr, xtst, ytr, ntree = 500*(1:3), importance = TRUE, cross = 5, cutoff = 0.5, ...)
+predictorRF <- function(xtr, xtst, ytr, ntree = 1500, importance = TRUE, cutoff = 0.5, ...)
 {
   # ntree is a vector of parameter grid to tune with, random feature selection
   # NOTE cross validation is set to always minimize misclassification error by default of tune.svm arguments despite that it might not be appropriate for largely unbalanced classes
   # NOTE no need for do.normalize for base learner DT
   
   library(randomForest)
-  library(e1071)
   
   classes <- names(tab <- table(ytr))
   classes.eff <- classes[tab > 0]
   stopifnot(length(classes.eff) >= 2)
   
   # train
-  model <- tune.randomForest(x = xtr, y = as.factor(as.character(ytr)), 
-                             ntree = ntree, importance = importance, 
-                             tunecontrol = tune.control(sampling="cross", cross=cross), ...)
+  model <- randomForest(x = xtr, y = as.factor(as.character(ytr)), 
+                        ntree = ntree, importance = importance, ...)
   # predict
-  pred <- predict(object = model$best.model, newdata = xtst, type = "prob", ...)
+  pred <- predict(object = model, newdata = xtst, type = "prob", ...)
   pred.class <- colnames(pred)[max.col(pred)]
   pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                       dimnames = list(rownames(xtst), classes))
