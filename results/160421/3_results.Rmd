@@ -86,7 +86,8 @@ for (i.fold in seq(nfolds*nrepeats)) {
                                                   '[[:digit:]]+', nfolds.inn, nrepeats.inn, 
                                                   sep = '_'), 
                                   full.names = TRUE)
-          res <- lapply(res.files, function(f) get(load(f)))
+          res <- lapply(res.files, function(f) try(get(load(f))))
+          res <- res[sapply(res, function(x) !inherits(x, "try-error"))]
           cvres[[prname]] <- crossValidationCombineResults(res)
         }
         
