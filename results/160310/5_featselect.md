@@ -578,7 +578,7 @@ for (yname in ylist) {
 ## 
 ## Total number of features selected at each run (averaged over each CV run)
 ## predictorLogitLasso        predictorPAM         predictorRF 
-##                2.16               13.06             7223.12
+##                2.16               13.06             9836.60
 ```
 
 ```
@@ -647,28 +647,28 @@ for (yname in ylist) {
 ## $predictorRF
 ## $predictorRF$mini.genes.vals
 ## 
-## X_10411  X_8454  X_4842  X_3815  X_5346  X_6358 X_64805  X_1739  X_5138 
-##      46      46      44      43      43      41      41      40      40 
-##  X_5257 
-##      40 
+##  X_5346 X_10411  X_4842  X_5138  X_6358 X_64805  X_9370  X_3815  X_5348 
+##      50      49      49      48      48      48      48      46      46 
+##  X_6869 
+##      46 
 ## 
 ## $predictorRF$other.genes.vals
 ## 
-##   X_1020    X_125 X_340273   X_2532  X_65992   X_6944  X_84057  X_10188 
-##       50       50       50       49       49       49       49       48 
-## X_150356   X_1960 
-##       48       48 
+##  X_1020   X_125  X_1960 X_22915  X_2532  X_3491  X_4976 X_65992  X_6944 
+##      50      50      50      50      50      50      50      50      50 
+## X_79174 
+##      50 
 ## 
 ## $predictorRF$path.vals
 ## 
-##   X_hsa04064__13___133     X_hsa04022__4___65    X_hsa04024__82___21 
-##                     50                     47                     46 
-##   X_hsa04064__13___129    X_hsa04066__68___58  X_hsa04020__9_53___42 
-##                     46                     46                     45 
-## X_hsa04114__44_45___42 X_hsa04530__43_47___30     X_hsa04920__14___6 
-##                     45                     45                     45 
-##   X_hsa05200__248___75 
-##                     45
+##  X_hsa04024__82___21 X_hsa04064__13___129   X_hsa04920__14___2 
+##                   50                   50                   50 
+## X_hsa04024__131___76  X_hsa04024__79___21  X_hsa04024__80___21 
+##                   49                   49                   49 
+##  X_hsa04024__80___59  X_hsa04024__81___21  X_hsa04024__90___59 
+##                   49                   49                   49 
+##  X_hsa04066__68___58 
+##                   49
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-5.png)

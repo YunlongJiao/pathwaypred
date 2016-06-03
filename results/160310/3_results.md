@@ -173,7 +173,8 @@ for (i.fold in seq(nfolds*nrepeats)) {
                                                   '[[:digit:]]+', nfolds.inn, nrepeats.inn, 
                                                   sep = '_'), 
                                   full.names = TRUE)
-          res <- lapply(res.files, function(f) get(load(f)))
+          res <- lapply(res.files, function(f) try(get(load(f))))
+          res <- res[sapply(res, function(x) !inherits(x, "try-error"))]
           cvres[[prname]] <- crossValidationCombineResults(res)
         }
         
@@ -280,7 +281,7 @@ for (yname in ylist) {
 ```
 
 ```
-## Warning: Removed 180 rows containing non-finite values (stat_boxplot).
+## Warning: Removed 178 rows containing non-finite values (stat_boxplot).
 ```
 
 ![plot of chunk overview](3_results_figure/overview-1.png)
@@ -329,16 +330,16 @@ for (yname in ylist) {
 ## $fun.vals
 ## 
 ##  predictorRadialSVM        predictorGBM predictorKendallSVM 
-##             "72.00"             "18.00"              "4.00" 
-##        predictorLDA         predictorRF  predictorSparseSVM 
-##              "2.00"              "2.00"              "2.00" 
+##             "72.00"             "20.00"              "4.00" 
+##        predictorLDA  predictorSparseSVM 
+##              "2.00"              "2.00" 
 ## 
 ## $genes.vals
 ## 
 ## predictorLinearSVM predictorRadialSVM       predictorLDA 
-##            "62.00"            "32.00"             "4.00" 
+##            "60.00"            "32.00"             "4.00" 
 ##        predictorRF 
-##             "2.00" 
+##             "4.00" 
 ## 
 ## $go.vals
 ## 
@@ -350,16 +351,16 @@ for (yname in ylist) {
 ## $mini.genes.vals
 ## 
 ##  predictorRadialSVM  predictorLinearSVM        predictorGBM 
-##             "52.00"             "42.00"              "4.00" 
-## predictorKendallSVM 
-##              "2.00" 
+##             "52.00"             "42.00"              "2.00" 
+## predictorKendallSVM         predictorRF 
+##              "2.00"              "2.00" 
 ## 
 ## $other.genes.vals
 ## 
-##  predictorLinearSVM  predictorRadialSVM         predictorRF 
-##             "60.00"             "32.00"              "4.00" 
-## predictorKendallSVM        predictorLDA 
-##              "2.00"              "2.00" 
+##  predictorLinearSVM  predictorRadialSVM        predictorLDA 
+##             "60.00"             "30.00"              "4.00" 
+##         predictorRF predictorKendallSVM 
+##              "4.00"              "2.00" 
 ## 
 ## $path.and.genes.vals
 ## 
@@ -424,48 +425,48 @@ for (yname in ylist) {
 ## 
 ## ------> 	 predicting for  surv.grps  	 <------
 ##                             fun.vals     go.vals   eff.vals path.vals
-## fun.vals                         NaN 0.185275862 1.00000000 1.0000000
-## go.vals                   1.00000000         NaN 1.00000000 1.0000000
-## eff.vals                  0.09900000 0.003000000        NaN 1.0000000
-## path.vals                 0.00900000 0.000000000 0.08400000       NaN
-## mini.genes.vals           1.00000000 0.153000000 1.00000000 1.0000000
-## other.genes.vals          0.12633333 0.008400000 0.95280000 1.0000000
-## genes.vals                0.11076923 0.007071429 0.90981818 1.0000000
-## eff.and.other.genes.vals  0.07473913 0.004909091 0.62648780 1.0000000
-## path.and.other.genes.vals 0.00180000 0.000000000 0.02178947 0.6264878
-## path.and.genes.vals       0.05359091 0.001800000 0.54781579 1.0000000
+## fun.vals                         NaN 0.157178571 1.00000000   1.00000
+## go.vals                   1.00000000         NaN 1.00000000   1.00000
+## eff.vals                  0.13716000 0.003000000        NaN   1.00000
+## path.vals                 0.01200000 0.000000000 0.08475000       NaN
+## mini.genes.vals           1.00000000 0.167896552 1.00000000   1.00000
+## other.genes.vals          0.20758065 0.012375000 1.00000000   1.00000
+## genes.vals                0.20758065 0.012000000 1.00000000   1.00000
+## eff.and.other.genes.vals  0.08475000 0.004909091 0.64215000   1.00000
+## path.and.other.genes.vals 0.00180000 0.000000000 0.02435294   0.64215
+## path.and.genes.vals       0.06586364 0.001800000 0.54781579   1.00000
 ##                           mini.genes.vals other.genes.vals  genes.vals
-## fun.vals                      0.909818182      1.000000000 1.000000000
-## go.vals                       1.000000000      1.000000000 1.000000000
-## eff.vals                      0.026550000      1.000000000 1.000000000
-## path.vals                     0.004909091      0.186300000 0.205258065
-## mini.genes.vals                       NaN      1.000000000 1.000000000
-## other.genes.vals              0.010000000              NaN 1.000000000
-## genes.vals                    0.007071429      0.613153846         NaN
-## eff.and.other.genes.vals      0.004909091      0.307406250 0.383029412
-## path.and.other.genes.vals     0.000000000      0.004909091 0.004909091
-## path.and.genes.vals           0.007071429      0.420250000 0.498891892
+## fun.vals                      0.831731707        1.0000000 1.000000000
+## go.vals                       1.000000000        1.0000000 1.000000000
+## eff.vals                      0.027000000        0.8895349 0.889534884
+## path.vals                     0.004909091        0.1500000 0.147461538
+## mini.genes.vals                       NaN        1.0000000 1.000000000
+## other.genes.vals              0.027000000              NaN 0.948200000
+## genes.vals                    0.027000000        1.0000000         NaN
+## eff.and.other.genes.vals      0.004909091        0.2380909 0.218812500
+## path.and.other.genes.vals     0.000000000        0.0045000 0.003857143
+## path.and.genes.vals           0.008250000        0.2928857 0.288264706
 ##                           eff.and.other.genes.vals
 ## fun.vals                                1.00000000
 ## go.vals                                 1.00000000
 ## eff.vals                                1.00000000
-## path.vals                               0.39702857
+## path.vals                               0.37508108
 ## mini.genes.vals                         1.00000000
 ## other.genes.vals                        1.00000000
 ## genes.vals                              1.00000000
 ## eff.and.other.genes.vals                       NaN
 ## path.and.other.genes.vals               0.05057143
-## path.and.genes.vals                     0.90981818
+## path.and.genes.vals                     0.90879545
 ##                           path.and.other.genes.vals path.and.genes.vals
-## fun.vals                                          1           1.0000000
-## go.vals                                           1           1.0000000
-## eff.vals                                          1           1.0000000
-## path.vals                                         1           0.3830294
-## mini.genes.vals                                   1           1.0000000
-## other.genes.vals                                  1           1.0000000
-## genes.vals                                        1           1.0000000
-## eff.and.other.genes.vals                          1           1.0000000
-## path.and.other.genes.vals                       NaN           0.0100000
+## fun.vals                                          1               1.000
+## go.vals                                           1               1.000
+## eff.vals                                          1               1.000
+## path.vals                                         1               0.352
+## mini.genes.vals                                   1               1.000
+## other.genes.vals                                  1               1.000
+## genes.vals                                        1               1.000
+## eff.and.other.genes.vals                          1               1.000
+## path.and.other.genes.vals                       NaN               0.012
 ## path.and.genes.vals                               1                 NaN
 ## 
 ## Simplify by thresholding at p-value < 0.05 
@@ -562,7 +563,7 @@ head(scores)
 ## 3 surv.grps eff.vals path-wise predictorRF 0.19047619   tpr rep1
 ## 4 surv.grps eff.vals path-wise predictorRF 0.66666667   ppv rep1
 ## 5 surv.grps eff.vals path-wise predictorRF 0.29629630  fval rep1
-## 6 surv.grps eff.vals path-wise predictorRF 0.66635945 auroc rep1
+## 6 surv.grps eff.vals path-wise predictorRF 0.66451613 auroc rep1
 ```
 
 
@@ -588,7 +589,7 @@ for (yname in ylist) {
 ```
 
 ```
-## Warning: Removed 23 rows containing non-finite values (stat_boxplot).
+## Warning: Removed 32 rows containing non-finite values (stat_boxplot).
 ```
 
 ![plot of chunk perfRF](3_results_figure/perfRF-1.png)
