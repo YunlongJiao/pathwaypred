@@ -48,10 +48,14 @@ Three directions
 - we derived pathway features based on mini-genes and lose interesting info from other-genes from the beginning so that we could do feature selection with pathways and add other-genes as predictors. by doing this we benefit from two-folds: interpretation with respect to pathways and identification of important other-genes that enhance prediction
 - **learning of projection of pathway features onto "functionality" features instead of based on biological knowledge, leading to feature reduction due to meta-features
 
+## 160608 Meeting notes with ximo and jose
+
+- do feature selection with pathways, use selected pathways combined with gene values to make prediction, see if prediction is improved
+- other cancer types/datasets
+
 ## TODO
 
-- finish 6_fsPred.R where, for each fixed algorithm that does FS and prediction simultaneously, pathway features and other.genes are independently selected and then added together to enhance prediction??
-- compare in 7_fsResults.Rmd by each fixed algorithm (mostly RF) to see if prediction is enhanced by this additional step? Then see using FS, compared to without FS but prname tuned out, if prediction is enhanced by FS?
+- focus on logitLasso now! finish 6_fsPred.R where FS is done for eff.vals/path.vals, and add genes.vals to make prediction where pathways features are not penalized so that they are always included in model but genes that provide orthogonal information in terms of improving prediction are selected alongside!
 
 ## Future work
 
