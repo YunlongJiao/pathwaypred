@@ -55,6 +55,7 @@ nsample <- length(samplelist)
 # create mixed feature matrices
 
 xlist2combn <- list("eff.and.other.genes.vals" = c("eff.vals", "other.genes.vals"), 
+                    "eff.and.genes.vals" = c("eff.vals", "genes.vals"), 
                     "path.and.other.genes.vals" = c("path.vals", "other.genes.vals"), 
                     "path.and.genes.vals" = c("path.vals", "genes.vals"))
 for (xname in names(xlist2combn)) {
@@ -73,7 +74,8 @@ xlist
 ##  [3] "genes.vals"                "go.vals"                  
 ##  [5] "mini.genes.vals"           "other.genes.vals"         
 ##  [7] "path.vals"                 "eff.and.other.genes.vals" 
-##  [9] "path.and.other.genes.vals" "path.and.genes.vals"
+##  [9] "eff.and.genes.vals"        "path.and.other.genes.vals"
+## [11] "path.and.genes.vals"
 ```
 
 ```r
@@ -159,6 +161,14 @@ for (xname in xlist) {
 ## NULL
 ## 
 ## 
+## -------------> 	  eff.and.genes.vals  	 <-------------
+##  num [1:881, 1:19746] 0.00407 0.0044 0.00438 0.00426 0.00426 ...
+##  - attr(*, "dimnames")=List of 2
+##   ..$ : chr [1:881] "TCGA.BH.A0W3.01A.11R.A109.07" "TCGA.BH.A0W4.01A.11R.A109.07" "TCGA.BH.A0DX.01A.11R.A115.07" "TCGA.BH.A0W7.01A.11R.A115.07" ...
+##   ..$ : chr [1:19746] "X_hsa04014__42" "X_hsa04014__43" "X_hsa04014__44" "X_hsa04014__33" ...
+## NULL
+## 
+## 
 ## -------------> 	  path.and.other.genes.vals  	 <-------------
 ##  num [1:881, 1:22597] 0.00209 0.0022 0.00205 0.00186 0.00218 ...
 ##  - attr(*, "dimnames")=List of 2
@@ -175,11 +185,13 @@ for (xname in xlist) {
 ## NULL
 ```
 
-## Groups (binary only)
+## Groups
 
-Binary classes are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
+Classes labels are created from clinical info for classification. There vector objects are named ending with `[.]grps$`.
 
-#### Basal vs Non-basal
+**NOTE for labels involving multiple classes, always put THE positive group to the last level in the ordered factor as the evaluation measure such as TPR, FPR will be specific to that level.**
+
+#### Basal vs Non-basal (breast cancer basal type)
 
 
 ```r
@@ -195,7 +207,7 @@ length(sl <- intersect(samplelist, names(basal.grps)))
 table(basal.grps[sl])
 ```
 
-#### Tumor vs Normal
+#### Tumor vs Normal (tumor detection)
 
 
 ```r
@@ -295,22 +307,91 @@ table(surv.grps[sl])
 ##          755          124
 ```
 
+#### Luminal vs Her2 vs Basal (breast cancer subtypes)
+
+
+```r
+y <- read.table(paste0(datapath, 'sampleCancerType.txt'), header = FALSE)
+head(y$V2)
+```
+
+```
+## [1] "Basal" "Basal" "Basal" "Basal" "Basal" "Basal"
+```
+
+```r
+unique(y$V2)
+```
+
+```
+## [1] "Basal"   "Luminal" "Unknown" "Her2"
+```
+
+```r
+subtype.grps <- ordered(gsub('[^[:alnum:]_]', '_', y$V2), levels = c("Luminal", "Her2", "Basal"), labels = c("T1_Luminal", "T2_Her2", "T3_Basal"))
+id.na <- is.na(subtype.grps)
+subtype.grps <- subtype.grps[!id.na]
+names(subtype.grps) <- y$V1[!id.na]
+head(subtype.grps)
+```
+
+```
+## TCGA.A2.A0T2.01A.11R.A084.07 TCGA.A1.A0SK.01A.12R.A084.07 
+##                     T3_Basal                     T3_Basal 
+## TCGA.A2.A0CM.01A.31R.A034.07 TCGA.AR.A1AR.01A.31R.A137.07 
+##                     T3_Basal                     T3_Basal 
+## TCGA.BH.A18V.11A.52R.A12D.07 TCGA.BH.A18V.01A.11R.A12D.07 
+##                     T3_Basal                     T3_Basal 
+## Levels: T1_Luminal < T2_Her2 < T3_Basal
+```
+
+```r
+# sample size (how many labels are available in the sample cohort)
+length(sl <- intersect(samplelist, names(subtype.grps)))
+```
+
+```
+## [1] 495
+```
+
+```r
+# contrasting class size
+table(subtype.grps[sl])
+```
+
+```
+## 
+## T1_Luminal    T2_Her2   T3_Basal 
+##        315         86         94
+```
+
 #### Summary
 
 
 ```r
 # get all groups
 ylist <- ls(pattern = '[.]grps$')
-# check for now to deal with binary classification only
+# show all groups with their classes 
 for (yname in ylist) {
-  stopifnot(length(levels(get(yname))) == 2)
+  cat('\n-------------> \t summary \t <-------------\n')
+  cat('\n-------------> \t ', yname, ' \t <-------------\n')
+  print(levels(get(yname)))
+  cat('\n')
 }
-# show all groups
-ylist
 ```
 
 ```
-## [1] "surv.grps"
+## 
+## -------------> 	 summary 	 <-------------
+## 
+## -------------> 	  subtype.grps  	 <-------------
+## [1] "T1_Luminal" "T2_Her2"    "T3_Basal"  
+## 
+## 
+## -------------> 	 summary 	 <-------------
+## 
+## -------------> 	  surv.grps  	 <-------------
+## [1] "neg_alive"    "pos_deceased"
 ```
 
 ## Predictors
@@ -360,16 +441,17 @@ kmatlist
 ```
 
 ```
-##  [1] "predictorKendallSVM.eff.and.other.genes.vals.kmat" 
-##  [2] "predictorKendallSVM.eff.vals.kmat"                 
-##  [3] "predictorKendallSVM.fun.vals.kmat"                 
-##  [4] "predictorKendallSVM.genes.vals.kmat"               
-##  [5] "predictorKendallSVM.go.vals.kmat"                  
-##  [6] "predictorKendallSVM.mini.genes.vals.kmat"          
-##  [7] "predictorKendallSVM.other.genes.vals.kmat"         
-##  [8] "predictorKendallSVM.path.and.genes.vals.kmat"      
-##  [9] "predictorKendallSVM.path.and.other.genes.vals.kmat"
-## [10] "predictorKendallSVM.path.vals.kmat"
+##  [1] "predictorKendallSVM.eff.and.genes.vals.kmat"       
+##  [2] "predictorKendallSVM.eff.and.other.genes.vals.kmat" 
+##  [3] "predictorKendallSVM.eff.vals.kmat"                 
+##  [4] "predictorKendallSVM.fun.vals.kmat"                 
+##  [5] "predictorKendallSVM.genes.vals.kmat"               
+##  [6] "predictorKendallSVM.go.vals.kmat"                  
+##  [7] "predictorKendallSVM.mini.genes.vals.kmat"          
+##  [8] "predictorKendallSVM.other.genes.vals.kmat"         
+##  [9] "predictorKendallSVM.path.and.genes.vals.kmat"      
+## [10] "predictorKendallSVM.path.and.other.genes.vals.kmat"
+## [11] "predictorKendallSVM.path.vals.kmat"
 ```
 
 ## (Nested) cross validation parameters
@@ -406,14 +488,14 @@ param <- expand.grid(as.character(xlist), # feature
                      as.integer(nrepeats.inn), 
                      KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
 write.table(param, file = '2_runPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
-# preview
+# preview of 2_runPredict.txt
 str(param)
 ```
 
 ```
-## 'data.frame':	36000 obs. of  9 variables:
+## 'data.frame':	79200 obs. of  9 variables:
 ##  $ Var1: chr  "eff.vals" "fun.vals" "genes.vals" "go.vals" ...
-##  $ Var2: chr  "surv.grps" "surv.grps" "surv.grps" "surv.grps" ...
+##  $ Var2: chr  "subtype.grps" "subtype.grps" "subtype.grps" "subtype.grps" ...
 ##  $ Var3: chr  "predictorConstant" "predictorConstant" "predictorConstant" "predictorConstant" ...
 ##  $ Var4: int  1 1 1 1 1 1 1 1 1 1 ...
 ##  $ Var5: int  5 5 5 5 5 5 5 5 5 5 ...
@@ -435,20 +517,53 @@ param <- expand.grid(as.character(xlist.test), # feature
                      as.character(method), 
                      KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
 write.table(param, file = '4_indepsignif.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
-# preview
+# preview of 4_indepsignif.txt
 str(param)
 ```
 
 ```
-## 'data.frame':	300 obs. of  8 variables:
+## 'data.frame':	600 obs. of  8 variables:
 ##  $ Var1: chr  "eff.vals" "fun.vals" "go.vals" "mini.genes.vals" ...
-##  $ Var2: chr  "surv.grps" "surv.grps" "surv.grps" "surv.grps" ...
-##  $ Var3: int  1 1 1 1 1 1 2 2 2 2 ...
+##  $ Var2: chr  "subtype.grps" "subtype.grps" "subtype.grps" "subtype.grps" ...
+##  $ Var3: int  1 1 1 1 1 1 1 1 1 1 ...
 ##  $ Var4: int  5 5 5 5 5 5 5 5 5 5 ...
 ##  $ Var5: int  10 10 10 10 10 10 10 10 10 10 ...
 ##  $ Var6: num  0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 ...
 ##  $ Var7: chr  "t.test" "t.test" "t.test" "t.test" ...
 ##  $ Var8: chr  "none" "none" "none" "none" ...
+```
+
+```r
+xlist.nopen <- grep("genes", xlist, value = TRUE, invert = TRUE) # pre-selected features included in model
+xlist.pen <- c("genes.vals") # select features while making prediction
+xlist.fs <- as.vector(outer(xlist.nopen, xlist.pen, FUN = "paste", sep = ".fs.")) # see fsPred.R for details
+prlist.fs <- c("predictorLogitLasso")
+param <- expand.grid(as.character(xlist.fs), # feature
+                     as.character(ylist), # group
+                     as.character(prlist.fs), # predictor
+                     as.integer(1:(nfolds * nrepeats)), # outter CV folds index for evaluation
+                     as.integer(nfolds), 
+                     as.integer(nrepeats), 
+                     as.integer(0:(nfolds.inn * nrepeats.inn)), # inner CV folds for tuning predictor
+                     as.integer(nfolds.inn), 
+                     as.integer(nrepeats.inn), 
+                     KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+write.table(param, file = '6_fsPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
+# preview of 6_fsPredict.txt
+str(param)
+```
+
+```
+## 'data.frame':	2400 obs. of  9 variables:
+##  $ Var1: chr  "eff.vals.fs.genes.vals" "fun.vals.fs.genes.vals" "go.vals.fs.genes.vals" "path.vals.fs.genes.vals" ...
+##  $ Var2: chr  "subtype.grps" "subtype.grps" "subtype.grps" "subtype.grps" ...
+##  $ Var3: chr  "predictorLogitLasso" "predictorLogitLasso" "predictorLogitLasso" "predictorLogitLasso" ...
+##  $ Var4: int  1 1 1 1 1 1 1 1 2 2 ...
+##  $ Var5: int  5 5 5 5 5 5 5 5 5 5 ...
+##  $ Var6: int  10 10 10 10 10 10 10 10 10 10 ...
+##  $ Var7: int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Var8: int  5 5 5 5 5 5 5 5 5 5 ...
+##  $ Var9: int  1 1 1 1 1 1 1 1 1 1 ...
 ```
 
 ```r
@@ -479,7 +594,7 @@ sessionInfo()
 ## [1] methods   stats     graphics  grDevices utils     datasets  base     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] magrittr_1.5     formatR_1.3      tools_3.2.1      mvtnorm_1.0-3   
-##  [5] codetools_0.2-14 stringi_1.0-1    pcaPP_1.9-60     knitr_1.12.3    
-##  [9] digest_0.6.8     stringr_1.0.0    evaluate_0.8.3
+##  [1] magrittr_1.5   formatR_1.3    tools_3.2.1    mvtnorm_1.0-3 
+##  [5] stringi_1.0-1  pcaPP_1.9-60   knitr_1.12.3   digest_0.6.8  
+##  [9] stringr_1.0.0  kernlab_0.9-24 evaluate_0.8.3
 ```
