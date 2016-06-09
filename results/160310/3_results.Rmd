@@ -34,6 +34,13 @@ xlist.type
 # groups
 ylist <- unique(param$yname)
 ylist
+# group scores
+ylist.score <- c("auroc", "auroc", "auroc", 
+                 "acc")
+names(ylist.score) <- c("basal.grps", "tumor.grps", "surv.grps", # binary
+                        "subtype.grps") # multi-class
+stopifnot(length(setdiff(ylist, names(ylist.score))) == 0)
+ylist.score
 # predictors
 prlist <- unique(param$prname)
 prlist
@@ -182,17 +189,16 @@ for (yname in ylist) {
 }
 ```
 
-## Predictor table w.r.t. AUROC
+## Predictor table
 
-As we see that class sizes are unbalanced so that we focus on AUROC to evaluate performance. This way we also get rid of the effect from tuning cutoff parameter. 
+As defined in `ylist.score`: **for binary classes,** as we see that class sizes are unbalanced so that we focus on `auroc` to evaluate performance. This way we also get rid of the effect from tuning cutoff parameter; **for multiple classes,** we focus on multi-class classification accuracy `acc` to evaluate performance.
 
 Now we turn to look at which `predictor` suits well in making prediction for a specific group of phenotypic response `yname` using each feature `xname`. We report the frequency of such predictor is selected across `r nfolds*nrepeats` repeats of evaluation CV runs.
 
 ```{r predictor}
-# focus only auroc
-sname <- "auroc"
 # show each grp separately
 for (yname in ylist) {
+  sname <- ylist.score[yname]
   cat('\n---> \t Frequency (%) of predictor being selected \t <---\n')
   cat('\n---> \t predicting for ', yname, ' using \t <---\n')
   d <- subset(scores, scores$score == sname & scores$y == yname)
@@ -205,17 +211,16 @@ for (yname in ylist) {
 }
 ```
 
-## Significance test w.r.t. AUROC
+## Significance test
 
 Now we look at the significance of the superiority using one feature over the other in terms of performance. For each group of phenotypic response `yname`, we compute a matrix where each entry indicates the p-value of a one-sided `t.test` testing if using the feature matrix in the row is indeed superior to using the feature matrix in the col.
 
 ```{r sigtest}
 # significance threshold
 thres <- 0.05
-# focus only auroc
-sname <- "auroc"
 # show each grp separately
 for (yname in ylist) {
+  sname <- ylist.score[yname]
   cat('\n---> \t p-value of t.test showing row superior to col \t <---\n')
   cat('\n------> \t predicting for ', yname, ' \t <------\n')
   # gather perf
