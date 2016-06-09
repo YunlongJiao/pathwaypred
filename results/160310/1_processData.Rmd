@@ -79,7 +79,7 @@ Classes labels are created from clinical info for classification. There vector o
 
 **NOTE for labels involving multiple classes, always put THE positive group to the last level in the ordered factor as the evaluation measure such as TPR, FPR will be specific to that level.**
 
-#### Basal vs Non-basal
+#### Basal vs Non-basal (breast cancer basal type)
 
 ```{r basal, eval=FALSE}
 y <- read.table(paste0(datapath, 'sampleBasalType.txt'), header = FALSE)
@@ -94,7 +94,7 @@ length(sl <- intersect(samplelist, names(basal.grps)))
 table(basal.grps[sl])
 ```
 
-#### Tumor vs Normal
+#### Tumor vs Normal (tumor detection)
 
 ```{r tumor, eval=FALSE}
 y <- read.table(paste0(datapath, 'TCGA_phenotype.txt'), header = TRUE)
@@ -145,7 +145,7 @@ length(sl <- intersect(samplelist, names(surv.grps)))
 table(surv.grps[sl])
 ```
 
-#### Luminal vs Her2 vs Basal (subtypes)
+#### Luminal vs Her2 vs Basal (breast cancer subtypes)
 
 ```{r subtype}
 y <- read.table(paste0(datapath, 'sampleCancerType.txt'), header = FALSE)
@@ -262,10 +262,13 @@ write.table(param, file = '4_indepsignif.txt', quote = FALSE, row.names = FALSE,
 # preview of 4_indepsignif.txt
 str(param)
 
-xlist.path <- c("eff.vals", "path.vals")
-param <- expand.grid(as.character(xlist), # feature
+xlist.nopen <- grep("genes", xlist, value = TRUE, invert = TRUE) # pre-selected features included in model
+xlist.pen <- c("genes.vals") # select features while making prediction
+xlist.fs <- as.vector(outer(xlist.nopen, xlist.pen, FUN = "paste", sep = ".fs.")) # see fsPred.R for details
+prlist.fs <- c("predictorLogitLasso")
+param <- expand.grid(as.character(xlist.fs), # feature
                      as.character(ylist), # group
-                     as.character(prlist), # predictor
+                     as.character(prlist.fs), # predictor
                      as.integer(1:(nfolds * nrepeats)), # outter CV folds index for evaluation
                      as.integer(nfolds), 
                      as.integer(nrepeats), 
@@ -273,8 +276,8 @@ param <- expand.grid(as.character(xlist), # feature
                      as.integer(nfolds.inn), 
                      as.integer(nrepeats.inn), 
                      KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
-write.table(param, file = '6_fsPred.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
-# preview of 6_fsPred.txt
+write.table(param, file = '6_fsPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
+# preview of 6_fsPredict.txt
 str(param)
 
 # save entire image to be loaded later
