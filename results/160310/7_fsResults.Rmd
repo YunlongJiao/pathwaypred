@@ -22,7 +22,7 @@ param <- read.table("6_fsPredict.txt", header = FALSE, row.names = NULL, col.nam
 # features
 xlist <- unique(param$xname)
 xlist <- grep("eff|path", xlist, value = TRUE) # only retain pathway values
-xlist <- c(xlist.fs, # specifically selected features
+xlist <- c(xlist.fs, # specific 2-step selected features
            unique(unlist(strsplit(xlist, "[.]fs[.]"))), # individual features
            gsub("vals[.]fs", "and", xlist), # "and"-type features
            "fun.vals", "go.vals", "mini.genes.vals", "other.genes.vals") # two more restricted set of gene-related vals
@@ -134,7 +134,7 @@ for (yname in ylist) {
 
 ## Feature selection
 
-In this section, we look for genes that provide orthogonal information, compensating (and improving) the prediction from pathway features for each `yname` in `r ylist`.
+In this section, with the predictor built following a specific 2-step feature selection, we have found **genes that provide orthogonal information**, compensating (and improving) the prediction from pathway features for each `yname` in `r ylist`.
 
 ```{r featselect_prepare, message=FALSE}
 xname <- "path.vals.fs.genes.vals" # do not alter
@@ -169,6 +169,75 @@ for (yname in ylist) {
   }
 }
 ```
+
+For each `yname` in `r ylist`, we have several plots to illustrate the results
+- Boxplot on the number of selected features from each feature type in `r xname.list`, wrt different algorithms, where variance shows at each CV run.
+- Histogram of how many times one feature are selected in total over all `r nfolds*nrepeats` CV runs, specific to each type and each algorithm.
+
+```{r featselect}
+# show each grp separately
+for (yname in ylist) {
+  cat('\n---> \t Specific 2-step feature selection \t <---\n')
+  cat('\n---------> \t for ', yname, ' \t <---------\n')
+  # featselect
+  featlist.short <- lapply(prlist, function(prname){
+    get(paste(yname,prname,"featlist.short",sep="_"))
+  })
+  names(featlist.short) <- prlist
+  # featlist.short is 3-layer list prlist -> xname.list -> CV repeats -> a character vector of feature names
+  # number of features are selected at each CV run
+  featlist.freq <- lapply(featlist.short, function(u) lapply(u, lapply, length))
+  featlist.freq <- melt(featlist.freq, level = 1, value.name = "value")
+  colnames(featlist.freq)[colnames(featlist.freq)=="L1"] <- "prname"
+  colnames(featlist.freq)[colnames(featlist.freq)=="L2"] <- "xname"
+  colnames(featlist.freq)[colnames(featlist.freq)=="L3"] <- "rep"
+  p1 <- ggplot(featlist.freq, aes(x = xname, y = value)) + 
+    geom_boxplot(aes(fill = xname), alpha = 0.8) + 
+    facet_wrap(~prname, scales = "free") + 
+    scale_x_discrete(name = "x") + 
+    scale_y_continuous(name = "Number of selected features") + 
+    ggtitle(paste0("How many features are selected at each run")) + 
+    theme(axis.text.x = element_blank(), legend.title = element_blank(), legend.position = "bottom")
+  plot(p1)
+  
+  # proportion across group
+  n.featlist.short <- tapply(featlist.freq$value, list(featlist.freq$rep, featlist.freq$prname), sum)
+  cat('\nTotal number of features selected at each run (averaged over each CV run)\n')
+  cat('\nNOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS\n')
+  print(colMeans(n.featlist.short))
+  
+  # proportion within group
+  cat('\nTotal number of features within each type\n')
+  cat('\nNOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS\n')
+  print(n.featlist.long)
+  
+  # show top 10 most selected features in each type by predictor
+  featlist.tab <- lapply(featlist.short, function(u) lapply(u, function(v) 
+    sort(table(unlist(v)), decreasing = TRUE)
+  ))
+  cat('\nPreview of top 10 most often selected features in each type\n')
+  cat('\nNOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS\n')
+  print(lapply(featlist.tab, function(u) lapply(u, head, n=10)))
+  
+  # count number of times of features from each type being selected over CV runs
+  featlist.count <- melt(featlist.tab, level = 1, value.name = "value")
+  colnames(featlist.count)[colnames(featlist.count)=="L1"] <- "prname"
+  colnames(featlist.count)[colnames(featlist.count)=="L2"] <- "xname"
+  colnames(featlist.count)[colnames(featlist.count)=="Var1"] <- "featname"
+  featlist.count <- dcast(featlist.count, prname+xname~value, fun.aggregate = length)
+  featlist.count <- melt(featlist.count, id.vars = c("prname","xname"))
+  p1 <- ggplot(featlist.count, aes(x = variable, y = value)) + 
+    geom_bar(aes(fill = xname), stat = "identity", position = "dodge", alpha = 0.8) + 
+    geom_text(aes(label = value, group = xname), size = 2, angle = 45, colour = "black", position = position_dodge(0.9), vjust = 0.9) + 
+    facet_wrap(~prname, scales = "free", ncol = 1) + 
+    scale_x_discrete(name = paste0("selected times (max ", nfolds*nrepeats, ")")) + 
+    scale_y_continuous(name = "count") + 
+    ggtitle(paste0("How many times features are selected over all ", nfolds*nrepeats, " CV runs")) + 
+    theme(legend.title = element_blank(), legend.position = "bottom")
+  plot(p1)
+}
+```
+
 
 
 ## Session info

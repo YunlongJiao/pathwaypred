@@ -317,7 +317,7 @@ for (yname in ylist) {
     theme(axis.text.x = element_blank(), legend.title = element_blank(), legend.position = "bottom")
   plot(p3)
   
-  # show top 3 most selected features in each type by predictor
+  # show top 10 most selected features in each type by predictor
   featlist.tab <- lapply(featlist.short, function(u) lapply(u, function(v) 
     sort(table(unlist(v)), decreasing = TRUE)
   ))
