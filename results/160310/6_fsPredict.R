@@ -1,4 +1,10 @@
-# this script is used to run double nested CV runs to later select predictors
+# this script is used to run double nested CV runs with a specific prediction manner
+# 1) pathway features are pre-selected by logitLasso
+# 2) build a logit model with pre-selected pathways always included in the model while genes 
+#    that provide othogonal information are selected
+# NOTE for computational reason, penalty.factor is set 1 to 1e-6 instead of 1 to 0 exactly;
+#      see glmnet() for more details
+
 # run this script on crom01 for prediction results
 
 # read cluster parameters from bash command line
@@ -78,7 +84,7 @@ if (i.fold.inn == 0) {
 message('train and predict ... ')
 penalty.factor <- rep(1, ncol(xtr))
 if (length(featlist.nopen) > 0) 
-  penalty.factor[1:length(featlist.nopen)] <- 0 # no penalty on pre-selected features
+  penalty.factor[1:length(featlist.nopen)] <- 1e-6 # no penalty on pre-selected features
 res <- indepValidation(xtr = xtr[train.fold, , drop=F], ytr = ytr[train.fold], 
                        xtst = xtr[test.fold, , drop=F], ytst = ytr[test.fold], 
                        predictor = prname, 
