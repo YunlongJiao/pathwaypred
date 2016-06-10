@@ -55,7 +55,7 @@ Three directions
 
 ## TODO
 
-- focus on logitLasso now! finish 6_fsPred.R where FS is done for eff.vals/path.vals, and add genes.vals to make prediction where pathways features are not penalized so that they are always included in model but genes that provide orthogonal information in terms of improving prediction are selected alongside!
+- finish 7_fsResults.Rmd section `featselect` and run 3,5,7 completely
 
 ## Future work
 

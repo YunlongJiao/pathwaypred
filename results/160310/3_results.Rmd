@@ -23,11 +23,11 @@ xlist
 xlist.type <- c("func-wise", "func-wise", 
                 "path-wise", "path-wise", 
                 "gene-wise", "gene-wise", "gene-wise", 
-                "mix-wise", "mix-wise", "mix-wise")
+                "mix-wise", "mix-wise", "mix-wise", "mix-wise")
 names(xlist.type) <- c("fun.vals", "go.vals", # functionality features
                        "eff.vals", "path.vals", # pathway features
                        "mini.genes.vals", "other.genes.vals", "genes.vals", # gene features
-                       "eff.and.other.genes.vals", "path.and.other.genes.vals", "path.and.genes.vals") # mixed type
+                       "eff.and.other.genes.vals", "eff.and.genes.vals", "path.and.other.genes.vals", "path.and.genes.vals") # mixed type
 xlist.vline <- c(2.5, 4.5, 7.5) # cut out types
 stopifnot(length(setdiff(xlist, names(xlist.type))) == 0)
 xlist.type
