@@ -33,7 +33,8 @@ xlist
 ##  [3] "genes.vals"                "go.vals"                  
 ##  [5] "mini.genes.vals"           "other.genes.vals"         
 ##  [7] "path.vals"                 "eff.and.other.genes.vals" 
-##  [9] "path.and.other.genes.vals" "path.and.genes.vals"
+##  [9] "eff.and.genes.vals"        "path.and.other.genes.vals"
+## [11] "path.and.genes.vals"
 ```
 
 ```r
@@ -41,11 +42,11 @@ xlist
 xlist.type <- c("func-wise", "func-wise", 
                 "path-wise", "path-wise", 
                 "gene-wise", "gene-wise", "gene-wise", 
-                "mix-wise", "mix-wise", "mix-wise")
+                "mix-wise", "mix-wise", "mix-wise", "mix-wise")
 names(xlist.type) <- c("fun.vals", "go.vals", # functionality features
                        "eff.vals", "path.vals", # pathway features
                        "mini.genes.vals", "other.genes.vals", "genes.vals", # gene features
-                       "eff.and.other.genes.vals", "path.and.other.genes.vals", "path.and.genes.vals") # mixed type
+                       "eff.and.other.genes.vals", "eff.and.genes.vals", "path.and.other.genes.vals", "path.and.genes.vals") # mixed type
 xlist.vline <- c(2.5, 4.5, 7.5) # cut out types
 stopifnot(length(setdiff(xlist, names(xlist.type))) == 0)
 xlist.type
@@ -60,8 +61,10 @@ xlist.type
 ##               "gene-wise"               "gene-wise" 
 ##                genes.vals  eff.and.other.genes.vals 
 ##               "gene-wise"                "mix-wise" 
-## path.and.other.genes.vals       path.and.genes.vals 
-##                "mix-wise"                "mix-wise"
+##        eff.and.genes.vals path.and.other.genes.vals 
+##                "mix-wise"                "mix-wise" 
+##       path.and.genes.vals 
+##                "mix-wise"
 ```
 
 ```r
@@ -83,7 +86,7 @@ ylist
 ```
 
 ```
-## [1] "surv.grps"
+## [1] "subtype.grps" "surv.grps"
 ```
 
 ```r
@@ -175,7 +178,7 @@ slist.prefer.large.score
 
 ## Independent significance t.test
 
-For each `yname` in surv.grps, we run independent significance t.test for each pathway and each gene individually and look at the returned p-values. (In case of multiple levels, we run t.test against binary labels that discriminate the last level vs the other levels.) In the end we have several different plots to illustrate the results.
+For each `yname` in subtype.grps, surv.grps, we run independent significance t.test for each pathway and each gene individually and look at the returned p-values. (In case of multiple levels, we run t.test against binary labels that discriminate the last level vs the other levels.) In the end we have several different plots to illustrate the results.
 
 
 ```r
@@ -251,7 +254,7 @@ for (yname in ylist) {
 }
 ```
 
-For each `yname` in surv.grps, we have several plots to illustrate the results
+For each `yname` in subtype.grps, surv.grps, we have several plots to illustrate the results
 - Boxplots of p-values of feature-by-feature t.test is used to show the variance of feature significance for different feature types. Two plots correpond to that with all features, or that with only significant features at a p-value less than `pthres`.
 - Lineplot of the accumulated proportion defined by the number of significant features within each type (at increasing p-value thresholds) divided by the total number of features from that specific type. The number on line is the absolute count of number of significant features within each type.
 - Barplot of the proportion defined by the number of significant features within each type divided by the number of significant features of all types pulled together (at increasing p-value thresholds). The number on bar is the absolute count of number of significant features within each type.
@@ -322,6 +325,100 @@ for (yname in ylist) {
   plot(p1)
 }
 ```
+
+```
+## 
+## ---> 	 Independent significance t.test 	 <---
+## 
+## ---------> 	 for  subtype.grps  	 <---------
+## 
+## Preview of top 10 most signif features in each type
+## $fun.vals
+##              X_Exocytosis X_Ubl_conjugation_pathway 
+##              3.576248e-15              1.211838e-09 
+##         X_Lipid_transport       X_Calcium_transport 
+##              1.525778e-09              3.634076e-08 
+##       X_Lipid_degradation                X_Antiport 
+##              4.728324e-08              2.406929e-07 
+## X_Sphingolipid_metabolism X_Fatty_acid_biosynthesis 
+##              2.689499e-07              3.583507e-07 
+##         X_Stress_response              X_Glycolysis 
+##              5.859861e-07              8.722341e-07 
+## 
+## $go.vals
+##                                                    X_JNK_cascade 
+##                                                     6.937648e-18 
+##                          X_microtubule_cytoskeleton_organization 
+##                                                     6.985323e-18 
+##                                       X_histone_H3_deacetylation 
+##                                                     4.460813e-14 
+##                                   X_superoxide_metabolic_process 
+##                                                     1.150477e-13 
+##                      X_phosphatidylcholine_acyl_chain_remodeling 
+##                                                     6.062780e-13 
+##                         X_positive_regulation_of_GTPase_activity 
+##                                                     1.089602e-12 
+## X_positive_regulation_of_DNA_templated_transcription__initiation 
+##                                                     1.583364e-12 
+##                                        X_protein_phosphorylation 
+##                                                     1.683775e-12 
+##                          X_glycerophospholipid_catabolic_process 
+##                                                     2.142504e-12 
+##                                           X_response_to_cytokine 
+##                                                     2.860997e-12 
+## 
+## $eff.vals
+##  X_hsa04919__39  X_hsa04914__34  X_hsa04914__39  X_hsa04010__14 
+##    1.697419e-20    7.357707e-19    1.316372e-18    6.985323e-18 
+## X_hsa05205__103  X_hsa04915__58  X_hsa04010__61  X_hsa04010__58 
+##    2.174559e-17    8.855212e-16    4.204943e-15    5.760968e-15 
+##  X_hsa04668__38  X_hsa04151__99 
+##    1.590756e-14    1.698098e-14 
+## 
+## $path.vals
+##  X_hsa04919__33___39  X_hsa04151__43___99 X_hsa05200__35___207 
+##         1.166098e-22         8.049279e-21         5.069082e-20 
+##   X_hsa04010__4___14  X_hsa04914__37___34 X_hsa04010__105___14 
+##         1.709221e-19         7.357707e-19         8.100432e-19 
+##  X_hsa04914__37___39 X_hsa04010__128___14 X_hsa05200__35___209 
+##         1.316372e-18         1.540677e-18         2.654614e-18 
+##   X_hsa04010__3___14 
+##         5.909348e-18 
+## 
+## $mini.genes.vals
+##       X_2099       X_3760       X_2925       X_8437       X_5613 
+## 1.736439e-24 1.665528e-23 9.045372e-22 9.395027e-21 3.440422e-20 
+##       X_8326       X_7066       X_8440      X_50604      X_57580 
+## 4.999023e-20 7.998074e-20 9.074077e-20 9.334031e-20 1.243317e-19 
+## 
+## $other.genes.vals
+##          X_9     X_161835       X_9120     X_112714      X_79624 
+## 3.740884e-35 6.626610e-32 3.181627e-30 1.373118e-29 2.350734e-29 
+##      X_25800     X_388468      X_25823      X_53335       X_8537 
+## 1.799662e-28 2.341486e-27 2.681914e-26 4.048322e-26 1.993943e-25 
+## 
+## 
+## Boxplots of p-values of feature-by-feature t.test
+```
+
+```
+## Warning: Removed 12510 rows containing non-finite values (stat_boxplot).
+
+## Warning: Removed 12510 rows containing non-finite values (stat_boxplot).
+```
+
+![plot of chunk test](5_featselect_figure/test-1.png)
+
+```
+## 
+## Total number of features within each type
+##         fun.vals          go.vals         eff.vals        path.vals 
+##               81              370             1031             6056 
+##  mini.genes.vals other.genes.vals 
+##             2142            16496
+```
+
+![plot of chunk test](5_featselect_figure/test-2.png)![plot of chunk test](5_featselect_figure/test-3.png)
 
 ```
 ## 
@@ -398,11 +495,13 @@ for (yname in ylist) {
 
 ```
 ## Warning: Removed 9 rows containing non-finite values (stat_boxplot).
+```
 
+```
 ## Warning: Removed 9 rows containing non-finite values (stat_boxplot).
 ```
 
-![plot of chunk test](5_featselect_figure/test-1.png)
+![plot of chunk test](5_featselect_figure/test-4.png)
 
 ```
 ## 
@@ -413,11 +512,11 @@ for (yname in ylist) {
 ##             2142            16496
 ```
 
-![plot of chunk test](5_featselect_figure/test-2.png)![plot of chunk test](5_featselect_figure/test-3.png)
+![plot of chunk test](5_featselect_figure/test-5.png)![plot of chunk test](5_featselect_figure/test-6.png)
 
 ## Algorithmic feature selection
 
-For each `yname` in surv.grps, prediction is made with pulled types of features, that is a naive combination of path.vals and genes.vals. We look at the frequency of each type of features being selected automatically.
+For each `yname` in subtype.grps, surv.grps, prediction is made with pulled types of features, that is a naive combination of path.vals and genes.vals. We look at the frequency of each type of features being selected automatically.
 
 
 ```r
@@ -463,7 +562,7 @@ for (yname in ylist) {
 }
 ```
 
-For each `yname` in surv.grps, we have several plots to illustrate the results
+For each `yname` in subtype.grps, surv.grps, we have several plots to illustrate the results
 - Boxplot of prediction performance using pulled feature set path.and.genes.vals, wrt different criterion and different prediction algorithm, where variance shows over 50 CV runs.
 - Three boxplots on the number of selected features from each feature type in mini.genes.vals, other.genes.vals, path.vals, wrt different algorithms, where variance shows at each CV run. Three of them each correpond to 1) total count of selected features from each type; 2) total count of selected features from each type divided by the total number of selected features of all types; 3) total count of selected features from each type divided by the total number of features from that same type.
 - Histogram of how many times one feature are selected in total over all 50 CV runs, specific to each type and each algorithm.
@@ -535,7 +634,7 @@ for (yname in ylist) {
     theme(axis.text.x = element_blank(), legend.title = element_blank(), legend.position = "bottom")
   plot(p3)
   
-  # show top 3 most selected features in each type by predictor
+  # show top 10 most selected features in each type by predictor
   featlist.tab <- lapply(featlist.short, function(u) lapply(u, function(v) 
     sort(table(unlist(v)), decreasing = TRUE)
   ))
@@ -565,11 +664,7 @@ for (yname in ylist) {
 ## 
 ## ---> 	 Algorithmic feature selection 	 <---
 ## 
-## ---------> 	 for  surv.grps  	 <---------
-```
-
-```
-## Warning: Removed 204 rows containing non-finite values (stat_boxplot).
+## ---------> 	 for  subtype.grps  	 <---------
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-1.png)![plot of chunk featselect](5_featselect_figure/featselect-2.png)
@@ -578,11 +673,7 @@ for (yname in ylist) {
 ## 
 ## Total number of features selected at each run (averaged over each CV run)
 ## predictorLogitLasso        predictorPAM         predictorRF 
-##                2.16               13.06             9836.60
-```
-
-```
-## Warning: Removed 102 rows containing non-finite values (stat_boxplot).
+##               46.58              160.56             8993.72
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-3.png)
@@ -595,6 +686,127 @@ for (yname in ylist) {
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-4.png)
+
+```
+## 
+## Preview of top 10 most often selected features in each type
+## $predictorLogitLasso
+## $predictorLogitLasso$mini.genes.vals
+## 
+##   X_2064   X_2099   X_8326    X_115   X_4137   X_5564   X_2712   X_6198 
+##       49       47       15       11       11       11       10       10 
+## X_134549   X_3595 
+##        9        8 
+## 
+## $predictorLogitLasso$other.genes.vals
+## 
+##  X_10948  X_80139   X_9654    X_771 X_203413   X_5167   X_3938  X_27086 
+##       50       50       50       47       46       45       44       43 
+## X_374819   X_7031 
+##       41       40 
+## 
+## $predictorLogitLasso$path.vals
+## 
+##  X_hsa04066__12___29 X_hsa04010__103___64   X_hsa04010__5___64 
+##                   31                   14                   14 
+##  X_hsa04520__22___18   X_hsa04520__22___4  X_hsa04066__12___43 
+##                   13                   11                    7 
+##   X_hsa04010__1___64  X_hsa04066__12___55   X_hsa04010__1___58 
+##                    6                    4                    3 
+##   X_hsa04010__5___61 
+##                    2 
+## 
+## 
+## $predictorPAM
+## $predictorPAM$mini.genes.vals
+## 
+##  X_2064  X_2099  X_2203  X_3595   X_367  X_4137  X_5613  X_6584 X_80736 
+##      50      50      50      50      50      50      50      50      50 
+##  X_8326 
+##      50 
+## 
+## $predictorPAM$other.genes.vals
+## 
+##  X_10551  X_10948 X_134147 X_140578 X_145837 X_145864 X_149563 X_155465 
+##       50       50       50       50       50       50       50       50 
+## X_161835     X_18 
+##       50       50 
+## 
+## $predictorPAM$path.vals
+## 
+##  X_hsa04010__105___14  X_hsa04010__128___14    X_hsa04010__4___14 
+##                    50                    50                    50 
+##    X_hsa04520__22___4   X_hsa04919__33___39 X_hsa04520__22___9_57 
+##                    50                    50                    48 
+##   X_hsa05200__27___48   X_hsa04310__39___34  X_hsa05200__27___200 
+##                    48                    47                    47 
+##   X_hsa04010__35___14 
+##                    46 
+## 
+## 
+## $predictorRF
+## $predictorRF$mini.genes.vals
+## 
+## X_10818  X_1101   X_115  X_1302  X_2023  X_2064  X_2066  X_2099  X_2203 
+##      50      50      50      50      50      50      50      50      50 
+##  X_2925 
+##      50 
+## 
+## $predictorRF$other.genes.vals
+## 
+## X_100129583 X_100130449     X_10087     X_10103     X_10551      X_1058 
+##          50          50          50          50          50          50 
+##     X_10612     X_10656     X_10742     X_10827 
+##          50          50          50          50 
+## 
+## $predictorRF$path.vals
+## 
+## X_hsa04010__105___14 X_hsa04010__126___14 X_hsa04010__128___14 
+##                   50                   50                   50 
+##  X_hsa04010__26___14   X_hsa04010__3___14  X_hsa04010__35___14 
+##                   50                   50                   50 
+##   X_hsa04010__4___14  X_hsa04010__41___14  X_hsa04010__43___14 
+##                   50                   50                   50 
+##  X_hsa04010__46___14 
+##                   50
+```
+
+![plot of chunk featselect](5_featselect_figure/featselect-5.png)
+
+```
+## 
+## ---> 	 Algorithmic feature selection 	 <---
+## 
+## ---------> 	 for  surv.grps  	 <---------
+```
+
+```
+## Warning: Removed 204 rows containing non-finite values (stat_boxplot).
+```
+
+![plot of chunk featselect](5_featselect_figure/featselect-6.png)![plot of chunk featselect](5_featselect_figure/featselect-7.png)
+
+```
+## 
+## Total number of features selected at each run (averaged over each CV run)
+## predictorLogitLasso        predictorPAM         predictorRF 
+##                2.16               13.06             9836.60
+```
+
+```
+## Warning: Removed 102 rows containing non-finite values (stat_boxplot).
+```
+
+![plot of chunk featselect](5_featselect_figure/featselect-8.png)
+
+```
+## 
+## Total number of features within each type
+##  mini.genes.vals other.genes.vals        path.vals 
+##             2212            16496             6101
+```
+
+![plot of chunk featselect](5_featselect_figure/featselect-9.png)
 
 ```
 ## 
@@ -671,7 +883,7 @@ for (yname in ylist) {
 ##                   49
 ```
 
-![plot of chunk featselect](5_featselect_figure/featselect-5.png)
+![plot of chunk featselect](5_featselect_figure/featselect-10.png)
 
 ## Session info
 
