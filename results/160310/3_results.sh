@@ -4,7 +4,7 @@
 
 ## -- our name ---
 #$ -N results
-#$ -l h_vmem=64G
+#$ -l h_vmem=32G
 ## Make sure that the .e and .o file arrive in the
 ## working directory
 #$ -cwd
@@ -12,6 +12,9 @@
 #$ -j y
 #$ -o logs
 #$ -e logs
+## Long time execution
+#$ -l long=true
+#$ -q long.q
 
 source $HOME/.bashrc
 Rscript -e "knitr::knit('$PWD/3_results.Rmd')"

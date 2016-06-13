@@ -55,7 +55,7 @@ Three directions
 
 ## TODO
 
-- finish 7_fsResults.Rmd section `featselect` and run 3,5,7 completely
+- other datasets
 
 ## Future work
 
