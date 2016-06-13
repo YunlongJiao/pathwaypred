@@ -335,7 +335,7 @@ for (yname in ylist) {
     geom_bar(aes(fill = xname), stat = "identity", position = "dodge", alpha = 0.8) + 
     geom_text(aes(label = value, group = xname), size = 2, angle = 45, colour = "black", position = position_dodge(0.9), vjust = 0.9) + 
     facet_wrap(~prname, scales = "free", ncol = 1) + 
-    scale_x_discrete(name = paste0("selected times (max ", nfolds*nrepeats, ")")) + 
+    scale_x_discrete(name = paste0("selected times (max ", nfolds*nrepeats, ")"), drop = FALSE) + 
     scale_y_continuous(name = "count") + 
     ggtitle(paste0("How many times features are selected over all ", nfolds*nrepeats, " CV runs")) + 
     theme(legend.title = element_blank(), legend.position = "bottom")
