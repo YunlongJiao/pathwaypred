@@ -81,6 +81,7 @@ ylist
 ```r
 # predictors
 prlist <- unique(param$prname)
+stopifnot(all(prlist == "predictorLogitLasso"))
 prlist
 ```
 
@@ -89,7 +90,6 @@ prlist
 ```
 
 ```r
-stopifnot(all(prlist == "predictorLogitLasso"))
 # (outter) `nfolds`-fold CV repeated `nrepeats` times for evaluation
 nfolds <- unique(param$nfolds)
 stopifnot(length(nfolds) == 1)
@@ -302,6 +302,16 @@ for (yname in ylist) {
   colnames(featlist.freq)[colnames(featlist.freq)=="L1"] <- "prname"
   colnames(featlist.freq)[colnames(featlist.freq)=="L2"] <- "xname"
   colnames(featlist.freq)[colnames(featlist.freq)=="L3"] <- "rep"
+  # proportion across group
+  n.featlist.short <- tapply(featlist.freq$value, list(featlist.freq$rep, featlist.freq$prname), sum)
+  cat('\nTotal number of features selected at each run (averaged over each CV run)\n')
+  cat('(NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)\n\n')
+  print(colMeans(n.featlist.short))
+  # proportion within group
+  cat('\nTotal number of features within each type\n')
+  cat('(NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)\n\n')
+  print(n.featlist.long)
+  # plot
   p1 <- ggplot(featlist.freq, aes(x = xname, y = value)) + 
     geom_boxplot(aes(fill = xname), alpha = 0.8) + 
     facet_wrap(~prname, scales = "free") + 
@@ -311,23 +321,13 @@ for (yname in ylist) {
     theme(axis.text.x = element_blank(), legend.title = element_blank(), legend.position = "bottom")
   plot(p1)
   
-  # proportion across group
-  n.featlist.short <- tapply(featlist.freq$value, list(featlist.freq$rep, featlist.freq$prname), sum)
-  cat('\nTotal number of features selected at each run (averaged over each CV run)\n')
-  cat('\nNOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS\n')
-  print(colMeans(n.featlist.short))
-  
-  # proportion within group
-  cat('\nTotal number of features within each type\n')
-  cat('\nNOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS\n')
-  print(n.featlist.long)
-  
   # show top 10 most selected features in each type by predictor
   featlist.tab <- lapply(featlist.short, function(u) lapply(u, function(v) 
     sort(table(unlist(v)), decreasing = TRUE)
   ))
   cat('\nPreview of top 10 most often selected features in each type\n')
-  cat('\nNOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS\n')
+  cat('The value indicate this feature has been selected how many times out of all ', nrepeats*nfolds, ' CV runs\n')
+  cat('(NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)\n\n')
   print(lapply(featlist.tab, function(u) lapply(u, head, n=10)))
   
   # count number of times of features from each type being selected over CV runs
@@ -337,6 +337,7 @@ for (yname in ylist) {
   colnames(featlist.count)[colnames(featlist.count)=="Var1"] <- "featname"
   featlist.count <- dcast(featlist.count, prname+xname~value, fun.aggregate = length)
   featlist.count <- melt(featlist.count, id.vars = c("prname","xname"))
+  featlist.count$variable <- factor(featlist.count$variable, levels = as.character(1:(nrepeats*nfolds)), ordered = TRUE)
   p1 <- ggplot(featlist.count, aes(x = variable, y = value)) + 
     geom_bar(aes(fill = xname), stat = "identity", position = "dodge", alpha = 0.8) + 
     geom_text(aes(label = value, group = xname), size = 2, angle = 45, colour = "black", position = position_dodge(0.9), vjust = 0.9) + 
@@ -354,27 +355,28 @@ for (yname in ylist) {
 ## ---> 	 Specific 2-step feature selection 	 <---
 ## 
 ## ---------> 	 for  subtype.grps  	 <---------
+## 
+## Total number of features selected at each run (averaged over each CV run)
+## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
+## 
+## predictorLogitLasso 
+##               42.34 
+## 
+## Total number of features within each type
+## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
+## 
+##  mini.genes.vals other.genes.vals        path.vals 
+##             2212            16496             6101
 ```
 
 ![plot of chunk featselect](7_fsResults_figure/featselect-1.png)
 
 ```
 ## 
-## Total number of features selected at each run (averaged over each CV run)
-## 
-## NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS
-## predictorLogitLasso 
-##               42.34 
-## 
-## Total number of features within each type
-## 
-## NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS
-##  mini.genes.vals other.genes.vals        path.vals 
-##             2212            16496             6101 
-## 
 ## Preview of top 10 most often selected features in each type
+## The value indicate this feature has been selected how many times out of all  50  CV runs
+## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
 ## 
-## NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS
 ## $predictorLogitLasso
 ## $predictorLogitLasso$mini.genes.vals
 ## integer(0)
@@ -401,27 +403,28 @@ for (yname in ylist) {
 ## ---> 	 Specific 2-step feature selection 	 <---
 ## 
 ## ---------> 	 for  surv.grps  	 <---------
+## 
+## Total number of features selected at each run (averaged over each CV run)
+## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
+## 
+## predictorLogitLasso 
+##            3.653061 
+## 
+## Total number of features within each type
+## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
+## 
+##  mini.genes.vals other.genes.vals        path.vals 
+##             2212            16496             6101
 ```
 
 ![plot of chunk featselect](7_fsResults_figure/featselect-3.png)
 
 ```
 ## 
-## Total number of features selected at each run (averaged over each CV run)
-## 
-## NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS
-## predictorLogitLasso 
-##            3.653061 
-## 
-## Total number of features within each type
-## 
-## NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS
-##  mini.genes.vals other.genes.vals        path.vals 
-##             2212            16496             6101 
-## 
 ## Preview of top 10 most often selected features in each type
+## The value indicate this feature has been selected how many times out of all  50  CV runs
+## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
 ## 
-## NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS
 ## $predictorLogitLasso
 ## $predictorLogitLasso$mini.genes.vals
 ## integer(0)
