@@ -265,7 +265,7 @@ str(param)
 xlist.nopen <- grep("genes", xlist, value = TRUE, invert = TRUE) # pre-selected features included in model
 xlist.pen <- c("genes.vals") # select features while making prediction
 xlist.fs <- as.vector(outer(xlist.nopen, xlist.pen, FUN = "paste", sep = ".fs.")) # see fsPred.R for details
-prlist.fs <- c("predictorLogitLasso")
+prlist.fs <- c("predictorLogitLasso2StepFS")
 param <- expand.grid(as.character(xlist.fs), # feature
                      as.character(ylist), # group
                      as.character(prlist.fs), # predictor
@@ -279,6 +279,12 @@ param <- expand.grid(as.character(xlist.fs), # feature
 write.table(param, file = '6_fsPredict.txt', quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ' ')
 # preview of 6_fsPredict.txt
 str(param)
+# check that in column "i.fold.inn" non-zeros come before zeros
+# this is necessarily to control cluster run - first run CrossVal then run IndepVal
+i.fold.inn.num.zero <- length(which(param[ ,7] == 0))
+i.fold.inn.num.zero # first this many are zeros and afterwards all non-zeros
+stopifnot(all(param[1:i.fold.inn.num.zero,7] == 0))
+stopifnot(all(param[-(1:i.fold.inn.num.zero),7] > 0))
 
 # save entire image to be loaded later
 save(list = c(xlist, ylist, kmatlist), file = 'dat.RData')

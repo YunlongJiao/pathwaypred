@@ -161,6 +161,10 @@ evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = tail(names(table(
     (1+b*b)*precision*recall/(b*b*precision+recall)
   }
   
+  # error control
+  if (is.null(pred$class))
+    return(NULL)
+  
   if(!is.factor(pred$class) && !is.character(pred$class)){
     stop("Indefinite predicted response type!")
   }
@@ -513,7 +517,7 @@ featselectRF <- function(model = NULL, ..., keep.signif = TRUE)
   
   if (is.null(model))
     model <- predictorRF(...)$model
-  s <- drop(randomForest::importance(x = model, type = 1))
+  s <- drop(randomForest::importance(x = model, type = 1, ...))
   
   if (keep.signif)
     s <- s[s > 0]
@@ -534,7 +538,7 @@ featselectLogitLasso <- function(model = NULL, ..., keep.signif = TRUE)
   
   if (is.null(model))
     model <- predictorLogitLasso(...)$model
-  s <- predict(object = model, newx = NULL, type = "coefficients")
+  s <- predict(object = model, newx = NULL, type = "coefficients", ...)
   s <- do.call('cbind', s)
   s <- rowSums(abs(s[-1, ])) # remove intercept
   
@@ -558,7 +562,7 @@ featselectPAM <- function(model = NULL, ..., keep.signif = TRUE)
   if (is.null(model))
     model <- predictorPAM(...)$model
   i <- which(model$threshold == model$best.thres)
-  centroid <- pamr::pamr.predict(fit = model, newx = NULL, threshold = model$best.thres, type = "centroid")
+  centroid <- pamr::pamr.predict(fit = model, newx = NULL, threshold = model$best.thres, type = "centroid", ...)
   
   # the following is adapted according to pamr::pamr.predict()
   delta.shrunk <- (centroid - model$centroid.overall)/model$sd
@@ -614,6 +618,7 @@ predictorLDA <- function(xtr, xtst, ytr, cutoff = 0.5, do.normalize = TRUE, ...)
   # predict
   pred <- predict(object = model, newdata = xtst, ...)
   pred.class <- as.character(pred$class)
+  names(pred.class) <- rownames(xtst)
   pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                       dimnames = list(rownames(xtst), classes))
   pred.prob[ , colnames(pred$posterior)] <- pred$posterior
@@ -641,6 +646,7 @@ predictorLogitLasso <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, do.norm
   # predict
   pred <- drop(predict(object = model, newx = as.matrix(xtst), type = "response", ...))
   pred.class <- colnames(pred)[max.col(pred)]
+  names(pred.class) <- rownames(xtst)
   pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                       dimnames = list(rownames(xtst), classes))
   pred.prob[ , colnames(pred)] <- pred
@@ -672,6 +678,7 @@ predictorLinearSVM <- function(xtr, xtst, ytr,
   # predict
   pred <- predict(object = model$best.model, newdata = xtst, probability = TRUE, ...)
   pred.class <- as.character(pred)
+  names(pred.class) <- rownames(xtst)
   pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                       dimnames = list(rownames(xtst), classes))
   pred.prob[ , colnames(attr(pred,"probabilities"))] <- attr(pred,"probabilities")
@@ -747,6 +754,7 @@ predictorKendallSVM <- function(xtr, xtst, ytr, kernel = pcaPP::cor.fk, do.norma
                   newdata = as.kernelMatrix(kmat[-train.idx,train.idx,drop=F][,SVindex(model),drop=F]), 
                   type = "probabilities", ...)
   pred.class <- colnames(pred)[max.col(pred)]
+  names(pred.class) <- rownames(xtst)
   pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                       dimnames = list(rownames(xtst), classes))
   pred.prob[ , colnames(pred)] <- pred
@@ -785,6 +793,7 @@ predictorKNN <- function(xtr, xtst, ytr, k = seq(1,10,2), do.normalize = TRUE, c
   # predict
   pred <- knn(train = xtr, test = xtst, cl = ytr, k = best.k, prob = TRUE, ...)
   pred.class <- as.character(pred)
+  names(pred.class) <- rownames(xtst)
   # IMPORTANT for multi-class (>2) case NA denotes unknown values!!
   pred.prob <- matrix(ifelse(length(classes.eff) == 2, 0, NA), 
                       nrow = nrow(xtst), ncol = length(classes), 
@@ -824,6 +833,7 @@ predictorNB <- function(xtr, xtst, ytr, do.normalize = TRUE, cutoff = 0.5, ...)
   # predict
   pred <- predict(object = model, newdata = xtst, type = "raw", ...)
   pred.class <- colnames(pred)[max.col(pred)]
+  names(pred.class) <- rownames(xtst)
   pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                       dimnames = list(rownames(xtst), classes))
   pred.prob[ , colnames(pred)] <- pred
@@ -854,6 +864,7 @@ predictorGBM <- function(xtr, xtst, ytr, n.trees = 1500, shrinkage = 0.002,
   # predict
   pred <- drop(predict(object = model, newdata = xtst, n.trees = model$n.trees, type = "response", ...))
   pred.class <- colnames(pred)[max.col(pred)]
+  names(pred.class) <- rownames(xtst)
   pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                       dimnames = list(rownames(xtst), classes))
   pred.prob[ , colnames(pred)] <- pred
@@ -882,6 +893,7 @@ predictorRF <- function(xtr, xtst, ytr, ntree = 1500, importance = TRUE, cutoff 
   # predict
   pred <- predict(object = model, newdata = xtst, type = "prob", ...)
   pred.class <- colnames(pred)[max.col(pred)]
+  names(pred.class) <- rownames(xtst)
   pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                       dimnames = list(rownames(xtst), classes))
   pred.prob[ , colnames(pred)] <- pred
@@ -923,6 +935,7 @@ predictorSparseSVM <- function(xtr, xtst, ytr, cost = 1, cutoff = 0, do.normaliz
   # predict
   pred <- predict(object = model, newx = xtst, decisionValues = TRUE, ...)
   pred.class <- as.character(pred$predictions)
+  names(pred.class) <- rownames(xtst)
   pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                       dimnames = list(rownames(xtst), classes))
   pred.prob[ , colnames(pred$decisionValues)] <- pred$decisionValues
@@ -961,6 +974,7 @@ predictorPAM <- function(xtr, xtst, ytr, do.normalize = TRUE, cross = 5, cutoff 
   pred <- pamr.predict(fit = model, newx = t(xtst), 
                        threshold = model$best.thres, type = "posterior", ...)
   pred.class <- colnames(pred)[max.col(pred)]
+  names(pred.class) <- rownames(xtst)
   pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                       dimnames = list(rownames(xtst), classes))
   pred.prob[ , colnames(pred)] <- pred
@@ -983,6 +997,7 @@ predictorConstant <- function(xtr, xtst, ytr, cutoff = 0.5, ...)
   
   model <- "Modal-class classifier"
   pred.class <- rep(modal, nrow(xtst))
+  names(pred.class) <- rownames(xtst)
   pred.prob <- matrix(tab/length(ytr), byrow = TRUE, 
                       nrow = nrow(xtst), ncol = length(classes), 
                       dimnames = list(rownames(xtst), classes))

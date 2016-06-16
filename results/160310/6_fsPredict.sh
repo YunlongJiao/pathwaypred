@@ -16,7 +16,9 @@
 #$ -e /dev/null
 
 ## set up distributed jobs for nclust range
-#$ -t 1-2400
+## look for the number "i.fold.inn.num.zero" shown in 1_processData.md because it is necessary to run this script twice!!
+#$ -t 401-2400 # first CV runs
+##$ -t 1-400 # then select lambdas and combine CV runs
 ## limit the number of simultaneous jobs
 #$ -tc 150
 
