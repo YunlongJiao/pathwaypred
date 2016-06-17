@@ -72,15 +72,18 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
   lam.nopen <- sort(lam.nopen, decreasing = TRUE)
   lam.pen <- sort(lam.pen, decreasing = TRUE)
   
-  # train step-1
+  message("Training Step I ...")
   model.nopen <- glmnet(x = as.matrix(xtr), y = as.factor(as.character(ytr)), family = "multinomial", 
                         lambda = lam.nopen, 
                         alpha = alpha, standardize = do.normalize, ...)
+  message("Feat selection Step I ...")
   featlist.nopen <- featselectLogitLasso2StepFS(model = model.nopen, keep.signif = FALSE) # fliter-out later
-  # train step-2
+  
+  message("Training Step II ...")
   penalty.factor <- rep(1, ncol(xtr))
   names(penalty.factor) <- colnames(xtr)
   model <- lapply(1:length(lam.nopen), function(i){
+    message(".", appendLF = FALSE)
     featlist.nopen <- featlist.nopen[[i]]
     # no penalty on pre-selected features
     penalty.factor[names(featlist.nopen[featlist.nopen > 0])] <- penalty.factor.ratio.min
@@ -89,6 +92,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     model.pen <- glmnet(x = as.matrix(xtr), y = as.factor(as.character(ytr)), family = "multinomial", 
                         lambda = lam.pen, 
                         alpha = alpha, standardize = do.normalize, ...)
+    message("+", appendLF = FALSE)
     model.pen$featlist.short <- featselectLogitLasso2StepFS(model = model.pen, keep.signif = TRUE)
     return(model.pen)
   })
@@ -96,6 +100,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     names(lam.nopen) <- paste0("s",0:(length(lam.nopen)-1))
   names(model) <- names(lam.nopen)
   model$lam.nopen <- lam.nopen
+  message("done!")
   
   # should not return path run predictions if this is CV run
   pred.class <- NULL
@@ -103,11 +108,14 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
   # combine CV results if this is NOT CV run
   cv.files <- list.files(path = 'Robj', pattern = cv.patt, full.names = TRUE)
   if (i.fold.inn == 0) {
+    message("combining CV runs ...")
     # get CV results from previous cluster runs
     cv.res <- lapply(cv.files, function(f) try(get(load(f))))
     cv.res <- cv.res[sapply(cv.res, function(x) !inherits(x, "try-error"))]
     # get CV performance
+    message("getting cv.perf ...")
     cv.perf <- lapply(cv.res, function(res){ # for each CV fold
+      message(".", appendLF = FALSE)
       # get CV test samples
       cv.ytst <- res$true.class
       stopifnot(all(names(cv.ytst) %in% rownames(xtr)))
@@ -147,16 +155,22 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     #   3) then more number of nopen feat 
     ind.acc <- which(cv.acc == max(cv.acc), arr.ind = TRUE)
     ind.acc.n.feat <- which(cv.n.featlist.short == min(cv.n.featlist.short[ind.acc]), arr.ind = TRUE)
+    #   2) then less total number of feat (lambda); 
+    #   3) then more number of nopen feat 
+    ind.acc <- which(cv.acc == max(cv.acc), arr.ind = TRUE)
+    ind.acc.n.feat <- which(cv.n.featlist.short == min(cv.n.featlist.short[ind.acc]), arr.ind = TRUE)
     ind <- ind.acc.n.feat[which.max(ind.acc.n.feat[ ,"row"]), ] # which.max returns the first hit
     best.lam.nopen <- lam.nopen[ind["row"]]
     best.lam.pen <- lam.pen[ind["col"]]
     
     # get trained model
+    message("getting trained model ...")
     model <- model[[names(best.lam.nopen)]]
     model$best.lam.nopen <- best.lam.nopen
     model$best.lam.pen <- best.lam.pen
     model$featlist.short <- NULL # annul this previously registered entry
     # predict with seleted lambda's
+    message("making prediction ...")
     pred <- drop(predict(object = model, newx = as.matrix(xtst), type = "response", 
                          s = best.lam.pen, ...))
     pred.class <- colnames(pred)[max.col(pred)]
@@ -164,6 +178,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                         dimnames = list(rownames(xtst), classes))
     pred.prob[ , colnames(pred)] <- pred
+    message("done done!")
   }
   
   res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
@@ -250,7 +265,3 @@ res$featlist.short <- names(get(fsname, mode = "function")(model = res$model,
                                                            s = res$model$best.lam.pen)) # get feats for only one lambda value
 
 assign(objname, res)
-if (!dir.exists('Robj')) dir.create('Robj')
-save(list = objname, file = objpath)
-message('new job saved up !!')
-quit(save = 'no')
