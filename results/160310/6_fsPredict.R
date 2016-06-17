@@ -12,7 +12,7 @@ ags <- commandArgs(trailingOnly = TRUE)
 stopifnot(length(ags) == 9)
 xname <- as.character(ags[1]) # feature matrix
 yname <- as.character(ags[2]) # response groups
-prname <- as.character(ags[3]) # predictor
+prname <- as.character(ags[3]) # predictor # NOTE "prname" corresponds to "3"-rd entry DO NOT CHANGE FOR SAKE OF lamags
 i.fold <- as.integer(ags[4]) # cv fold index
 nfolds <- as.integer(ags[5]) # number of folds
 nrepeats <- as.integer(ags[6]) # number of repeats
@@ -21,6 +21,7 @@ nfolds.inn <- as.integer(ags[8]) # inner number of folds
 nrepeats.inn <- as.integer(ags[9]) # inner number of repeats
 
 lamags <- ags
+lamags[3] <- "predictorLogitLasso"
 lamags[7] <- as.integer(0) # for later paste into lam-name,lam-path to retrieve lambda list so that it always corresponds to i.fold.inn=0
 cvags <- ags
 cvags[7] <- "[[:digit:]]+"
@@ -54,7 +55,7 @@ source("../../src/func.R")
 predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, do.normalize = TRUE, 
                                        lam.nopen, lam.pen, # for specific 2-step training
                                        i.fold.inn, # deciding if it is CV run or not
-                                       cv.patt = paste0('^cvres_', paste(cvags, collapse = '_')), 
+                                       cv.patt, # for reading CV results
                                        penalty.factor.ratio.min = 1e-6, penalty.factor.ratio.max = 1e6, ...)
 {
   # lam.nopen,lam.pen are two lists of lambda's to fit model with in either step respectively
@@ -243,7 +244,7 @@ res <- indepValidation(xtr = xtr[train.fold, , drop=F], ytr = ytr[train.fold],
                        xtst = xtr[test.fold, , drop=F], ytst = ytr[test.fold], 
                        predictor = prname, 
                        remove.const = FALSE, # constant already removed
-                       lam.nopen = lam.nopen, lam.pen = lam.pen, i.fold.inn = i.fold.inn)
+                       lam.nopen = lam.nopen, lam.pen = lam.pen, i.fold.inn = i.fold.inn, cv.patt = paste0('^cvres_', paste(cvags, collapse = '_')))
 message('feature selection ... ')
 res$featlist.short <- names(get(fsname, mode = "function")(model = res$model, 
                                                            s = res$model$best.lam.pen)) # get feats for only one lambda value

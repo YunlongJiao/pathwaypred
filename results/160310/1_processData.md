@@ -537,7 +537,7 @@ str(param)
 xlist.nopen <- grep("genes", xlist, value = TRUE, invert = TRUE) # pre-selected features included in model
 xlist.pen <- c("genes.vals") # select features while making prediction
 xlist.fs <- as.vector(outer(xlist.nopen, xlist.pen, FUN = "paste", sep = ".fs.")) # see fsPred.R for details
-prlist.fs <- c("predictorLogitLasso")
+prlist.fs <- c("predictorLogitLasso2StepFS")
 param <- expand.grid(as.character(xlist.fs), # feature
                      as.character(ylist), # group
                      as.character(prlist.fs), # predictor
@@ -557,7 +557,7 @@ str(param)
 ## 'data.frame':	2400 obs. of  9 variables:
 ##  $ Var1: chr  "eff.vals.fs.genes.vals" "fun.vals.fs.genes.vals" "go.vals.fs.genes.vals" "path.vals.fs.genes.vals" ...
 ##  $ Var2: chr  "subtype.grps" "subtype.grps" "subtype.grps" "subtype.grps" ...
-##  $ Var3: chr  "predictorLogitLasso" "predictorLogitLasso" "predictorLogitLasso" "predictorLogitLasso" ...
+##  $ Var3: chr  "predictorLogitLasso2StepFS" "predictorLogitLasso2StepFS" "predictorLogitLasso2StepFS" "predictorLogitLasso2StepFS" ...
 ##  $ Var4: int  1 1 1 1 1 1 1 1 2 2 ...
 ##  $ Var5: int  5 5 5 5 5 5 5 5 5 5 ...
 ##  $ Var6: int  10 10 10 10 10 10 10 10 10 10 ...
@@ -567,6 +567,20 @@ str(param)
 ```
 
 ```r
+# check that in column "i.fold.inn" non-zeros come before zeros
+# this is necessarily to control cluster run - first run CrossVal then run IndepVal
+i.fold.inn.num.zero <- length(which(param[ ,7] == 0))
+i.fold.inn.num.zero # first this many are zeros and afterwards all non-zeros
+```
+
+```
+## [1] 400
+```
+
+```r
+stopifnot(all(param[1:i.fold.inn.num.zero,7] == 0))
+stopifnot(all(param[-(1:i.fold.inn.num.zero),7] > 0))
+
 # save entire image to be loaded later
 save(list = c(xlist, ylist, kmatlist), file = 'dat.RData')
 ```
@@ -596,5 +610,5 @@ sessionInfo()
 ## loaded via a namespace (and not attached):
 ##  [1] magrittr_1.5   formatR_1.3    tools_3.2.1    mvtnorm_1.0-3 
 ##  [5] stringi_1.0-1  pcaPP_1.9-60   knitr_1.12.3   digest_0.6.8  
-##  [9] stringr_1.0.0  kernlab_0.9-24 evaluate_0.8.3
+##  [9] stringr_1.0.0  evaluate_0.8.3
 ```

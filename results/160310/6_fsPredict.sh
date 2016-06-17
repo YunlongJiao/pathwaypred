@@ -12,12 +12,14 @@
 ## Merge the standard out and standard error to one file in one folder
 #$ -j y
 ## Disable log output
-#$ -o /dev/null
-#$ -e /dev/null
+#$ -o logs
+##$ -o /dev/null
+##$ -e /dev/null
 
 ## set up distributed jobs for nclust range
 ## look for the number "i.fold.inn.num.zero" shown in 1_processData.md because it is necessary to run this script twice!!
-#$ -t 401-2400 # first CV runs
+#$ -t 401-409
+##$ -t 401-2400 # first CV runs
 ##$ -t 1-400 # then select lambdas and combine CV runs
 ## limit the number of simultaneous jobs
 #$ -tc 150
