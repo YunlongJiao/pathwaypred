@@ -93,7 +93,8 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
                             lambda = lam.pen, penalty.factor = penalty.factor,
                             alpha = alpha, standardize = do.normalize, ...))
     message("+", appendLF = FALSE)
-    model.pen$featlist.short <- featselectLogitLasso2StepFS(model = model.pen, keep.signif = TRUE)
+    if (!inherits(model.pen, "try-error"))
+      model.pen$featlist.short <- featselectLogitLasso2StepFS(model = model.pen, keep.signif = TRUE)
     return(model.pen)
   })
   if (is.null(names(lam.nopen)))
@@ -106,8 +107,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
   pred.class <- NULL
   pred.prob <- NULL
   # combine CV results if this is NOT CV run
-  cv.files <- list.files(path = 'Robj', pattern = cv.patt, full.names = TRUE)
-  if (i.fold.inn == 0 && length(cv.files) > 0) {
+  if (i.fold.inn == 0 && length(cv.files <- list.files(path = 'Robj', pattern = cv.patt, full.names = TRUE)) > 0) {
     message("combining CV runs ...")
     # get CV results from previous cluster runs
     cv.res <- lapply(cv.files, function(f) try(get(load(f))))
@@ -124,18 +124,25 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
       stopifnot(all(model.nopen$lam.nopen == lam.nopen))
       
       # get feat number
-      cv.n.featlist.short <- lapply(model.nopen[names(model.nopen$lam.nopen)], function(model.pen){
-        # get totally selected featlist for each lam.pen
-        return(sapply(model.pen$featlist.short, length))
+      cv.n.featlist.short <- lapply(model.nopen[names(model.nopen$lam.nopen)], function(model.pen){ # for each lam.nopen
+        # get totally selected featlist for all lam.pen
+        if (inherits(model.pen, "try-error"))
+          return(NA)
+        else
+          return(sapply(model.pen$featlist.short, length))
       })
       cv.n.featlist.short <- do.call('rbind', cv.n.featlist.short) # "rbind" leads to lam.nopen in row, lam.pen in col
       
       # get CV acc
       cv.acc <- lapply(model.nopen[names(model.nopen$lam.nopen)], function(model.pen){ # for each lam.nopen
-        # predict for each lam.pen
-        stopifnot(all(model.pen$lambda == lam.pen))
-        cv.pred <- predict(object = model.pen, newx = as.matrix(xtr[names(cv.ytst), ]), type = "class", ...)
-        return(apply(cv.pred, 2, function(pp) mean(pp == cv.ytst)))
+        # predict for all lam.pen
+        if (inherits(model.pen, "try-error"))
+          return(NA)
+        else {
+          stopifnot(all(model.pen$lambda == lam.pen))
+          cv.pred <- predict(object = model.pen, newx = as.matrix(xtr[names(cv.ytst), ]), type = "class", ...)
+          return(apply(cv.pred, 2, function(pp) mean(pp == cv.ytst)))
+        }
       })
       cv.acc <- do.call('rbind', cv.acc) # "rbind" leads to lam.nopen in row, lam.pen in col
       
@@ -144,11 +151,11 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     # average fold n.feat
     cv.n.featlist.short <- unlist(lapply(cv.perf, '[[', 'cv.n.featlist.short'))
     dim(cv.n.featlist.short) <- c(length(lam.nopen), length(lam.pen), length(cv.res))
-    cv.n.featlist.short <- apply(cv.n.featlist.short, c(1,2), mean)
+    cv.n.featlist.short <- apply(cv.n.featlist.short, c(1,2), mean, na.rm = TRUE)
     # average fold scores
     cv.acc <- unlist(lapply(cv.perf, '[[', 'cv.acc'))
     dim(cv.acc) <- c(length(lam.nopen), length(lam.pen), length(cv.res))
-    cv.acc <- apply(cv.acc, c(1,2), mean)
+    cv.acc <- apply(cv.acc, c(1,2), mean, na.rm = TRUE)
     # lambda selection rule!! because we set lam.nopen and lam.pen to be decreasing and cv.acc is created by "rbind", we now select lambda's confining to 
     #   1) larger CV acc; 
     #   2) then less total number of feat (lambda); 
@@ -166,6 +173,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     # get trained model
     message("getting trained model ...")
     model <- model[[names(best.lam.nopen)]]
+    stopifnot(!inherits(model, "try-error"))
     model$best.lam.nopen <- best.lam.nopen
     model$best.lam.pen <- best.lam.pen
     model$featlist.short <- NULL # annul this previously registered entry
