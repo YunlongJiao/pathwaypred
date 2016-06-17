@@ -89,9 +89,9 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     penalty.factor[names(featlist.nopen[featlist.nopen > 0])] <- penalty.factor.ratio.min
     # exclude other features
     penalty.factor[names(featlist.nopen[featlist.nopen == 0])] <- penalty.factor.ratio.max
-    model.pen <- glmnet(x = as.matrix(xtr), y = as.factor(as.character(ytr)), family = "multinomial", 
-                        lambda = lam.pen, 
-                        alpha = alpha, standardize = do.normalize, ...)
+    model.pen <- try(glmnet(x = as.matrix(xtr), y = as.factor(as.character(ytr)), family = "multinomial", 
+                            lambda = lam.pen, penalty.factor = penalty.factor,
+                            alpha = alpha, standardize = do.normalize, ...))
     message("+", appendLF = FALSE)
     model.pen$featlist.short <- featselectLogitLasso2StepFS(model = model.pen, keep.signif = TRUE)
     return(model.pen)
@@ -107,7 +107,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
   pred.prob <- NULL
   # combine CV results if this is NOT CV run
   cv.files <- list.files(path = 'Robj', pattern = cv.patt, full.names = TRUE)
-  if (i.fold.inn == 0) {
+  if (i.fold.inn == 0 && length(cv.files) > 0) {
     message("combining CV runs ...")
     # get CV results from previous cluster runs
     cv.res <- lapply(cv.files, function(f) try(get(load(f))))
@@ -270,3 +270,4 @@ if (!dir.exists('Robj')) dir.create('Robj')
 save(list = objname, file = objpath)
 message('new job saved up !!')
 quit(save = 'no')
+
