@@ -55,7 +55,7 @@ source("../../src/func.R")
 predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, do.normalize = TRUE, 
                                        lam.nopen, lam.pen, # for specific 2-step training
                                        i.fold.inn, # deciding if it is CV run or not
-                                       cv.patt, # for reading CV results
+                                       cv.patt, # for reading CV results stored in folder Robj/
                                        penalty.factor.ratio.min = 1e-6, penalty.factor.ratio.max = 1e6, ...)
 {
   # lam.nopen,lam.pen are two lists of lambda's to fit model with in either step respectively
@@ -69,8 +69,13 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
   classes.eff <- classes[tab > 0]
   stopifnot(length(classes.eff) >= 2)
   
+  # sort and name lambda lists
   lam.nopen <- sort(lam.nopen, decreasing = TRUE)
+  if (is.null(names(lam.nopen)))
+    names(lam.nopen) <- paste0("s",0:(length(lam.nopen)-1))
   lam.pen <- sort(lam.pen, decreasing = TRUE)
+  if (is.null(names(lam.pen)))
+    names(lam.pen) <- paste0("s",0:(length(lam.pen)-1))
   
   message("Training Step I ...")
   model.nopen <- glmnet(x = as.matrix(xtr), y = as.factor(as.character(ytr)), family = "multinomial", 
@@ -97,8 +102,6 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
       model.pen$featlist.short <- featselectLogitLasso2StepFS(model = model.pen, keep.signif = TRUE)
     return(model.pen)
   })
-  if (is.null(names(lam.nopen)))
-    names(lam.nopen) <- paste0("s",0:(length(lam.nopen)-1))
   names(model) <- names(lam.nopen)
   model$lam.nopen <- lam.nopen
   message(" done!")
@@ -139,8 +142,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
         if (inherits(model.pen, "try-error"))
           return(NA)
         else {
-          stopifnot(all(model.pen$lambda == lam.pen))
-          cv.pred <- predict(object = model.pen, newx = as.matrix(xtr[names(cv.ytst), ]), type = "class", ...)
+          cv.pred <- predict(object = model.pen, newx = as.matrix(xtr[names(cv.ytst), ]), s = lam.pen, type = "class", ...)
           return(apply(cv.pred, 2, function(pp) mean(pp == cv.ytst)))
         }
       })
