@@ -100,7 +100,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     names(lam.nopen) <- paste0("s",0:(length(lam.nopen)-1))
   names(model) <- names(lam.nopen)
   model$lam.nopen <- lam.nopen
-  message("done!")
+  message(" done!")
   
   # should not return path run predictions if this is CV run
   pred.class <- NULL
@@ -178,7 +178,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
                         dimnames = list(rownames(xtst), classes))
     pred.prob[ , colnames(pred)] <- pred
-    message("done done!")
+    message(" done done!")
   }
   
   res <- list(model=model, class=pred.class, prob=pred.prob, cutoff=cutoff)
@@ -261,7 +261,8 @@ res <- indepValidation(xtr = xtr[train.fold, , drop=F], ytr = ytr[train.fold],
                        remove.const = FALSE, # constant already removed
                        lam.nopen = lam.nopen, lam.pen = lam.pen, i.fold.inn = i.fold.inn, cv.patt = paste0('^cvres_', paste(cvags, collapse = '_')))
 message('feature selection ... ')
-res$featlist.short <- names(get(fsname, mode = "function")(model = res$model, 
-                                                           s = res$model$best.lam.pen)) # get feats for only one lambda value
+if (!is.null(res$model$best.lam.pen))
+  res$featlist.short <- names(get(fsname, mode = "function")(model = res$model, 
+                                                             s = res$model$best.lam.pen)) # get feats for only one lambda value
 
 assign(objname, res)
