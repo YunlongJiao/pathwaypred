@@ -82,7 +82,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
                         lambda = lam.nopen, 
                         alpha = alpha, standardize = do.normalize, ...)
   message("Feat selection Step I ...")
-  featlist.nopen <- featselectLogitLasso2StepFS(model = model.nopen, keep.signif = FALSE) # fliter-out later
+  featlist.nopen <- featselectLogitLasso2StepFS(model = model.nopen, lambda = lam.nopen, keep.signif = FALSE) # fliter-out later
   
   message("Training Step II ...")
   penalty.factor <- rep(1, ncol(xtr))
@@ -99,7 +99,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
                             alpha = alpha, standardize = do.normalize, ...))
     message("+", appendLF = FALSE)
     if (!inherits(model.pen, "try-error"))
-      model.pen$featlist.short <- featselectLogitLasso2StepFS(model = model.pen, keep.signif = TRUE)
+      model.pen$featlist.short <- featselectLogitLasso2StepFS(model = model.pen, lambda = lam.pen, keep.signif = TRUE)
     return(model.pen)
   })
   names(model) <- names(lam.nopen)
@@ -181,8 +181,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     model$featlist.short <- NULL # annul this previously registered entry
     # predict with seleted lambda's
     message("making prediction ...")
-    pred <- drop(predict(object = model, newx = as.matrix(xtst), type = "response", 
-                         s = best.lam.pen, ...))
+    pred <- drop(predict(object = model, newx = as.matrix(xtst), type = "response", s = best.lam.pen, ...))
     pred.class <- colnames(pred)[max.col(pred)]
     names(pred.class) <- rownames(xtst)
     pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
@@ -195,7 +194,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
   return(res)
 }
 
-featselectLogitLasso2StepFS <- function(model = NULL, ..., keep.signif = TRUE)
+featselectLogitLasso2StepFS <- function(model = NULL, lambda = model$lambda, ..., keep.signif = TRUE)
 {
   # computes absolute value of coefficients for each feature
   # returns LIST of only those with non-zero contribution to at least one of the phenotypes ordered by decreasing sum contribution
@@ -205,7 +204,7 @@ featselectLogitLasso2StepFS <- function(model = NULL, ..., keep.signif = TRUE)
   
   if (is.null(model))
     model <- predictorLogitLasso2StepFS(...)$model
-  s <- predict(object = model, newx = NULL, type = "coefficients", ...)
+  s <- predict(object = model, newx = NULL, s = lambda, type = "coefficients", ...)
   dims <- c(nrow(s[[1]]), ncol(s[[1]]), length(s))
   dims.names <- list(rownames(s[[1]]), colnames(s[[1]]), names(s))
   s <- as.vector(do.call('cbind', s))
