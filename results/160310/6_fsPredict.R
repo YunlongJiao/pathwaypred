@@ -266,3 +266,7 @@ if (!is.null(res$model$best.lam.pen))
                                                              s = res$model$best.lam.pen)) # get feats for only one lambda value
 
 assign(objname, res)
+if (!dir.exists('Robj')) dir.create('Robj')
+save(list = objname, file = objpath)
+message('new job saved up !!')
+quit(save = 'no')
