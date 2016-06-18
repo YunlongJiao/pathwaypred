@@ -56,7 +56,10 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
                                        lam.nopen, lam.pen, # for specific 2-step training
                                        i.fold.inn, # deciding if it is CV run or not
                                        cv.patt, # for reading CV results stored in folder Robj/
-                                       penalty.factor.ratio.min = 1e-6, penalty.factor.ratio.max = 1e6, ...)
+                                       penalty.factor.ratio = 1e12, 
+                                       penalty.factor.ratio.min = 0, 
+                                       penalty.factor.ratio.max = Inf, 
+                                       ...)
 {
   # lam.nopen,lam.pen are two lists of lambda's to fit model with in either step respectively
   # i.fold.inn is set for cluster run which is first to run CV folds and later select lambdas and make prediction
@@ -85,7 +88,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
   featlist.nopen <- featselectLogitLasso2StepFS(model = model.nopen, s = lam.nopen, keep.signif = FALSE) # fliter-out later
   
   message("Training Step II ...")
-  penalty.factor <- rep(1, ncol(xtr))
+  penalty.factor <- rep(penalty.factor.ratio, ncol(xtr))
   names(penalty.factor) <- colnames(xtr)
   model <- lapply(1:length(lam.nopen), function(i){
     message(".", appendLF = FALSE)
@@ -178,7 +181,8 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     stopifnot(!inherits(model, "try-error"))
     model$best.lam.nopen <- best.lam.nopen
     model$best.lam.pen <- best.lam.pen
-    model$featlist.short <- NULL # annul this previously registered entry
+    model$featlist.nopen <- model$featlist.short[[names(best.lam.pen)]]
+    # model$featlist.short <- NULL # annul this previously registered entry
     # predict with seleted lambda's
     message("making prediction ...")
     pred <- predict(object = model, newx = as.matrix(xtst), type = "response", s = best.lam.pen, ...)
