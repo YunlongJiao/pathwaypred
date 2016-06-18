@@ -194,7 +194,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
   return(res)
 }
 
-featselectLogitLasso2StepFS <- function(model = NULL, lambda = model$lambda, ..., keep.signif = TRUE)
+featselectLogitLasso2StepFS <- function(model = NULL, s = model$lambda, ..., keep.signif = TRUE)
 {
   # computes absolute value of coefficients for each feature
   # returns LIST of only those with non-zero contribution to at least one of the phenotypes ordered by decreasing sum contribution
@@ -204,23 +204,23 @@ featselectLogitLasso2StepFS <- function(model = NULL, lambda = model$lambda, ...
   
   if (is.null(model))
     model <- predictorLogitLasso2StepFS(...)$model
-  s <- predict(object = model, newx = NULL, s = lambda, type = "coefficients", ...)
-  dims <- c(nrow(s[[1]]), ncol(s[[1]]), length(s))
-  dims.names <- list(rownames(s[[1]]), colnames(s[[1]]), names(s))
-  s <- as.vector(do.call('cbind', s))
-  dim(s) <- dims
-  dimnames(s) <- dims.names
-  fs <- lapply(1:dim(s)[2], function(j){
-    u <- s[ ,j, ] # reduce to 2-dim matrix
+  coefs <- predict(object = model, newx = NULL, s = s, type = "coefficients", ...)
+  dims <- c(nrow(coefs[[1]]), ncol(coefs[[1]]), length(coefs))
+  dims.names <- list(rownames(coefs[[1]]), colnames(coefs[[1]]), names(coefs))
+  coefs <- as.vector(do.call('cbind', coefs))
+  dim(coefs) <- dims
+  dimnames(coefs) <- dims.names
+  feats <- lapply(1:dim(coefs)[2], function(j){
+    u <- coefs[ ,j, ] # reduce to 2-dim matrix
     u <- rowSums(abs(u[-1, ]))
     if (keep.signif)
       u <- u[u > 0] # can be strongly positive or negative related!
     u <- sort(u, decreasing = TRUE)
     return(u)
   })
-  names(fs) <- dimnames(s)[[2]]
+  names(feats) <- dimnames(coefs)[[2]]
   
-  return(fs)
+  return(feats)
 }
 
 
