@@ -56,8 +56,8 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
                                        lam.nopen, lam.pen, # for specific 2-step training
                                        i.fold.inn, # deciding if it is CV run or not
                                        cv.patt, # for reading CV results stored in folder Robj/
-                                       lam.pen.ratio = 1e10, # multiplied to lam.pen for 2-step penalty.factor
-                                       penalty.factor.ratio = 1e10, ...) # for 2-step penalty.factor
+                                       lam.pen.ratio = 1e12, # multiplied to lam.pen for 2-step penalty.factor
+                                       penalty.factor.ratio = 1e6, ...) # for 2-step penalty.factor
 {
   # lam.nopen,lam.pen are two lists of lambda's to fit model with in either step respectively
   # i.fold.inn is set for cluster run which is first to run CV folds and later select lambdas and make prediction
