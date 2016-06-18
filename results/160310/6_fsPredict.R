@@ -54,9 +54,9 @@ source("../../src/func.R")
 # specific predictor function TO BE added to func.R file ...
 predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, do.normalize = TRUE, 
                                        lam.nopen, lam.pen, # for specific 2-step training
+                                       featlist.nopen, # indices of feats to include in the 1-step fs
                                        i.fold.inn, # deciding if it is CV run or not
                                        cv.patt, # for reading CV results stored in folder Robj/
-                                       lam.pen.ratio = 1e12, # multiplied to lam.pen for 2-step penalty.factor
                                        penalty.factor.ratio = 1e6, ...) # for 2-step penalty.factor
 {
   # lam.nopen,lam.pen are two lists of lambda's to fit model with in either step respectively
@@ -74,12 +74,12 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
   lam.nopen <- sort(lam.nopen, decreasing = TRUE)
   if (is.null(names(lam.nopen)))
     names(lam.nopen) <- paste0("s",0:(length(lam.nopen)-1))
-  lam.pen <- sort(lam.pen*lam.pen.ratio, decreasing = TRUE)
+  lam.pen <- sort(lam.pen, decreasing = TRUE)
   if (is.null(names(lam.pen)))
     names(lam.pen) <- paste0("s",0:(length(lam.pen)-1))
   
   message("Training Step I ...")
-  model.nopen <- glmnet(x = as.matrix(xtr), y = as.factor(as.character(ytr)), family = "multinomial", 
+  model.nopen <- glmnet(x = as.matrix(xtr[ ,featlist.nopen,drop=FALSE]), y = as.factor(as.character(ytr)), family = "multinomial", 
                         lambda = lam.nopen, 
                         alpha = alpha, standardize = do.normalize, ...)
   message("Feat selection Step I ...")
@@ -92,16 +92,16 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     message(".", appendLF = FALSE)
     featlist.nopen <- featlist.nopen[[i]]
     # no penalty on pre-selected features
-    penalty.factor[names(featlist.nopen[featlist.nopen > 0])] <- 1/penalty.factor.ratio
+    penalty.factor[names(featlist.nopen)[featlist.nopen > 0]] <- 1/penalty.factor.ratio
     # exclude other features
-    penalty.factor[names(featlist.nopen[featlist.nopen == 0])] <- penalty.factor.ratio
+    penalty.factor[names(featlist.nopen)[featlist.nopen == 0]] <- penalty.factor.ratio
     model.pen <- try(glmnet(x = as.matrix(xtr), y = as.factor(as.character(ytr)), family = "multinomial", 
                             lambda = NULL, penalty.factor = penalty.factor,
                             alpha = alpha, standardize = do.normalize, ...))
     message("+", appendLF = FALSE)
     if (!inherits(model.pen, "try-error")) {
       if (min(model.pen$lambda) > max(lam.pen) || max(model.pen$lambda) < min(lam.pen))
-        warning("To retrain 2-step model.pen for lam.nopen = ", lam.nopen[i], "is necessary !")
+        message("To retrain 2-step model.pen for lam.nopen = ", lam.nopen[i], "is necessary !")
       model.pen$featlist.short <- featselectLogitLasso2StepFS(model = model.pen, s = lam.pen, keep.signif = TRUE)
     }
     return(model.pen)
@@ -222,7 +222,7 @@ featselectLogitLasso2StepFS <- function(model = NULL, s = model$lambda, ..., kee
     u <- sort(u, decreasing = TRUE)
     return(u)
   })
-  names(feats) <- dimnames(coefs)[[2]]
+  names(feats) <- names(s)
   
   return(feats)
 }
@@ -238,7 +238,10 @@ lampath <- paste0('Robj/ivres_', paste(lamags, collapse = '_'), '.RData')
 lam.nopen <- get(load(gsub(xname, xname.nopen, lampath)))$model$lambda
 lam.pen <- get(load(gsub(xname, xname.pen, lampath)))$model$lambda
 # get R objects
-xtr <- cbind(removeConst(get(xname.nopen)), removeConst(get(xname.pen))) # rownames were well aligned already
+xtr.nopen <- removeConst(get(xname.nopen))
+xtr.pen <- removeConst(get(xname.pen))
+xtr <- cbind(xtr.nopen, xtr.pen) # rownames were well aligned already
+featlist.nopen <- 1:ncol(xtr.nopen) # indices to include in 1-step fs
 ytr <- get(yname)
 # keep only samples for which label info is available
 samplelist <- intersect(rownames(xtr), names(ytr))
@@ -272,7 +275,9 @@ res <- indepValidation(xtr = xtr[train.fold, , drop=F], ytr = ytr[train.fold],
                        xtst = xtr[test.fold, , drop=F], ytst = ytr[test.fold], 
                        predictor = prname, 
                        remove.const = FALSE, # constant already removed
-                       lam.nopen = lam.nopen, lam.pen = lam.pen, i.fold.inn = i.fold.inn, cv.patt = paste0('^cvres_', paste(cvags, collapse = '_')))
+                       lam.nopen = lam.nopen, featlist.nopen = featlist.nopen, 
+                       lam.pen = lam.pen, 
+                       i.fold.inn = i.fold.inn, cv.patt = paste0('^cvres_', paste(cvags, collapse = '_')))
 message('feature selection ... ')
 if (!is.null(res$model$best.lam.pen))
   res$featlist.short <- names(get(fsname, mode = "function")(model = res$model, 
