@@ -82,7 +82,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
                         lambda = lam.nopen, 
                         alpha = alpha, standardize = do.normalize, ...)
   message("Feat selection Step I ...")
-  featlist.nopen <- featselectLogitLasso2StepFS(model = model.nopen, lambda = lam.nopen, keep.signif = FALSE) # fliter-out later
+  featlist.nopen <- featselectLogitLasso2StepFS(model = model.nopen, s = lam.nopen, keep.signif = FALSE) # fliter-out later
   
   message("Training Step II ...")
   penalty.factor <- rep(1, ncol(xtr))
@@ -99,7 +99,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
                             alpha = alpha, standardize = do.normalize, ...))
     message("+", appendLF = FALSE)
     if (!inherits(model.pen, "try-error"))
-      model.pen$featlist.short <- featselectLogitLasso2StepFS(model = model.pen, lambda = lam.pen, keep.signif = TRUE)
+      model.pen$featlist.short <- featselectLogitLasso2StepFS(model = model.pen, s = lam.pen, keep.signif = TRUE)
     return(model.pen)
   })
   names(model) <- names(lam.nopen)
@@ -160,10 +160,6 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     cv.acc <- apply(cv.acc, c(1,2), mean, na.rm = TRUE)
     # lambda selection rule!! because we set lam.nopen and lam.pen to be decreasing and cv.acc is created by "rbind", we now select lambda's confining to 
     #   1) larger CV acc; 
-    #   2) then less total number of feat (lambda); 
-    #   3) then more number of nopen feat 
-    ind.acc <- which(cv.acc == max(cv.acc), arr.ind = TRUE)
-    ind.acc.n.feat <- which(cv.n.featlist.short == min(cv.n.featlist.short[ind.acc]), arr.ind = TRUE)
     #   2) then less total number of feat (lambda); 
     #   3) then more number of nopen feat 
     ind.acc <- which(cv.acc == max(cv.acc), arr.ind = TRUE)
