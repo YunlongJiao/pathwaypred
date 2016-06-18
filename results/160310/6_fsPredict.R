@@ -95,11 +95,14 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     # exclude other features
     penalty.factor[names(featlist.nopen[featlist.nopen == 0])] <- penalty.factor.ratio.max
     model.pen <- try(glmnet(x = as.matrix(xtr), y = as.factor(as.character(ytr)), family = "multinomial", 
-                            lambda = lam.pen, penalty.factor = penalty.factor,
+                            lambda = NULL, penalty.factor = penalty.factor,
                             alpha = alpha, standardize = do.normalize, ...))
     message("+", appendLF = FALSE)
-    if (!inherits(model.pen, "try-error"))
+    if (!inherits(model.pen, "try-error")) {
+      if (min(model.pen$lambda) > max(lam.pen) || max(model.pen$lambda) < min(lam.pen))
+        warning("To retrain 2-step model.pen for lam.nopen = ", lam.nopen[i], "is necessary !")
       model.pen$featlist.short <- featselectLogitLasso2StepFS(model = model.pen, s = lam.pen, keep.signif = TRUE)
+    }
     return(model.pen)
   })
   names(model) <- names(lam.nopen)
@@ -130,7 +133,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
       cv.n.featlist.short <- lapply(model.nopen[names(model.nopen$lam.nopen)], function(model.pen){ # for each lam.nopen
         # get totally selected featlist for all lam.pen
         if (inherits(model.pen, "try-error"))
-          return(NA)
+          return(rep(NA, length(lam.pen)))
         else
           return(sapply(model.pen$featlist.short, length))
       })
@@ -140,7 +143,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
       cv.acc <- lapply(model.nopen[names(model.nopen$lam.nopen)], function(model.pen){ # for each lam.nopen
         # predict for all lam.pen
         if (inherits(model.pen, "try-error"))
-          return(NA)
+          return(rep(NA, length(lam.pen)))
         else {
           cv.pred <- predict(object = model.pen, newx = as.matrix(xtr[names(cv.ytst), ]), s = lam.pen, type = "class", ...)
           return(apply(cv.pred, 2, function(pp) mean(pp == cv.ytst)))
@@ -167,6 +170,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     ind <- ind.acc.n.feat[which.max(ind.acc.n.feat[ ,"row"]), ] # which.max returns the first hit
     best.lam.nopen <- lam.nopen[ind["row"]]
     best.lam.pen <- lam.pen[ind["col"]]
+    message("FOUND best.lam.nopen = \t", best.lam.nopen, "\tbest.lam.pen = \t", best.lam.pen)
     
     # get trained model
     message("getting trained model ...")
@@ -177,7 +181,8 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     model$featlist.short <- NULL # annul this previously registered entry
     # predict with seleted lambda's
     message("making prediction ...")
-    pred <- drop(predict(object = model, newx = as.matrix(xtst), type = "response", s = best.lam.pen, ...))
+    pred <- predict(object = model, newx = as.matrix(xtst), type = "response", s = best.lam.pen, ...)
+    pred <- drop(pred)
     pred.class <- colnames(pred)[max.col(pred)]
     names(pred.class) <- rownames(xtst)
     pred.prob <- matrix(0, nrow = nrow(xtst), ncol = length(classes), 
