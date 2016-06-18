@@ -56,10 +56,8 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
                                        lam.nopen, lam.pen, # for specific 2-step training
                                        i.fold.inn, # deciding if it is CV run or not
                                        cv.patt, # for reading CV results stored in folder Robj/
-                                       penalty.factor.ratio = 1e12, 
-                                       penalty.factor.ratio.min = 0, 
-                                       penalty.factor.ratio.max = Inf, 
-                                       ...)
+                                       lam.pen.ratio = 1e12, # multiplied to lam.pen for 2-step penalty.factor
+                                       penalty.factor.ratio = 1e6, ...) # for 2-step penalty.factor
 {
   # lam.nopen,lam.pen are two lists of lambda's to fit model with in either step respectively
   # i.fold.inn is set for cluster run which is first to run CV folds and later select lambdas and make prediction
@@ -76,7 +74,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
   lam.nopen <- sort(lam.nopen, decreasing = TRUE)
   if (is.null(names(lam.nopen)))
     names(lam.nopen) <- paste0("s",0:(length(lam.nopen)-1))
-  lam.pen <- sort(lam.pen, decreasing = TRUE)
+  lam.pen <- sort(lam.pen*lam.pen.ratio, decreasing = TRUE)
   if (is.null(names(lam.pen)))
     names(lam.pen) <- paste0("s",0:(length(lam.pen)-1))
   
@@ -88,15 +86,15 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
   featlist.nopen <- featselectLogitLasso2StepFS(model = model.nopen, s = lam.nopen, keep.signif = FALSE) # fliter-out later
   
   message("Training Step II ...")
-  penalty.factor <- rep(penalty.factor.ratio, ncol(xtr))
+  penalty.factor <- rep(1, ncol(xtr))
   names(penalty.factor) <- colnames(xtr)
   model <- lapply(1:length(lam.nopen), function(i){
     message(".", appendLF = FALSE)
     featlist.nopen <- featlist.nopen[[i]]
     # no penalty on pre-selected features
-    penalty.factor[names(featlist.nopen[featlist.nopen > 0])] <- penalty.factor.ratio.min
+    penalty.factor[names(featlist.nopen[featlist.nopen > 0])] <- 1/penalty.factor.ratio
     # exclude other features
-    penalty.factor[names(featlist.nopen[featlist.nopen == 0])] <- penalty.factor.ratio.max
+    penalty.factor[names(featlist.nopen[featlist.nopen == 0])] <- penalty.factor.ratio
     model.pen <- try(glmnet(x = as.matrix(xtr), y = as.factor(as.character(ytr)), family = "multinomial", 
                             lambda = NULL, penalty.factor = penalty.factor,
                             alpha = alpha, standardize = do.normalize, ...))
@@ -110,6 +108,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
   })
   names(model) <- names(lam.nopen)
   model$lam.nopen <- lam.nopen
+  model$lam.pen <- lam.pen
   message(" done!")
   
   # should not return path run predictions if this is CV run
@@ -182,7 +181,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
     model$best.lam.nopen <- best.lam.nopen
     model$best.lam.pen <- best.lam.pen
     model$featlist.nopen <- model$featlist.short[[names(best.lam.pen)]]
-    # model$featlist.short <- NULL # annul this previously registered entry
+    model$featlist.short <- NULL # annul this previously registered entry
     # predict with seleted lambda's
     message("making prediction ...")
     pred <- predict(object = model, newx = as.matrix(xtst), type = "response", s = best.lam.pen, ...)
