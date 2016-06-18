@@ -12,8 +12,8 @@
 ## Merge the standard out and standard error to one file in one folder
 #$ -j y
 ## Disable log output
-#$ -o /dev/null
-#$ -e /dev/null
+##$ -o /dev/null
+##$ -e /dev/null
 
 ## set up distributed jobs for nclust range
 ## look up to the number "i.fold.inn.num.zero" shown in 1_processData.md 
