@@ -41,12 +41,12 @@ xlist
 ```
 
 ```r
-# feature types # the following order is fairly important
-xlist.type <- c("func-wise", "func-wise", 
-                "path-wise", "path-wise", 
-                "gene-wise", "gene-wise", "gene-wise", 
-                "mix-wise", "mix-wise", 
-                "fs-wise", "fs-wise")
+# feature types # to decide which prname to use and the following order is also fairly important for plotting
+xlist.type <- c("func-wise", "func-wise", # prname == "predictorLogitLasso"
+                "path-wise", "path-wise",  # prname == "predictorLogitLasso"
+                "gene-wise", "gene-wise", "gene-wise",  # prname == "predictorLogitLasso"
+                "mix-wise", "mix-wise",  # prname == "predictorLogitLasso"
+                "fs-wise", "fs-wise") # prname == "predictorLogitLasso2StepFS"
 names(xlist.type) <- c("fun.vals", "go.vals", # functionality features
                        "eff.vals", "path.vals", # pathway features
                        "mini.genes.vals", "other.genes.vals", "genes.vals", # gene features
@@ -81,12 +81,12 @@ ylist
 ```r
 # predictors
 prlist <- unique(param$prname)
-stopifnot(all(prlist == "predictorLogitLasso"))
+stopifnot(all(prlist == "predictorLogitLasso2StepFS"))
 prlist
 ```
 
 ```
-## [1] "predictorLogitLasso"
+## [1] "predictorLogitLasso2StepFS"
 ```
 
 ```r
@@ -159,11 +159,13 @@ In this secion, we fix the predictor to be logitLasso and compare model performa
 
 
 ```r
-prname <- "predictorLogitLasso"
 scores <- list()
 for (yname in ylist) {
   for (xname in xlist) {
     message(yname, '\t', xname)
+    prname <- switch(xlist.type[xname],
+                     "fs-wise" = "predictorLogitLasso2StepFS", 
+                     "predictorLogitLasso")
     res.files <- list.files(path = 'Robj', 
                             pattern = paste('^ivres', xname, yname, prname, 
                                             '[[:digit:]]+', nfolds, nrepeats, 
@@ -194,20 +196,20 @@ head(scores)
 ```
 
 ```
-##              y                      x    type           predictor
-## 1 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso
-## 2 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso
-## 3 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso
-## 4 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso
-## 5 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso
-## 6 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso
+##              y                      x    type                  predictor
+## 1 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso2StepFS
+## 2 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso2StepFS
+## 3 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso2StepFS
+## 4 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso2StepFS
+## 5 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso2StepFS
+## 6 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso2StepFS
 ##       value score  rep
-## 1 0.9090909   acc rep1
+## 1 0.7979798   acc rep1
 ## 2 0.0000000   fpr rep1
-## 3 0.8000000   tpr rep1
+## 3 0.6000000   tpr rep1
 ## 4 1.0000000   ppv rep1
-## 5 0.8888889  fval rep1
-## 6 0.9816456 auroc rep1
+## 5 0.7500000  fval rep1
+## 6 0.9411392 auroc rep1
 ```
 
 
@@ -226,7 +228,7 @@ for (yname in ylist) {
     geom_boxplot(aes(fill = x), alpha = 0.8) + 
     geom_vline(xintercept = xlist.vline, color = "grey", size = 2) + 
     facet_wrap(~score, scales = "free") + 
-    ggtitle(paste0("predicting ", yname, " using ", prname)) + 
+    ggtitle(paste0("predicting ", yname, " using LogitLasso 1Step vs 2StepFS")) + 
     theme(axis.text.x = element_blank())
   plot(p1)
 }
@@ -235,7 +237,7 @@ for (yname in ylist) {
 ![plot of chunk perfLogitLasso](7_fsResults_figure/perfLogitLasso-1.png)
 
 ```
-## Warning: Removed 1094 rows containing non-finite values (stat_boxplot).
+## Warning: Removed 1033 rows containing non-finite values (stat_boxplot).
 ```
 
 ![plot of chunk perfLogitLasso](7_fsResults_figure/perfLogitLasso-2.png)
@@ -244,6 +246,8 @@ for (yname in ylist) {
 ## Feature selection
 
 In this section, with the predictor built following a specific 2-step feature selection, we have found **genes that provide orthogonal information**, compensating (and improving) the prediction from pathway features for each `yname` in subtype.grps, surv.grps.
+
+**NOTE if results are "weird", check 6_fsPredict.R and change lam.pen.ratio manually so that lam.pen which is read from elsewhere is compatible with themodel trained under our new 2-step FS setting here!!**
 
 
 ```r
@@ -254,29 +258,29 @@ featlist.long <- lapply(xname.list, function(u){
 })
 names(featlist.long) <- xname.list
 n.featlist.long <- sapply(featlist.long, length)
+
+prname <- "predictorLogitLasso2StepFS"
 # show each grp separately
 for (yname in ylist) {
-  for (prname in prlist) {
-    message(yname, '\t', prname)
-    res.files <- list.files(path = 'Robj', 
-                            pattern = paste('^ivres', xname, yname, prname, 
-                                            '[[:digit:]]+', nfolds, nrepeats, 
-                                            0, nfolds.inn, nrepeats.inn, 
-                                            sep = '_'), 
-                            full.names = TRUE)
-    res <- lapply(res.files, function(f) get(load(f)))
-    names(res) <- paste0("rep",1:length(res))
-    
-    # featselect
-    featlist.short <- lapply(res, '[[', 'featlist.short')
-    featlist.short <- lapply(featlist.long, function(u){
-      lapply(featlist.short, function(v){
-        intersect(u,v)
-      })
+  message(yname, '\t', prname)
+  res.files <- list.files(path = 'Robj', 
+                          pattern = paste('^ivres', xname, yname, prname, 
+                                          '[[:digit:]]+', nfolds, nrepeats, 
+                                          0, nfolds.inn, nrepeats.inn, 
+                                          sep = '_'), 
+                          full.names = TRUE)
+  res <- lapply(res.files, function(f) get(load(f)))
+  names(res) <- paste0("rep",1:length(res))
+  
+  # featselect
+  featlist.short <- lapply(res, '[[', 'featlist.short')
+  featlist.short <- lapply(featlist.long, function(u){
+    lapply(featlist.short, function(v){
+      intersect(u,v)
     })
-    assign(paste(yname,prname,"featlist.short",sep="_"), featlist.short)
-    rm(res)
-  }
+  })
+  assign(paste(yname,prname,"featlist.short",sep="_"), featlist.short)
+  rm(res)
 }
 ```
 
@@ -359,8 +363,8 @@ for (yname in ylist) {
 ## Total number of features selected at each run (averaged over each CV run)
 ## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
 ## 
-## predictorLogitLasso 
-##               42.34 
+## predictorLogitLasso2StepFS 
+##                       33.7 
 ## 
 ## Total number of features within each type
 ## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
@@ -377,23 +381,23 @@ for (yname in ylist) {
 ## The value indicate this feature has been selected how many times out of all  50  CV runs
 ## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
 ## 
-## $predictorLogitLasso
-## $predictorLogitLasso$mini.genes.vals
+## $predictorLogitLasso2StepFS
+## $predictorLogitLasso2StepFS$mini.genes.vals
 ## integer(0)
 ## 
-## $predictorLogitLasso$other.genes.vals
+## $predictorLogitLasso2StepFS$other.genes.vals
 ## integer(0)
 ## 
-## $predictorLogitLasso$path.vals
+## $predictorLogitLasso2StepFS$path.vals
 ## 
-##    X_hsa04520__22___18     X_hsa04520__22___4    X_hsa04919__33___39 
-##                     50                     50                     50 
-##   X_hsa05200__27___200     X_hsa03320__1___63 X_hsa04012__11_12___65 
-##                     49                     45                     45 
-##    X_hsa05200__27___48    X_hsa05200__27___49   X_hsa05200__39___198 
-##                     44                     44                     43 
+##     X_hsa04520__22___4    X_hsa04919__33___39   X_hsa05200__39___198 
+##                     50                     50                     44 
+##   X_hsa05200__27___200 X_hsa04012__11_12___65    X_hsa04520__22___18 
+##                     40                     38                     38 
+##    X_hsa05200__27___48    X_hsa05200__27___49    X_hsa04010__26___12 
+##                     37                     33                     32 
 ##    X_hsa05231__55___17 
-##                     40
+##                     31
 ```
 
 ![plot of chunk featselect](7_fsResults_figure/featselect-2.png)
@@ -407,8 +411,8 @@ for (yname in ylist) {
 ## Total number of features selected at each run (averaged over each CV run)
 ## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
 ## 
-## predictorLogitLasso 
-##            3.653061 
+## predictorLogitLasso2StepFS 
+##                      59.28 
 ## 
 ## Total number of features within each type
 ## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
@@ -425,27 +429,23 @@ for (yname in ylist) {
 ## The value indicate this feature has been selected how many times out of all  50  CV runs
 ## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
 ## 
-## $predictorLogitLasso
-## $predictorLogitLasso$mini.genes.vals
+## $predictorLogitLasso2StepFS
+## $predictorLogitLasso2StepFS$mini.genes.vals
 ## integer(0)
 ## 
-## $predictorLogitLasso$other.genes.vals
+## $predictorLogitLasso2StepFS$other.genes.vals
+## integer(0)
 ## 
-## X_340273  X_49854 X_149647  X_57482   X_8462   X_6531   X_6908   X_8840 
-##        9        5        4        3        3        2        2        2 
-## X_116085 X_143188 
-##        1        1 
+## $predictorLogitLasso2StepFS$path.vals
 ## 
-## $predictorLogitLasso$path.vals
-## 
-##    X_hsa04068__79___46    X_hsa04350__53___28    X_hsa04066__72___53 
-##                     13                     10                      9 
-##    X_hsa04068__80___46    X_hsa04010__56___54    X_hsa04151__47___36 
-##                      9                      6                      4 
-## X_hsa04330__15_16___12     X_hsa03320__1___27     X_hsa03320__2___27 
-##                      4                      3                      3 
-##     X_hsa03320__3___27 
-##                      3
+##    X_hsa04068__80___46   X_hsa05200__13___196 X_hsa04261__57___14_16 
+##                     50                     39                     36 
+## X_hsa04622__7___5_8_37    X_hsa04520__20___17   X_hsa04020__9_53___7 
+##                     36                     34                     32 
+## X_hsa04261__58___14_16 X_hsa04261__59___14_16    X_hsa04350__53___28 
+##                     32                     31                     30 
+## X_hsa04620__49_55___39 
+##                     30
 ```
 
 ![plot of chunk featselect](7_fsResults_figure/featselect-4.png)
