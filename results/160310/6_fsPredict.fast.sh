@@ -2,6 +2,9 @@
 
 ## split job runs, check *.core.sh for details
 
+rm logs/*fs*
+rm Robj/*fs*
+
 # submit first job named "xxx"
 qsub -N CVfsPredict -t 401-409 -o logs 6_fsPredict.core.sh
 
