@@ -57,6 +57,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
                                        featlist.nopen, # indices of feats to include in the 1-step fs
                                        i.fold.inn, # deciding if it is CV run or not
                                        cv.patt, # for reading CV results stored in folder Robj/
+                                       lam.pen.ratio = 1e18, # multiplied to lam.pen to accommodate 2-step fs
                                        penalty.factor.ratio = 1e6, ...) # for 2-step penalty.factor
 {
   # lam.nopen,lam.pen are two lists of lambda's to fit model with in either step respectively
@@ -74,7 +75,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
   lam.nopen <- sort(lam.nopen, decreasing = TRUE)
   if (is.null(names(lam.nopen)))
     names(lam.nopen) <- paste0("s",0:(length(lam.nopen)-1))
-  lam.pen <- sort(lam.pen, decreasing = TRUE)
+  lam.pen <- sort(lam.pen*lam.pen.ratio, decreasing = TRUE)
   if (is.null(names(lam.pen)))
     names(lam.pen) <- paste0("s",0:(length(lam.pen)-1))
   
