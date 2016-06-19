@@ -136,6 +136,8 @@ for (yname in ylist) {
 
 In this section, with the predictor built following a specific 2-step feature selection, we have found **genes that provide orthogonal information**, compensating (and improving) the prediction from pathway features for each `yname` in `r ylist`.
 
+**NOTE if results are "weird", check 6_fsPredict.R and change lam.pen.ratio manually so that lam.pen which is read from elsewhere is compatible with themodel trained under our new 2-step FS setting here!!**
+
 ```{r featselect_prepare, message=FALSE}
 xname <- "path.vals.fs.genes.vals" # do not alter
 xname.list <- c("mini.genes.vals", "other.genes.vals", "path.vals") # do not alter
