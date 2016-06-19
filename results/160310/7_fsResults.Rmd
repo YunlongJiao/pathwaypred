@@ -27,12 +27,12 @@ xlist <- c(xlist, # specific 2-step selected features
            gsub("vals[.]fs", "and", xlist), # "and"-type features
            "fun.vals", "go.vals", "mini.genes.vals", "other.genes.vals") # two more restricted set of gene-related vals
 xlist
-# feature types # the following order is fairly important
-xlist.type <- c("func-wise", "func-wise", 
-                "path-wise", "path-wise", 
-                "gene-wise", "gene-wise", "gene-wise", 
-                "mix-wise", "mix-wise", 
-                "fs-wise", "fs-wise")
+# feature types # to decide which prname to use and the following order is also fairly important for plotting
+xlist.type <- c("func-wise", "func-wise", # prname == "predictorLogitLasso"
+                "path-wise", "path-wise",  # prname == "predictorLogitLasso"
+                "gene-wise", "gene-wise", "gene-wise",  # prname == "predictorLogitLasso"
+                "mix-wise", "mix-wise",  # prname == "predictorLogitLasso"
+                "fs-wise", "fs-wise") # prname == "predictorLogitLasso2StepFS"
 names(xlist.type) <- c("fun.vals", "go.vals", # functionality features
                        "eff.vals", "path.vals", # pathway features
                        "mini.genes.vals", "other.genes.vals", "genes.vals", # gene features
@@ -46,7 +46,7 @@ ylist <- unique(param$yname)
 ylist
 # predictors
 prlist <- unique(param$prname)
-stopifnot(all(prlist == "predictorLogitLasso"))
+stopifnot(all(prlist == "predictorLogitLasso2StepFS"))
 prlist
 # (outter) `nfolds`-fold CV repeated `nrepeats` times for evaluation
 nfolds <- unique(param$nfolds)
@@ -76,11 +76,13 @@ slist.prefer.large.score
 In this secion, we fix the predictor to be logitLasso and compare model performances of different feature types wrt various criteria.
 
 ```{r perfLogitLasso_prepare, message=FALSE}
-prname <- "predictorLogitLasso"
 scores <- list()
 for (yname in ylist) {
   for (xname in xlist) {
     message(yname, '\t', xname)
+    prname <- switch(xlist.type[xname],
+                     "fs-wise" = "predictorLogitLasso2StepFS", 
+                     "predictorLogitLasso")
     res.files <- list.files(path = 'Robj', 
                             pattern = paste('^ivres', xname, yname, prname, 
                                             '[[:digit:]]+', nfolds, nrepeats, 
@@ -125,7 +127,7 @@ for (yname in ylist) {
     geom_boxplot(aes(fill = x), alpha = 0.8) + 
     geom_vline(xintercept = xlist.vline, color = "grey", size = 2) + 
     facet_wrap(~score, scales = "free") + 
-    ggtitle(paste0("predicting ", yname, " using ", prname)) + 
+    ggtitle(paste0("predicting ", yname, " using LogitLasso 1Step vs 2StepFS")) + 
     theme(axis.text.x = element_blank())
   plot(p1)
 }
@@ -146,29 +148,29 @@ featlist.long <- lapply(xname.list, function(u){
 })
 names(featlist.long) <- xname.list
 n.featlist.long <- sapply(featlist.long, length)
+
+prname <- "predictorLogitLasso2StepFS"
 # show each grp separately
 for (yname in ylist) {
-  for (prname in prlist) {
-    message(yname, '\t', prname)
-    res.files <- list.files(path = 'Robj', 
-                            pattern = paste('^ivres', xname, yname, prname, 
-                                            '[[:digit:]]+', nfolds, nrepeats, 
-                                            0, nfolds.inn, nrepeats.inn, 
-                                            sep = '_'), 
-                            full.names = TRUE)
-    res <- lapply(res.files, function(f) get(load(f)))
-    names(res) <- paste0("rep",1:length(res))
-    
-    # featselect
-    featlist.short <- lapply(res, '[[', 'featlist.short')
-    featlist.short <- lapply(featlist.long, function(u){
-      lapply(featlist.short, function(v){
-        intersect(u,v)
-      })
+  message(yname, '\t', prname)
+  res.files <- list.files(path = 'Robj', 
+                          pattern = paste('^ivres', xname, yname, prname, 
+                                          '[[:digit:]]+', nfolds, nrepeats, 
+                                          0, nfolds.inn, nrepeats.inn, 
+                                          sep = '_'), 
+                          full.names = TRUE)
+  res <- lapply(res.files, function(f) get(load(f)))
+  names(res) <- paste0("rep",1:length(res))
+  
+  # featselect
+  featlist.short <- lapply(res, '[[', 'featlist.short')
+  featlist.short <- lapply(featlist.long, function(u){
+    lapply(featlist.short, function(v){
+      intersect(u,v)
     })
-    assign(paste(yname,prname,"featlist.short",sep="_"), featlist.short)
-    rm(res)
-  }
+  })
+  assign(paste(yname,prname,"featlist.short",sep="_"), featlist.short)
+  rm(res)
 }
 ```
 
