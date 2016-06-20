@@ -57,7 +57,7 @@ predictorLogitLasso2StepFS <- function(xtr, xtst, ytr, alpha = 1, cutoff = 0.5, 
                                        featlist.nopen, # indices of feats to include in the 1-step fs
                                        i.fold.inn, # deciding if it is CV run or not
                                        cv.patt, # for reading CV results stored in folder Robj/
-                                       penalty.factor.ratio = 100, # for 2-step penalty.factor
+                                       penalty.factor.ratio = 1, # for 2-step penalty.factor
                                        lam.pen.ratio = penalty.factor.ratio*penalty.factor.ratio, ...) # multiplied to lam.pen to accommodate 2-step fs
 {
   # lam.nopen,lam.pen are two lists of lambda's to fit model with in either step respectively
