@@ -71,9 +71,9 @@ slist.prefer.large.score
 ```
 
 
-## Performance with logitLasso only
+## Performance with LogitLasso only
 
-In this secion, we fix the predictor to be logitLasso and compare model performances of different feature types wrt various criteria.
+In this secion, we fix the predictor to be LogitLasso and compare model performances of different feature types wrt various criteria.
 
 ```{r perfLogitLasso_prepare, message=FALSE}
 scores <- list()
@@ -138,7 +138,9 @@ for (yname in ylist) {
 
 In this section, with the predictor built following a specific 2-step feature selection, we have found **genes that provide orthogonal information**, compensating (and improving) the prediction from pathway features for each `yname` in `r ylist`.
 
-**NOTE if results are "weird", check 6_fsPredict.R and change lam.pen.ratio manually so that lam.pen which is read from elsewhere is compatible with themodel trained under our new 2-step FS setting here!!**
+**NOTE if results are "weird", check 6_fsPredict.R and change penalty.factor.ratio or lam.pen.ratio manually so that lam.pen which is read from elsewhere is compatible with themodel trained under our new 2-step FS setting here!!**
+
+**NOTE lambda tuning rules!! As we need to tune 2-dim regularization parameters, namely lam.nopen (step 1) and lam.pen (step 2), we follow the rules confining to 1) larger CV acc; 2) then less total number of features; 3) then more number of pathway features!!**
 
 ```{r featselect_prepare, message=FALSE}
 xname <- "path.vals.fs.genes.vals" # do not alter
