@@ -204,12 +204,12 @@ head(scores)
 ## 5 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso2StepFS
 ## 6 subtype.grps eff.vals.fs.genes.vals fs-wise predictorLogitLasso2StepFS
 ##       value score  rep
-## 1 0.8282828   acc rep1
+## 1 0.8484848   acc rep1
 ## 2 0.0000000   fpr rep1
-## 3 0.6500000   tpr rep1
+## 3 0.7000000   tpr rep1
 ## 4 1.0000000   ppv rep1
-## 5 0.7878788  fval rep1
-## 6 0.9588608 auroc rep1
+## 5 0.8235294  fval rep1
+## 6 0.9689873 auroc rep1
 ```
 
 
@@ -237,7 +237,7 @@ for (yname in ylist) {
 ![plot of chunk perfLogitLasso](7_fsResults_figure/perfLogitLasso-1.png)
 
 ```
-## Warning: Removed 1020 rows containing non-finite values (stat_boxplot).
+## Warning: Removed 987 rows containing non-finite values (stat_boxplot).
 ```
 
 ![plot of chunk perfLogitLasso](7_fsResults_figure/perfLogitLasso-2.png)
@@ -366,7 +366,7 @@ for (yname in ylist) {
 ## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
 ## 
 ## predictorLogitLasso2StepFS 
-##                      35.94 
+##                      34.36 
 ## 
 ## Total number of features within each type
 ## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
@@ -394,12 +394,12 @@ for (yname in ylist) {
 ## 
 ##     X_hsa04520__22___4    X_hsa04919__33___39   X_hsa05200__27___200 
 ##                     50                     50                     41 
-##    X_hsa04520__22___18   X_hsa05200__39___198    X_hsa05200__27___48 
-##                     40                     39                     37 
-## X_hsa04012__11_12___65    X_hsa05200__27___49     X_hsa03320__1___63 
-##                     36                     35                     31 
-##    X_hsa04010__26___12 
-##                     30
+## X_hsa04012__11_12___65    X_hsa04520__22___18   X_hsa05200__39___198 
+##                     40                     39                     38 
+##    X_hsa05200__27___48    X_hsa05200__27___49    X_hsa04010__26___12 
+##                     36                     35                     33 
+##     X_hsa03320__1___63 
+##                     32
 ```
 
 ![plot of chunk featselect](7_fsResults_figure/featselect-2.png)
@@ -414,7 +414,7 @@ for (yname in ylist) {
 ## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
 ## 
 ## predictorLogitLasso2StepFS 
-##                      57.86 
+##                      59.96 
 ## 
 ## Total number of features within each type
 ## (NOTE THAT GENES PROVIDE ORTHOGONAL INFO TO PATHWAYS)
@@ -440,13 +440,13 @@ for (yname in ylist) {
 ## 
 ## $predictorLogitLasso2StepFS$path.vals
 ## 
-##    X_hsa04068__80___46   X_hsa05200__13___196 X_hsa04261__57___14_16 
-##                     49                     40                     38 
-## X_hsa04622__7___5_8_37    X_hsa04520__20___17   X_hsa04020__9_53___7 
-##                     36                     35                     32 
-## X_hsa04261__58___14_16 X_hsa04261__59___14_16    X_hsa04350__51___36 
-##                     32                     30                     30 
-##    X_hsa04350__53___28 
+##    X_hsa04068__80___46 X_hsa04261__57___14_16 X_hsa04622__7___5_8_37 
+##                     50                     42                     41 
+##   X_hsa05200__13___196   X_hsa04020__9_53___7 X_hsa04261__58___14_16 
+##                     39                     37                     37 
+##    X_hsa04520__20___17 X_hsa04261__59___14_16    X_hsa04350__53___28 
+##                     37                     33                     31 
+## X_hsa04350__62___48_49 
 ##                     30
 ```
 
