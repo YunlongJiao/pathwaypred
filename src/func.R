@@ -507,7 +507,7 @@ featselectIndepSignif <- function(xtr, ytr, pthres = 0.05, test = "t.test", meth
 
 
 
-featselectRF <- function(model = NULL, vthres = 0, ..., keep.signif = TRUE)
+featselectRF <- function(model = NULL, ..., vthres = 0, keep.signif = TRUE)
 {
   # computes importance measure as mean decrease in accuracy (type=1) for each feature
   # returns only those with positive importance ordered by decreasing value
