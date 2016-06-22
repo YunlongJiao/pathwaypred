@@ -1,6 +1,6 @@
-## Project CIPF - Pathway features prediction
+# Classification with pathway activation features
 
-# Notes
+## Notes
 
 - Dependent packages are listed at the top of `src/func.R`.
 - Within each folder named by dates under `results/`, files are numbered by the necessary order of execution.
