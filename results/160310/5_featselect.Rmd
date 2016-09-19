@@ -204,8 +204,8 @@ for (yname in ylist) {
 For each `yname` in `r ylist`, prediction is made with pulled types of features, that is a naive combination of path.vals and genes.vals. We look at the frequency of each type of features being selected automatically.
 
 ```{r featselect_prepare, message=FALSE}
-xname <- "path.and.genes.vals" # do not alter
-xname.list <- c("mini.genes.vals", "other.genes.vals", "path.vals") # do not alter
+xname <- "path.and.other.genes.vals"
+xname.list <- c("other.genes.vals", "path.vals")
 featlist.long <- lapply(xname.list, function(u){
   colnames(get(u))
 })
