@@ -520,8 +520,8 @@ For each `yname` in subtype.grps, surv.grps, prediction is made with pulled type
 
 
 ```r
-xname <- "path.and.genes.vals" # do not alter
-xname.list <- c("mini.genes.vals", "other.genes.vals", "path.vals") # do not alter
+xname <- "path.and.other.genes.vals"
+xname.list <- c("other.genes.vals", "path.vals")
 featlist.long <- lapply(xname.list, function(u){
   colnames(get(u))
 })
@@ -563,8 +563,8 @@ for (yname in ylist) {
 ```
 
 For each `yname` in subtype.grps, surv.grps, we have several plots to illustrate the results
-- Boxplot of prediction performance using pulled feature set path.and.genes.vals, wrt different criterion and different prediction algorithm, where variance shows over 50 CV runs.
-- Three boxplots on the number of selected features from each feature type in mini.genes.vals, other.genes.vals, path.vals, wrt different algorithms, where variance shows at each CV run. Three of them each correpond to 1) total count of selected features from each type; 2) total count of selected features from each type divided by the total number of selected features of all types; 3) total count of selected features from each type divided by the total number of features from that same type.
+- Boxplot of prediction performance using pulled feature set path.and.other.genes.vals, wrt different criterion and different prediction algorithm, where variance shows over 50 CV runs.
+- Three boxplots on the number of selected features from each feature type in other.genes.vals, path.vals, wrt different algorithms, where variance shows at each CV run. Three of them each correpond to 1) total count of selected features from each type; 2) total count of selected features from each type divided by the total number of selected features of all types; 3) total count of selected features from each type divided by the total number of features from that same type.
 - Histogram of how many times one feature are selected in total over all 50 CV runs, specific to each type and each algorithm.
 
 
@@ -652,7 +652,7 @@ for (yname in ylist) {
     geom_bar(aes(fill = xname), stat = "identity", position = "dodge", alpha = 0.8) + 
     geom_text(aes(label = value, group = xname), size = 2, angle = 45, colour = "black", position = position_dodge(0.9), vjust = 0.9) + 
     facet_wrap(~prname, scales = "free", ncol = 1) + 
-    scale_x_discrete(name = paste0("selected times (max ", nfolds*nrepeats, ")")) + 
+    scale_x_discrete(name = paste0("selected times (max ", nfolds*nrepeats, ")"), drop = FALSE) + 
     scale_y_continuous(name = "count") + 
     ggtitle(paste0("How many times features are selected over all ", nfolds*nrepeats, " CV runs")) + 
     theme(legend.title = element_blank(), legend.position = "bottom")
@@ -673,7 +673,7 @@ for (yname in ylist) {
 ## 
 ## Total number of features selected at each run (averaged over each CV run)
 ## predictorLogitLasso        predictorPAM         predictorRF 
-##               46.58              160.56             8993.72
+##               42.96              178.84             8694.94
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-3.png)
@@ -681,8 +681,8 @@ for (yname in ylist) {
 ```
 ## 
 ## Total number of features within each type
-##  mini.genes.vals other.genes.vals        path.vals 
-##             2212            16496             6101
+## other.genes.vals        path.vals 
+##            16496             6101
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-4.png)
@@ -691,83 +691,62 @@ for (yname in ylist) {
 ## 
 ## Preview of top 10 most often selected features in each type
 ## $predictorLogitLasso
-## $predictorLogitLasso$mini.genes.vals
-## 
-##   X_2064   X_2099   X_8326    X_115   X_4137   X_5564   X_2712   X_6198 
-##       49       47       15       11       11       11       10       10 
-## X_134549   X_3595 
-##        9        8 
-## 
 ## $predictorLogitLasso$other.genes.vals
 ## 
-##  X_10948  X_80139   X_9654    X_771 X_203413   X_5167   X_3938  X_27086 
-##       50       50       50       47       46       45       44       43 
-## X_374819   X_7031 
-##       41       40 
+##  X_10948 X_203413  X_80139    X_771   X_9654   X_5167  X_27086   X_3938 
+##       50       50       50       49       49       46       45       44 
+## X_155465  X_27202 
+##       42       42 
 ## 
 ## $predictorLogitLasso$path.vals
 ## 
-##  X_hsa04066__12___29 X_hsa04010__103___64   X_hsa04010__5___64 
-##                   31                   14                   14 
-##  X_hsa04520__22___18   X_hsa04520__22___4  X_hsa04066__12___43 
-##                   13                   11                    7 
-##   X_hsa04010__1___64  X_hsa04066__12___55   X_hsa04010__1___58 
-##                    6                    4                    3 
-##   X_hsa04010__5___61 
-##                    2 
+##     X_hsa04520__22___4    X_hsa04066__12___29    X_hsa04520__22___18 
+##                     33                     31                     19 
+##     X_hsa04010__5___64   X_hsa04010__103___64    X_hsa04919__33___39 
+##                     15                     11                     11 
+##    X_hsa04066__12___43     X_hsa04010__1___64 X_hsa04012__11_12___65 
+##                      8                      6                      4 
+##     X_hsa04010__5___61 
+##                      3 
 ## 
 ## 
 ## $predictorPAM
-## $predictorPAM$mini.genes.vals
-## 
-##  X_2064  X_2099  X_2203  X_3595   X_367  X_4137  X_5613  X_6584 X_80736 
-##      50      50      50      50      50      50      50      50      50 
-##  X_8326 
-##      50 
-## 
 ## $predictorPAM$other.genes.vals
 ## 
-##  X_10551  X_10948 X_134147 X_140578 X_145837 X_145864 X_149563 X_155465 
+##  X_10103  X_10551  X_10948 X_134147 X_140578 X_143941 X_145837 X_145864 
 ##       50       50       50       50       50       50       50       50 
-## X_161835     X_18 
+## X_149563 X_155465 
 ##       50       50 
 ## 
 ## $predictorPAM$path.vals
 ## 
 ##  X_hsa04010__105___14  X_hsa04010__128___14    X_hsa04010__4___14 
 ##                    50                    50                    50 
-##    X_hsa04520__22___4   X_hsa04919__33___39 X_hsa04520__22___9_57 
-##                    50                    50                    48 
-##   X_hsa05200__27___48   X_hsa04310__39___34  X_hsa05200__27___200 
-##                    48                    47                    47 
-##   X_hsa04010__35___14 
-##                    46 
+##   X_hsa04310__39___34    X_hsa04520__22___4 X_hsa04520__22___9_57 
+##                    50                    50                    50 
+##   X_hsa04919__33___39   X_hsa05200__27___48   X_hsa04010__35___14 
+##                    50                    50                    49 
+##   X_hsa04010__41___14 
+##                    49 
 ## 
 ## 
 ## $predictorRF
-## $predictorRF$mini.genes.vals
-## 
-## X_10818  X_1101   X_115  X_1302  X_2023  X_2064  X_2066  X_2099  X_2203 
-##      50      50      50      50      50      50      50      50      50 
-##  X_2925 
-##      50 
-## 
 ## $predictorRF$other.genes.vals
 ## 
-## X_100129583 X_100130449     X_10087     X_10103     X_10551      X_1058 
+## X_100129583     X_10096     X_10103     X_10200     X_10551      X_1058 
 ##          50          50          50          50          50          50 
-##     X_10612     X_10656     X_10742     X_10827 
+##     X_10612     X_10656     X_10809     X_10827 
 ##          50          50          50          50 
 ## 
 ## $predictorRF$path.vals
 ## 
-## X_hsa04010__105___14 X_hsa04010__126___14 X_hsa04010__128___14 
+## X_hsa04010__105___14  X_hsa04010__11___14 X_hsa04010__126___14 
 ##                   50                   50                   50 
-##  X_hsa04010__26___14   X_hsa04010__3___14  X_hsa04010__35___14 
+## X_hsa04010__128___14  X_hsa04010__25___14  X_hsa04010__26___14 
 ##                   50                   50                   50 
-##   X_hsa04010__4___14  X_hsa04010__41___14  X_hsa04010__43___14 
+##   X_hsa04010__3___14  X_hsa04010__35___14   X_hsa04010__4___14 
 ##                   50                   50                   50 
-##  X_hsa04010__46___14 
+##  X_hsa04010__41___14 
 ##                   50
 ```
 
@@ -781,7 +760,7 @@ for (yname in ylist) {
 ```
 
 ```
-## Warning: Removed 204 rows containing non-finite values (stat_boxplot).
+## Warning: Removed 205 rows containing non-finite values (stat_boxplot).
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-6.png)![plot of chunk featselect](5_featselect_figure/featselect-7.png)
@@ -790,11 +769,11 @@ for (yname in ylist) {
 ## 
 ## Total number of features selected at each run (averaged over each CV run)
 ## predictorLogitLasso        predictorPAM         predictorRF 
-##                2.16               13.06             9836.60
+##                1.40               12.52             9426.68
 ```
 
 ```
-## Warning: Removed 102 rows containing non-finite values (stat_boxplot).
+## Warning: Removed 74 rows containing non-finite values (stat_boxplot).
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-8.png)
@@ -802,8 +781,8 @@ for (yname in ylist) {
 ```
 ## 
 ## Total number of features within each type
-##  mini.genes.vals other.genes.vals        path.vals 
-##             2212            16496             6101
+## other.genes.vals        path.vals 
+##            16496             6101
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-9.png)
@@ -812,31 +791,20 @@ for (yname in ylist) {
 ## 
 ## Preview of top 10 most often selected features in each type
 ## $predictorLogitLasso
-## $predictorLogitLasso$mini.genes.vals
-## X_353500 
-##        1 
-## 
 ## $predictorLogitLasso$other.genes.vals
 ## 
-## X_340273  X_49854   X_8338   X_6531   X_8840 X_149647  X_57482   X_6908 
-##       23       10        8        7        7        6        6        4 
-##   X_7071   X_8462 
-##        4        4 
+## X_340273  X_49854   X_8338   X_8840   X_6531   X_1469 X_149647  X_57482 
+##       20        7        7        5        4        3        3        3 
+##   X_7071  X_11190 
+##        3        2 
 ## 
 ## $predictorLogitLasso$path.vals
 ## 
-##    X_hsa04068__79___46 X_hsa04151__49_50___36    X_hsa04068__80___46 
-##                      3                      2                      1 
+## X_hsa04151__49_50___36    X_hsa04068__79___46    X_hsa04068__80___46 
+##                      2                      1                      1 
 ## 
 ## 
 ## $predictorPAM
-## $predictorPAM$mini.genes.vals
-## 
-## X_353500   X_2335   X_6356   X_1301   X_2277   X_1654   X_3164   X_5296 
-##       10        4        4        3        3        2        2        2 
-##   X_3381   X_3569 
-##        1        1 
-## 
 ## $predictorPAM$other.genes.vals
 ## 
 ## X_340273  X_49854   X_8338   X_8462   X_8840   X_1469 X_149647   X_2706 
@@ -847,7 +815,7 @@ for (yname in ylist) {
 ## $predictorPAM$path.vals
 ## 
 ##    X_hsa04068__79___46    X_hsa04068__79___13    X_hsa04066__72___53 
-##                     21                     20                     14 
+##                     22                     20                     14 
 ##    X_hsa04151__47___36    X_hsa04068__79___45    X_hsa04068__80___46 
 ##                     12                     10                     10 
 ## X_hsa04151__49_50___36 X_hsa04151__22_81___36    X_hsa04151__59___36 
@@ -857,30 +825,23 @@ for (yname in ylist) {
 ## 
 ## 
 ## $predictorRF
-## $predictorRF$mini.genes.vals
-## 
-##  X_5346 X_10411  X_4842  X_5138  X_6358 X_64805  X_9370  X_3815  X_5348 
-##      50      49      49      48      48      48      48      46      46 
-##  X_6869 
-##      46 
-## 
 ## $predictorRF$other.genes.vals
 ## 
-##  X_1020   X_125  X_1960 X_22915  X_2532  X_3491  X_4976 X_65992  X_6944 
-##      50      50      50      50      50      50      50      50      50 
-## X_79174 
-##      50 
+##  X_10003    X_125 X_130733 X_150356 X_161176   X_2532   X_3068   X_3347 
+##       50       50       50       50       50       50       50       50 
+## X_340273   X_3491 
+##       50       50 
 ## 
 ## $predictorRF$path.vals
 ## 
-##  X_hsa04024__82___21 X_hsa04064__13___129   X_hsa04920__14___2 
-##                   50                   50                   50 
-## X_hsa04024__131___76  X_hsa04024__79___21  X_hsa04024__80___21 
-##                   49                   49                   49 
-##  X_hsa04024__80___59  X_hsa04024__81___21  X_hsa04024__90___59 
-##                   49                   49                   49 
-##  X_hsa04066__68___58 
-##                   49
+##    X_hsa04022__4___65  X_hsa04064__13___133    X_hsa04920__19___2 
+##                    50                    50                    50 
+##  X_hsa04024__128___59  X_hsa04024__130___21 X_hsa04024__131___110 
+##                    49                    49                    49 
+##  X_hsa04024__133___76   X_hsa04024__79___21   X_hsa04024__81___21 
+##                    49                    49                    49 
+##   X_hsa04024__81___59 
+##                    49
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-10.png)
@@ -912,8 +873,8 @@ sessionInfo()
 ## [1] ggplot2_2.1.0  reshape2_1.4.1
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.1      digest_0.6.8     plyr_1.8.3       gtable_0.1.2    
-##  [5] formatR_1.3      magrittr_1.5     evaluate_0.8.3   scales_0.3.0    
-##  [9] stringi_1.0-1    labeling_0.3     tools_3.2.1      stringr_1.0.0   
-## [13] munsell_0.4.2    colorspace_1.2-6 knitr_1.12.3
+##  [1] Rcpp_0.12.6      digest_0.6.9     plyr_1.8.4       gtable_0.2.0    
+##  [5] formatR_1.3      magrittr_1.5     evaluate_0.8.3   scales_0.4.0    
+##  [9] stringi_1.1.1    labeling_0.3     tools_3.2.1      stringr_1.0.0   
+## [13] munsell_0.4.3    colorspace_1.2-6 knitr_1.12.3
 ```
