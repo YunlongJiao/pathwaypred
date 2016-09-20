@@ -521,7 +521,7 @@ For each `yname` in subtype.grps, surv.grps, prediction is made with pulled type
 
 ```r
 xname <- "path.and.other.genes.vals"
-xname.list <- c("other.genes.vals", "path.vals")
+xname.list <- c("other.genes.vals", "path.vals") # must conform with feature types in xname
 featlist.long <- lapply(xname.list, function(u){
   colnames(get(u))
 })
@@ -557,6 +557,23 @@ for (yname in ylist) {
       })
     })
     assign(paste(yname,prname,"featlist.short",sep="_"), featlist.short)
+    
+    # feat.scores
+    fsfunc <- get(gsub("^predictor", "featselect", prname), mode = "function")
+    featlist.scores <- lapply(res, function(u){
+      message(",", appendLF = FALSE)
+      v <- fsfunc(model = u$model, keep.signif = FALSE)
+      data.frame(t(v))
+    })
+    featlist.scores <- colMeans(do.call("rbind", featlist.scores))
+    featlist.scores <- sort(featlist.scores, decreasing = TRUE) # a vector of mean var.imp over cv splits
+    featlist.scores.split <- lapply(featlist.long, function(u){
+      sort(featlist.scores[u], decreasing = TRUE)
+    }) # a list of mean var.imp for each type of features
+    assign(paste(yname,prname,"featlist.scores",sep="_"), featlist.scores)
+    assign(paste(yname,prname,"featlist.scores.split",sep="_"), featlist.scores.split)
+    message("done!")
+    
     rm(res)
   }
 }
@@ -634,14 +651,23 @@ for (yname in ylist) {
     theme(axis.text.x = element_blank(), legend.title = element_blank(), legend.position = "bottom")
   plot(p3)
   
-  # show top 10 most selected features in each type by predictor
+  # show top 20 overall and top 10 most selected features in each type by predictor
+  # NOTE ordered by mean var.imp scores
+  featlist.scores <- lapply(prlist.fs, function(prname){
+    get(paste(yname,prname,"featlist.scores",sep="_"))
+  })
+  featlist.scores.split <- lapply(prlist.fs, function(prname){
+    get(paste(yname,prname,"featlist.scores.split",sep="_"))
+  })
+  cat('\nPreview of top 20 most often selected features overall\n')
+  print(lapply(featlist.scores, head, n = 20))
+  cat('\nPreview of top 10 most often selected features in each type\n')
+  print(lapply(featlist.scores.split, function(u) lapply(u, head, n=10)))
+  
+  # count number of times of features from each type being selected over CV runs
   featlist.tab <- lapply(featlist.short, function(u) lapply(u, function(v) 
     sort(table(unlist(v)), decreasing = TRUE)
   ))
-  cat('\nPreview of top 10 most often selected features in each type\n')
-  print(lapply(featlist.tab, function(u) lapply(u, head, n=10)))
-  
-  # count number of times of features from each type being selected over CV runs
   featlist.count <- melt(featlist.tab, level = 1, value.name = "value")
   colnames(featlist.count)[colnames(featlist.count)=="L1"] <- "prname"
   colnames(featlist.count)[colnames(featlist.count)=="L2"] <- "xname"
@@ -689,65 +715,109 @@ for (yname in ylist) {
 
 ```
 ## 
+## Preview of top 20 most often selected features overall
+## [[1]]
+##    X_hsa04066__12___29                X_10948    X_hsa04066__12___43 
+##             120.591330              53.098806              20.696956 
+##    X_hsa04066__12___55                 X_9654                X_27086 
+##              13.052405               8.055124               7.758482 
+##                X_80139                  X_771     X_hsa04520__22___4 
+##               7.047831               6.897315               5.389681 
+##                X_23158                X_27202 X_hsa04012__11_12___65 
+##               4.841492               4.471393               4.242531 
+##   X_hsa04010__103___64               X_374819                 X_5167 
+##               3.959265               3.871744               3.858661 
+##    X_hsa04064__119___3                 X_9687   X_hsa05200__39___194 
+##               3.295791               3.271080               3.239432 
+##     X_hsa04010__5___64               X_390144 
+##               3.073002               3.071690 
+## 
+## [[2]]
+##             X_10948             X_23158             X_79083 
+##           0.3139455           0.2959814           0.2849490 
+##               X_771              X_3169             X_93210 
+##           0.2818985           0.2310019           0.2250319 
+##            X_155465            X_203413             X_54847 
+##           0.2178854           0.1913219           0.1864260 
+##  X_hsa04520__22___4            X_260429            X_196993 
+##           0.1765399           0.1718112           0.1704374 
+##              X_2296            X_222171              X_7033 
+##           0.1687239           0.1681109           0.1620014 
+##              X_7494            X_134147 X_hsa04919__33___39 
+##           0.1556302           0.1513914           0.1465047 
+##              X_9654               X_419 
+##           0.1463216           0.1454738 
+## 
+## [[3]]
+##               X_10948    X_hsa04520__22___4               X_93210 
+##              7.827060              7.584025              7.415659 
+##                X_2886   X_hsa05200__27___48 X_hsa04520__22___9_57 
+##              7.408301              6.611783              6.279772 
+##  X_hsa05200__27___200                X_5709               X_94103 
+##              6.248449              6.217945              6.139543 
+##                X_5469               X_51755               X_22794 
+##              6.129763              5.789782              5.290422 
+##               X_84961                X_8557               X_55876 
+##              5.249553              5.206912              4.927099 
+##               X_27202   X_hsa04919__33___39                X_9862 
+##              4.907550              4.874208              4.863564 
+##              X_339287   X_hsa04066__12___47 
+##              4.847998              4.833022 
+## 
+## 
 ## Preview of top 10 most often selected features in each type
-## $predictorLogitLasso
-## $predictorLogitLasso$other.genes.vals
+## [[1]]
+## [[1]]$other.genes.vals
+##   X_10948    X_9654   X_27086   X_80139     X_771   X_23158   X_27202 
+## 53.098806  8.055124  7.758482  7.047831  6.897315  4.841492  4.471393 
+##  X_374819    X_5167    X_9687 
+##  3.871744  3.858661  3.271080 
 ## 
-##  X_10948 X_203413  X_80139    X_771   X_9654   X_5167  X_27086   X_3938 
-##       50       50       50       49       49       46       45       44 
-## X_155465  X_27202 
-##       42       42 
-## 
-## $predictorLogitLasso$path.vals
-## 
-##     X_hsa04520__22___4    X_hsa04066__12___29    X_hsa04520__22___18 
-##                     33                     31                     19 
-##     X_hsa04010__5___64   X_hsa04010__103___64    X_hsa04919__33___39 
-##                     15                     11                     11 
-##    X_hsa04066__12___43     X_hsa04010__1___64 X_hsa04012__11_12___65 
-##                      8                      6                      4 
-##     X_hsa04010__5___61 
-##                      3 
+## [[1]]$path.vals
+##    X_hsa04066__12___29    X_hsa04066__12___43    X_hsa04066__12___55 
+##             120.591330              20.696956              13.052405 
+##     X_hsa04520__22___4 X_hsa04012__11_12___65   X_hsa04010__103___64 
+##               5.389681               4.242531               3.959265 
+##    X_hsa04064__119___3   X_hsa05200__39___194     X_hsa04010__5___64 
+##               3.295791               3.239432               3.073002 
+##    X_hsa04919__33___39 
+##               2.731157 
 ## 
 ## 
-## $predictorPAM
-## $predictorPAM$other.genes.vals
+## [[2]]
+## [[2]]$other.genes.vals
+##   X_10948   X_23158   X_79083     X_771    X_3169   X_93210  X_155465 
+## 0.3139455 0.2959814 0.2849490 0.2818985 0.2310019 0.2250319 0.2178854 
+##  X_203413   X_54847  X_260429 
+## 0.1913219 0.1864260 0.1718112 
 ## 
-##  X_10103  X_10551  X_10948 X_134147 X_140578 X_143941 X_145837 X_145864 
-##       50       50       50       50       50       50       50       50 
-## X_149563 X_155465 
-##       50       50 
-## 
-## $predictorPAM$path.vals
-## 
-##  X_hsa04010__105___14  X_hsa04010__128___14    X_hsa04010__4___14 
-##                    50                    50                    50 
-##   X_hsa04310__39___34    X_hsa04520__22___4 X_hsa04520__22___9_57 
-##                    50                    50                    50 
-##   X_hsa04919__33___39   X_hsa05200__27___48   X_hsa04010__35___14 
-##                    50                    50                    49 
-##   X_hsa04010__41___14 
-##                    49 
+## [[2]]$path.vals
+##    X_hsa04520__22___4   X_hsa04919__33___39 X_hsa04520__22___9_57 
+##            0.17653992            0.14650471            0.08022062 
+##   X_hsa05200__27___48    X_hsa04010__4___14  X_hsa04010__105___14 
+##            0.07755888            0.07066615            0.06528159 
+##  X_hsa04010__128___14  X_hsa05200__27___200   X_hsa04310__39___34 
+##            0.06410622            0.06386342            0.04466021 
+##    X_hsa04910__7___46 
+##            0.04378431 
 ## 
 ## 
-## $predictorRF
-## $predictorRF$other.genes.vals
+## [[3]]
+## [[3]]$other.genes.vals
+##  X_10948  X_93210   X_2886   X_5709  X_94103   X_5469  X_51755  X_22794 
+## 7.827060 7.415659 7.408301 6.217945 6.139543 6.129763 5.789782 5.290422 
+##  X_84961   X_8557 
+## 5.249553 5.206912 
 ## 
-## X_100129583     X_10096     X_10103     X_10200     X_10551      X_1058 
-##          50          50          50          50          50          50 
-##     X_10612     X_10656     X_10809     X_10827 
-##          50          50          50          50 
-## 
-## $predictorRF$path.vals
-## 
-## X_hsa04010__105___14  X_hsa04010__11___14 X_hsa04010__126___14 
-##                   50                   50                   50 
-## X_hsa04010__128___14  X_hsa04010__25___14  X_hsa04010__26___14 
-##                   50                   50                   50 
-##   X_hsa04010__3___14  X_hsa04010__35___14   X_hsa04010__4___14 
-##                   50                   50                   50 
-##  X_hsa04010__41___14 
-##                   50
+## [[3]]$path.vals
+##    X_hsa04520__22___4   X_hsa05200__27___48 X_hsa04520__22___9_57 
+##              7.584025              6.611783              6.279772 
+##  X_hsa05200__27___200   X_hsa04919__33___39   X_hsa04066__12___47 
+##              6.248449              4.874208              4.833022 
+##   X_hsa04066__12___29  X_hsa05200__27___195   X_hsa04066__12___51 
+##              4.597030              4.513323              4.384273 
+##   X_hsa04066__12___44 
+##              4.364264
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-5.png)
@@ -789,59 +859,109 @@ for (yname in ylist) {
 
 ```
 ## 
+## Preview of top 20 most often selected features overall
+## [[1]]
+##               X_340273                X_49854                 X_8338 
+##            1.217789161            0.515033649            0.148564000 
+##                X_57482                 X_8840    X_hsa04068__79___46 
+##            0.130173628            0.128864391            0.128313242 
+##                 X_7071 X_hsa04151__49_50___36    X_hsa04068__80___46 
+##            0.127239844            0.101331611            0.101216432 
+##                 X_8462                 X_6531                 X_6908 
+##            0.093408719            0.069270086            0.047315040 
+##               X_149647                X_11190                 X_1469 
+##            0.044616512            0.040778794            0.014971967 
+##                 X_2706                X_80352               X_143188 
+##            0.012970830            0.011150602            0.010277597 
+##                X_57092               X_140766 
+##            0.010007489            0.006828938 
+## 
+## [[2]]
+##               X_340273                X_49854                 X_8338 
+##            0.047729439            0.013897836            0.012200328 
+##                 X_8840                 X_8462    X_hsa04068__79___46 
+##            0.007867872            0.007730948            0.007085790 
+##               X_149647    X_hsa04068__79___13                 X_1469 
+##            0.005975607            0.005433540            0.005259875 
+##                X_57482    X_hsa04066__72___53    X_hsa04151__47___36 
+##            0.004685595            0.004370495            0.004290329 
+##                X_23177 X_hsa04151__49_50___36                 X_2706 
+##            0.004005071            0.003974868            0.003677420 
+##    X_hsa04151__59___36                 X_7071    X_hsa04151__90___36 
+##            0.003442089            0.003325888            0.003081494 
+## X_hsa04151__22_81___36                X_80352 
+##            0.003057788            0.002569142 
+## 
+## [[3]]
+##               X_6944             X_150356             X_340273 
+##             3.385928             3.157064             3.143314 
+##               X_8543               X_4976              X_84057 
+##             2.928443             2.856979             2.832433 
+##              X_65992               X_2532                X_554 
+##             2.716975             2.649522             2.607316 
+##               X_7203               X_1960               X_5876 
+##             2.586838             2.525411             2.480017 
+##               X_9314               X_3872               X_1020 
+##             2.452908             2.449782             2.431037 
+## X_hsa04064__13___133              X_22915                X_125 
+##             2.415154             2.385635             2.327121 
+##             X_115939               X_3068 
+##             2.313359             2.301542 
+## 
+## 
 ## Preview of top 10 most often selected features in each type
-## $predictorLogitLasso
-## $predictorLogitLasso$other.genes.vals
+## [[1]]
+## [[1]]$other.genes.vals
+##   X_340273    X_49854     X_8338    X_57482     X_8840     X_7071 
+## 1.21778916 0.51503365 0.14856400 0.13017363 0.12886439 0.12723984 
+##     X_8462     X_6531     X_6908   X_149647 
+## 0.09340872 0.06927009 0.04731504 0.04461651 
 ## 
-## X_340273  X_49854   X_8338   X_8840   X_6531   X_1469 X_149647  X_57482 
-##       20        7        7        5        4        3        3        3 
-##   X_7071  X_11190 
-##        3        2 
+## [[1]]$path.vals
+##    X_hsa04068__79___46 X_hsa04151__49_50___36    X_hsa04068__80___46 
+##              0.1283132              0.1013316              0.1012164 
+##    X_hsa04014__14___42    X_hsa04014__14___43    X_hsa04014__14___44 
+##              0.0000000              0.0000000              0.0000000 
+##    X_hsa04014__14___33    X_hsa04014__14___35    X_hsa04014__14___37 
+##              0.0000000              0.0000000              0.0000000 
+##    X_hsa04014__14___97 
+##              0.0000000 
 ## 
-## $predictorLogitLasso$path.vals
 ## 
-## X_hsa04151__49_50___36    X_hsa04068__79___46    X_hsa04068__80___46 
-##                      2                      1                      1 
+## [[2]]
+## [[2]]$other.genes.vals
+##    X_340273     X_49854      X_8338      X_8840      X_8462    X_149647 
+## 0.047729439 0.013897836 0.012200328 0.007867872 0.007730948 0.005975607 
+##      X_1469     X_57482     X_23177      X_2706 
+## 0.005259875 0.004685595 0.004005071 0.003677420 
 ## 
-## 
-## $predictorPAM
-## $predictorPAM$other.genes.vals
-## 
-## X_340273  X_49854   X_8338   X_8462   X_8840   X_1469 X_149647   X_2706 
-##       43       25       24       24       18       14       14       12 
-##  X_23177  X_57482 
-##       11       11 
-## 
-## $predictorPAM$path.vals
-## 
+## [[2]]$path.vals
 ##    X_hsa04068__79___46    X_hsa04068__79___13    X_hsa04066__72___53 
-##                     22                     20                     14 
-##    X_hsa04151__47___36    X_hsa04068__79___45    X_hsa04068__80___46 
-##                     12                     10                     10 
-## X_hsa04151__49_50___36 X_hsa04151__22_81___36    X_hsa04151__59___36 
-##                     10                      9                      9 
-##    X_hsa04151__90___36 
-##                      9 
+##            0.007085790            0.005433540            0.004370495 
+##    X_hsa04151__47___36 X_hsa04151__49_50___36    X_hsa04151__59___36 
+##            0.004290329            0.003974868            0.003442089 
+##    X_hsa04151__90___36 X_hsa04151__22_81___36    X_hsa04068__80___46 
+##            0.003081494            0.003057788            0.002281906 
+##    X_hsa04068__79___45 
+##            0.002204651 
 ## 
 ## 
-## $predictorRF
-## $predictorRF$other.genes.vals
+## [[3]]
+## [[3]]$other.genes.vals
+##   X_6944 X_150356 X_340273   X_8543   X_4976  X_84057  X_65992   X_2532 
+## 3.385928 3.157064 3.143314 2.928443 2.856979 2.832433 2.716975 2.649522 
+##    X_554   X_7203 
+## 2.607316 2.586838 
 ## 
-##  X_10003    X_125 X_130733 X_150356 X_161176   X_2532   X_3068   X_3347 
-##       50       50       50       50       50       50       50       50 
-## X_340273   X_3491 
-##       50       50 
-## 
-## $predictorRF$path.vals
-## 
-##    X_hsa04022__4___65  X_hsa04064__13___133    X_hsa04920__19___2 
-##                    50                    50                    50 
-##  X_hsa04024__128___59  X_hsa04024__130___21 X_hsa04024__131___110 
-##                    49                    49                    49 
-##  X_hsa04024__133___76   X_hsa04024__79___21   X_hsa04024__81___21 
-##                    49                    49                    49 
-##   X_hsa04024__81___59 
-##                    49
+## [[3]]$path.vals
+##   X_hsa04064__13___133    X_hsa04066__68___58   X_hsa04064__13___129 
+##               2.415154               1.979269               1.970600 
+##     X_hsa04920__14___6     X_hsa04920__14___2     X_hsa04022__4___65 
+##               1.921515               1.881255               1.799578 
+## X_hsa04114__44_45___42    X_hsa04152__86___84    X_hsa04068__80___66 
+##               1.780715               1.759832               1.747516 
+##    X_hsa04024__80___59 
+##               1.721790
 ```
 
 ![plot of chunk featselect](5_featselect_figure/featselect-10.png)
@@ -870,11 +990,14 @@ sessionInfo()
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] ggplot2_2.1.0  reshape2_1.4.1
+## [1] randomForest_4.6-12 pamr_1.55           survival_2.39-5    
+## [4] cluster_2.0.4       glmnet_2.0-3        foreach_1.4.3      
+## [7] Matrix_1.2-6        ggplot2_2.1.0       reshape2_1.4.1     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.6      digest_0.6.9     plyr_1.8.4       gtable_0.2.0    
-##  [5] formatR_1.3      magrittr_1.5     evaluate_0.8.3   scales_0.4.0    
-##  [9] stringi_1.1.1    labeling_0.3     tools_3.2.1      stringr_1.0.0   
-## [13] munsell_0.4.3    colorspace_1.2-6 knitr_1.12.3
+##  [1] Rcpp_0.12.6      knitr_1.12.3     magrittr_1.5     splines_3.2.1   
+##  [5] munsell_0.4.3    colorspace_1.2-6 lattice_0.20-33  stringr_1.0.0   
+##  [9] plyr_1.8.4       tools_3.2.1      gtable_0.2.0     iterators_1.0.8 
+## [13] digest_0.6.9     formatR_1.3      codetools_0.2-14 evaluate_0.8.3  
+## [17] labeling_0.3     stringi_1.1.1    scales_0.4.0
 ```
