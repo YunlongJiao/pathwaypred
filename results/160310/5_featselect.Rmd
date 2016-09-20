@@ -205,7 +205,7 @@ For each `yname` in `r ylist`, prediction is made with pulled types of features,
 
 ```{r featselect_prepare, message=FALSE}
 xname <- "path.and.other.genes.vals"
-xname.list <- c("other.genes.vals", "path.vals")
+xname.list <- c("other.genes.vals", "path.vals") # must conform with feature types in xname
 featlist.long <- lapply(xname.list, function(u){
   colnames(get(u))
 })
@@ -241,6 +241,23 @@ for (yname in ylist) {
       })
     })
     assign(paste(yname,prname,"featlist.short",sep="_"), featlist.short)
+    
+    # feat.scores
+    fsfunc <- get(gsub("^predictor", "featselect", prname), mode = "function")
+    featlist.scores <- lapply(res, function(u){
+      message(",", appendLF = FALSE)
+      v <- fsfunc(model = u$model, keep.signif = FALSE)
+      data.frame(t(v))
+    })
+    featlist.scores <- colMeans(do.call("rbind", featlist.scores))
+    featlist.scores <- sort(featlist.scores, decreasing = TRUE) # a vector of mean var.imp over cv splits
+    featlist.scores.split <- lapply(featlist.long, function(u){
+      sort(featlist.scores[u], decreasing = TRUE)
+    }) # a list of mean var.imp for each type of features
+    assign(paste(yname,prname,"featlist.scores",sep="_"), featlist.scores)
+    assign(paste(yname,prname,"featlist.scores.split",sep="_"), featlist.scores.split)
+    message("done!")
+    
     rm(res)
   }
 }
@@ -317,12 +334,18 @@ for (yname in ylist) {
     theme(axis.text.x = element_blank(), legend.title = element_blank(), legend.position = "bottom")
   plot(p3)
   
-  # show top 10 most selected features in each type by predictor
-  featlist.tab <- lapply(featlist.short, function(u) lapply(u, function(v) 
-    sort(table(unlist(v)), decreasing = TRUE)
-  ))
+  # show top 20 overall and top 10 most selected features in each type by predictor
+  # NOTE ordered by mean var.imp scores
+  featlist.scores <- lapply(prlist.fs, function(prname){
+    get(paste(yname,prname,"featlist.scores",sep="_"))
+  })
+  featlist.scores.split <- lapply(prlist.fs, function(prname){
+    get(paste(yname,prname,"featlist.scores.split",sep="_"))
+  })
+  cat('\nPreview of top 20 most often selected features overall\n')
+  print(lapply(featlist.scores, head, n = 20))
   cat('\nPreview of top 10 most often selected features in each type\n')
-  print(lapply(featlist.tab, function(u) lapply(u, head, n=10)))
+  print(lapply(featlist.scores.split, function(u) lapply(u, head, n=10)))
   
   # count number of times of features from each type being selected over CV runs
   featlist.count <- melt(featlist.tab, level = 1, value.name = "value")
