@@ -339,9 +339,11 @@ for (yname in ylist) {
   featlist.scores <- lapply(prlist.fs, function(prname){
     get(paste(yname,prname,"featlist.scores",sep="_"))
   })
+  names(featlist.scores) <- prlist.fs
   featlist.scores.split <- lapply(prlist.fs, function(prname){
     get(paste(yname,prname,"featlist.scores.split",sep="_"))
   })
+  names(featlist.scores.split) <- prlist.fs
   cat('\nPreview of top 20 most often selected features overall\n')
   print(lapply(featlist.scores, head, n = 20))
   cat('\nPreview of top 10 most often selected features in each type\n')
