@@ -201,7 +201,44 @@ for (yname in ylist) {
 
 ## Algorithmic feature selection
 
-For each `yname` in `r ylist`, prediction is made with pulled types of features, that is a naive combination of path.vals and genes.vals. We look at the frequency of each type of features being selected automatically.
+First, for each `yname` in `r ylist`, we look at prediction made with pathway features and see the top paths selected.
+
+```{r pathselect, message=FALSE, results='hold'}
+cat('\nPreview of top 20 most often selected features overall\n')
+pathlist <- c("eff.vals", "path.vals")
+for (yname in ylist) {
+  for (prname in prlist.fs) {
+    for (xname in pathlist) {
+      cat('\n predict for \t', yname, '\t with \t', prname, '\t featselect from \t', xname, '\n')
+      message(yname, '\t', prname, '\t', xname)
+      res.files <- list.files(path = 'Robj', 
+                              pattern = paste('^ivres', xname, yname, prname, 
+                                              '[[:digit:]]+', nfolds, nrepeats, 
+                                              0, nfolds.inn, nrepeats.inn, 
+                                              sep = '_'), 
+                              full.names = TRUE)
+      res <- lapply(res.files, function(f) get(load(f)))
+      names(res) <- paste0("rep",1:length(res))
+      
+      # feat.scores
+      fsfunc <- get(gsub("^predictor", "featselect", prname), mode = "function")
+      featlist.scores <- lapply(res, function(u){
+        message(",", appendLF = FALSE)
+        v <- fsfunc(model = u$model, keep.signif = FALSE)
+        data.frame(t(v))
+      })
+      featlist.scores <- colMeans(do.call("rbind", featlist.scores))
+      featlist.scores <- sort(featlist.scores, decreasing = TRUE) # a vector of mean var.imp over cv splits
+      print(featlist.scores, head, n = 10)
+      message('done!\n')
+      
+      rm(res)
+    }
+  }
+}
+```
+
+Second, for each `yname` in `r ylist`, we focus on prediction made with pulled types of features, that is a naive combination of path.vals and other.genes.vals. We look at the frequency of each type of features being selected automatically.
 
 ```{r featselect_prepare, message=FALSE}
 xname <- "path.and.other.genes.vals"
