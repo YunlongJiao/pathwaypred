@@ -229,7 +229,7 @@ for (yname in ylist) {
       })
       featlist.scores <- colMeans(do.call("rbind", featlist.scores))
       featlist.scores <- sort(featlist.scores, decreasing = TRUE) # a vector of mean var.imp over cv splits
-      print(featlist.scores, head, n = 10)
+      print(head(featlist.scores, n = 10))
       message('done!\n')
       
       rm(res)

@@ -516,7 +516,164 @@ for (yname in ylist) {
 
 ## Algorithmic feature selection
 
-For each `yname` in subtype.grps, surv.grps, prediction is made with pulled types of features, that is a naive combination of path.vals and genes.vals. We look at the frequency of each type of features being selected automatically.
+First, for each `yname` in subtype.grps, surv.grps, we look at prediction made with pathway features and see the top paths selected.
+
+
+```r
+cat('\nPreview of top 20 most often selected features overall\n')
+pathlist <- c("eff.vals", "path.vals")
+for (yname in ylist) {
+  for (prname in prlist.fs) {
+    for (xname in pathlist) {
+      cat('\n predict for \t', yname, '\t with \t', prname, '\t featselect from \t', xname, '\n')
+      message(yname, '\t', prname, '\t', xname)
+      res.files <- list.files(path = 'Robj', 
+                              pattern = paste('^ivres', xname, yname, prname, 
+                                              '[[:digit:]]+', nfolds, nrepeats, 
+                                              0, nfolds.inn, nrepeats.inn, 
+                                              sep = '_'), 
+                              full.names = TRUE)
+      res <- lapply(res.files, function(f) get(load(f)))
+      names(res) <- paste0("rep",1:length(res))
+      
+      # feat.scores
+      fsfunc <- get(gsub("^predictor", "featselect", prname), mode = "function")
+      featlist.scores <- lapply(res, function(u){
+        message(",", appendLF = FALSE)
+        v <- fsfunc(model = u$model, keep.signif = FALSE)
+        data.frame(t(v))
+      })
+      featlist.scores <- colMeans(do.call("rbind", featlist.scores))
+      featlist.scores <- sort(featlist.scores, decreasing = TRUE) # a vector of mean var.imp over cv splits
+      print(head(featlist.scores, n = 10))
+      message('done!\n')
+      
+      rm(res)
+    }
+  }
+}
+```
+
+```
+## 
+## Preview of top 20 most often selected features overall
+## 
+##  predict for 	 subtype.grps 	 with 	 predictorLogitLasso 	 featselect from 	 eff.vals 
+## X_hsa04151__99 X_hsa04664__46 X_hsa04114__59 X_hsa04066__83 X_hsa04520__18 
+##      218.31730      187.60654      156.14050      114.52635       96.79770 
+## X_hsa04919__39  X_hsa04520__4 X_hsa04010__14 X_hsa04310__34 X_hsa04722__38 
+##       76.60303       73.52043       48.03888       44.92842       30.58448 
+## 
+##  predict for 	 subtype.grps 	 with 	 predictorLogitLasso 	 featselect from 	 path.vals 
+##   X_hsa05200__39___198 X_hsa04012__11_12___65    X_hsa04066__12___29 
+##              238.98056              238.34286              194.01210 
+##    X_hsa04151__43___99    X_hsa04012__33___40    X_hsa04064__119___3 
+##              166.12661              161.88278              145.97613 
+##    X_hsa04919__33___39    X_hsa04151__43___98    X_hsa04064__119___2 
+##              113.61463               87.29574               69.30643 
+##   X_hsa05200__39___194 
+##               58.35423 
+## 
+##  predict for 	 subtype.grps 	 with 	 predictorPAM 	 featselect from 	 eff.vals 
+##  X_hsa04919__39  X_hsa04910__46  X_hsa04914__34  X_hsa04914__39 
+##       0.5255328       0.3363353       0.3279478       0.3182080 
+##  X_hsa04010__58   X_hsa04012__8  X_hsa04310__34  X_hsa04010__14 
+##       0.3058692       0.2977321       0.2772249       0.2569187 
+##  X_hsa04010__61 X_hsa05205__103 
+##       0.2535409       0.2522179 
+## 
+##  predict for 	 subtype.grps 	 with 	 predictorPAM 	 featselect from 	 path.vals 
+##   X_hsa04919__33___39    X_hsa04520__22___4    X_hsa04010__4___14 
+##             0.3118759             0.3051574             0.2358318 
+##  X_hsa04010__105___14  X_hsa04010__128___14 X_hsa04520__22___9_57 
+##             0.2301472             0.2286724             0.2079228 
+##   X_hsa05200__27___48   X_hsa04010__35___14  X_hsa05200__27___200 
+##             0.2052510             0.1991137             0.1912441 
+##   X_hsa04010__41___14 
+##             0.1886628 
+## 
+##  predict for 	 subtype.grps 	 with 	 predictorRF 	 featselect from 	 eff.vals 
+##                  X_hsa04919__39                  X_hsa04520__18 
+##                       15.415391                       14.969809 
+## X_hsa04110__60_10_11_12_13_14_9                   X_hsa04520__4 
+##                       14.567776                       12.466191 
+##                 X_hsa05200__188                  X_hsa04914__34 
+##                       12.030271                       11.989912 
+##                 X_hsa04919__101                  X_hsa04914__39 
+##                       10.845884                       10.769300 
+##                 X_hsa05200__200                  X_hsa04310__31 
+##                       10.059977                        9.819939 
+## 
+##  predict for 	 subtype.grps 	 with 	 predictorRF 	 featselect from 	 path.vals 
+##    X_hsa04520__22___4 X_hsa04520__22___9_57   X_hsa05200__27___48 
+##             11.369923              9.725942              9.666752 
+##  X_hsa05200__27___200   X_hsa04919__33___39   X_hsa04066__12___47 
+##              9.119630              8.054061              7.198269 
+##  X_hsa05200__27___195  X_hsa05200__27___196   X_hsa04066__12___29 
+##              7.025833              6.974245              6.942003 
+##   X_hsa04520__22___18 
+##              6.792048 
+## 
+##  predict for 	 surv.grps 	 with 	 predictorLogitLasso 	 featselect from 	 eff.vals 
+## X_hsa04350__48_49     X_hsa04916__6     X_hsa04916__8    X_hsa04670__55 
+##         4.1599815         3.4700589         1.7101114         1.1264037 
+##    X_hsa04010__54    X_hsa04015__18   X_hsa05200__196   X_hsa05200__216 
+##         1.1002448         0.5206661         0.3801982         0.3406850 
+##    X_hsa03320__27   X_hsa05205__352 
+##         0.2707450         0.2269695 
+## 
+##  predict for 	 surv.grps 	 with 	 predictorLogitLasso 	 featselect from 	 path.vals 
+##   X_hsa05200__13___196    X_hsa04068__80___46    X_hsa04068__79___46 
+##              18.193562               6.350796               4.747317 
+##    X_hsa04066__72___53    X_hsa04350__53___28     X_hsa04066__12___5 
+##               3.072443               2.186691               1.614420 
+##    X_hsa04062__23___25    X_hsa04350__51___36    X_hsa04066__12___44 
+##               1.601270               1.429558               1.356231 
+## X_hsa04015__77_79___18 
+##               0.937713 
+## 
+##  predict for 	 surv.grps 	 with 	 predictorPAM 	 featselect from 	 eff.vals 
+##  X_hsa04010__54 X_hsa05200__216  X_hsa04152__84  X_hsa04152__44 
+##     0.029773768     0.029367881     0.022708493     0.015832536 
+##  X_hsa04920__43  X_hsa04620__39  X_hsa04151__36  X_hsa04670__55 
+##     0.015513924     0.013814974     0.011883499     0.010907159 
+##  X_hsa03320__27  X_hsa04152__87 
+##     0.010581655     0.009875971 
+## 
+##  predict for 	 surv.grps 	 with 	 predictorPAM 	 featselect from 	 path.vals 
+##    X_hsa04068__79___46    X_hsa04068__79___13    X_hsa04066__72___53 
+##            0.009159852            0.007809093            0.005865147 
+##    X_hsa04151__47___36 X_hsa04151__49_50___36    X_hsa04151__59___36 
+##            0.005779866            0.005666568            0.004657317 
+##    X_hsa04151__90___36 X_hsa04151__22_81___36    X_hsa04068__79___45 
+##            0.004306541            0.004299332            0.004008427 
+##    X_hsa04068__79___51 
+##            0.003155063 
+## 
+##  predict for 	 surv.grps 	 with 	 predictorRF 	 featselect from 	 eff.vals 
+##          X_hsa04152__84           X_hsa04920__2         X_hsa05200__216 
+##                6.420736                6.391394                6.271815 
+## X_hsa04110__43_83_84_85          X_hsa04620__39        X_hsa04520__1_13 
+##                6.242242                6.230379                6.180771 
+##           X_hsa04920__6          X_hsa04022__65          X_hsa04022__57 
+##                6.099366                5.877635                5.559056 
+##          X_hsa04530__30 
+##                5.310898 
+## 
+##  predict for 	 surv.grps 	 with 	 predictorRF 	 featselect from 	 path.vals 
+##          X_hsa04066__68___58         X_hsa04064__13___133 
+##                     3.965006                     3.628987 
+##           X_hsa04920__14___6 X_hsa04110__79___43_83_84_85 
+##                     3.620410                     3.552620 
+##       X_hsa04530__43_47___30       X_hsa04114__44_45___42 
+##                     3.549963                     3.387482 
+##          X_hsa04066__72___88          X_hsa04068__80___66 
+##                     3.355948                     3.353964 
+##       X_hsa04114__23_28___42          X_hsa04066__72___53 
+##                     3.300457                     3.207004
+```
+
+Second, for each `yname` in subtype.grps, surv.grps, we focus on prediction made with pulled types of features, that is a naive combination of path.vals and other.genes.vals. We look at the frequency of each type of features being selected automatically.
 
 
 ```r
