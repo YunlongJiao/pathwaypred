@@ -73,7 +73,7 @@ removeConst <- function(xtr, xtst=NULL, tol2const=1e-6, ...)
 {
   numid <- which(sapply(as.data.frame(xtr), is.numeric))
   constid <- apply(xtr[,numid], 2, function(u){
-    (mean(u, na.rm = TRUE) < tol2const && diff(range(u, na.rm = TRUE)) < tol2const) || (diff(range(u, na.rm = TRUE)) / mean(u, na.rm = TRUE) < tol2const)
+    (abs(mean(u, na.rm = TRUE)) < tol2const && diff(range(u, na.rm = TRUE)) < tol2const) || (diff(range(u, na.rm = TRUE)) / abs(mean(u, na.rm = TRUE)) < tol2const)
   })
   xtr <- xtr[ , numid[!constid], drop = F]
   if(is.null(xtst)){
