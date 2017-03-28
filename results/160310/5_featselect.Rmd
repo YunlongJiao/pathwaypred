@@ -48,6 +48,7 @@ prlist <- unique(param$prname)
 prlist
 # predictors that automate feat select
 prlist.fs <- c("predictorLogitLasso","predictorPAM","predictorRF")
+prname.fs <- "predictorRF"
 prlist.fs <- prlist.fs[prlist.fs %in% prlist]
 prlist.fs
 # (outter) `nfolds`-fold CV repeated `nrepeats` times for evaluation
@@ -70,6 +71,8 @@ slist
 slist.prefer.large.score <- c(TRUE, FALSE, TRUE, TRUE, TRUE, TRUE)
 names(slist.prefer.large.score) <- slist
 slist.prefer.large.score
+# max number of selected features to write in file
+n.max.fs <- 50
 ```
 
 ## Independent significance t.test
@@ -204,8 +207,10 @@ for (yname in ylist) {
 First, for each `yname` in `r ylist`, we look at prediction made with pathway features and see the top paths selected.
 
 ```{r pathselect, message=FALSE, results='hold'}
-cat('\nPreview of top 20 most often selected features overall\n')
 pathlist <- c("eff.vals", "path.vals")
+pathselect <- list()
+i <- 1
+cat('\nPreview of top 20 most often selected features overall\n')
 for (yname in ylist) {
   for (prname in prlist.fs) {
     for (xname in pathlist) {
@@ -230,12 +235,28 @@ for (yname in ylist) {
       featlist.scores <- colMeans(do.call("rbind", featlist.scores))
       featlist.scores <- sort(featlist.scores, decreasing = TRUE) # a vector of mean var.imp over cv splits
       print(head(featlist.scores, n = 10))
+      # to write up
+      pathselect[[i]] <- data.frame(
+        "x" = xname,
+        "y" = yname,
+        "type" = xlist.type[xname],
+        "predictor" = prname,
+        "rank" = 1:n.max.fs,
+        "feat" = names(featlist.scores)[1:n.max.fs],
+        "varimp" = featlist.scores[1:n.max.fs],
+        row.names = NULL
+      )
+      i <- i + 1
       message('done!\n')
       
       rm(res)
     }
   }
 }
+pathselect <- do.call("rbind", pathselect)
+rownames(pathselect) <- seq(nrow(pathselect))
+# write up !
+write.table(pathselect, file = "pathselect.txt", row.names = TRUE, col.names = TRUE, sep = '\t')
 ```
 
 Second, for each `yname` in `r ylist`, we focus on prediction made with pulled types of features, that is a naive combination of path.vals and other.genes.vals. We look at the frequency of each type of features being selected automatically.
@@ -243,6 +264,7 @@ Second, for each `yname` in `r ylist`, we focus on prediction made with pulled t
 ```{r featselect_prepare, message=FALSE}
 xname <- "path.and.other.genes.vals"
 xname.list <- c("other.genes.vals", "path.vals") # must conform with feature types in xname
+stopifnot("other.genes.vals" %in% xname.list)
 featlist.long <- lapply(xname.list, function(u){
   colnames(get(u))
 })
@@ -305,8 +327,10 @@ For each `yname` in `r ylist`, we have several plots to illustrate the results
 - Three boxplots on the number of selected features from each feature type in `r xname.list`, wrt different algorithms, where variance shows at each CV run. Three of them each correpond to 1) total count of selected features from each type; 2) total count of selected features from each type divided by the total number of selected features of all types; 3) total count of selected features from each type divided by the total number of features from that same type.
 - Histogram of how many times one feature are selected in total over all `r nfolds*nrepeats` CV runs, specific to each type and each algorithm.
 
-```{r featselect}
+```{r featselect, message=FALSE, results='hold'}
 # show each grp separately
+othergeneselect <- list()
+i <- 1
 for (yname in ylist) {
   cat('\n---> \t Algorithmic feature selection \t <---\n')
   cat('\n---------> \t for ', yname, ' \t <---------\n')
@@ -385,6 +409,18 @@ for (yname in ylist) {
   print(lapply(featlist.scores, head, n = 20))
   cat('\nPreview of top 10 most often selected features in each type\n')
   print(lapply(featlist.scores.split, function(u) lapply(u, head, n=10)))
+  # to write up
+  othergeneselect[[i]] <- data.frame(
+    "x" = xname,
+    "y" = yname,
+    "type" = xlist.type[xname],
+    "predictor" = prname,
+    "rank" = 1:n.max.fs,
+    "othergene" = names(featlist.scores.split[[prname.fs]][["other.genes.vals"]])[1:n.max.fs],
+    "varimp" = featlist.scores.split[[prname.fs]][["other.genes.vals"]][1:n.max.fs],
+    row.names = NULL
+  )
+  i <- i + 1
   
   # count number of times of features from each type being selected over CV runs
   featlist.tab <- lapply(featlist.short, function(u) lapply(u, function(v) 
@@ -406,6 +442,10 @@ for (yname in ylist) {
     theme(legend.title = element_blank(), legend.position = "bottom")
   plot(p1)
 }
+othergeneselect <- do.call("rbind", othergeneselect)
+rownames(othergeneselect) <- seq(nrow(othergeneselect))
+# write up !
+write.table(othergeneselect, file = "othergeneselect.txt", row.names = TRUE, col.names = TRUE, sep = '\t')
 ```
 
 ## Session info
