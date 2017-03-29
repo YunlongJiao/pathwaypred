@@ -81,9 +81,9 @@ for (i.fold in seq(nfolds*nrepeats)) {
       # get obj
       objname <- paste('res', xname, yname, i.fold, nfolds, nrepeats, sep = '_')
       objpath <- paste0('Robj/',objname,'.RData')
-      # if (file.exists(objpath)) {
-      #   ivres <- get(load(objpath))
-      # } else {
+      if (file.exists(objpath)) {
+        ivres <- get(load(objpath))
+      } else {
         # read nested cv res
         cvres <- list()
         for (prname in prlist) {
@@ -142,7 +142,7 @@ for (i.fold in seq(nfolds*nrepeats)) {
         assign(objname, ivres)
         save(list = objname, file = objpath)
         rm(list = c(objname,"cvres"))
-      # }
+      }
       
       # record score values
       scores[[objname]] <- data.frame(y = yname, 
@@ -256,7 +256,7 @@ for (yname in ylist) {
 
 This section is complementary to previous section "Performance overview". The difference is that here we do not tune predictor out but fix the predictor to be random forest. Then we compare performance of different feature types wrt various criteria. Generally RF should do a fairly good job in classification while enabling simultaneously feature selection.
 
-```{r perfRF_prepare, message=FALSE}
+```{r perfRF_prepare, message=FALSE, eval=FALSE}
 prname <- "predictorRF"
 scores <- list()
 for (yname in ylist) {
@@ -291,7 +291,7 @@ rownames(scores) <- seq(nrow(scores))
 head(scores)
 ```
 
-```{r perfRF}
+```{r perfRF, eval=FALSE}
 # plot each grps in a separate figure
 for (yname in ylist) {
   d <- subset(scores, scores$y == yname)
