@@ -146,7 +146,8 @@ evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = tail(names(table(
   library(survcomp)
   
   ppv_measure <- function(label, pred.class, ytst){
-    sum(pred.class==label & ytst==label)/sum(pred.class==label)
+    ifelse(all(pred.class!=label), 
+           0, sum(pred.class==label & ytst==label)/sum(pred.class==label))
   }
   
   fpr_measure <- function(label, pred.class, ytst){
@@ -158,7 +159,8 @@ evaluatePred <- function(pred, ytst, ysurv = NULL, pos.label = tail(names(table(
   }
   
   f_measure <- function(b, precision, recall){
-    (1+b*b)*precision*recall/(b*b*precision+recall)
+    ifelse(precision == 0 && recall == 0,
+           0, (1+b*b)*precision*recall/(b*b*precision+recall))
   }
   
   # error control
@@ -345,11 +347,12 @@ crossValidationCombineResults <- function(foldres,
                                           elem_keepfold=c("true.surv","true.class","test.class","test.prob","featlist"),
                                           elem_inherit=c("predictor", "cutoff", "pos.label"))
 {
+  # be careful to use this function only with consistent cv foldres applied to the same xname,yname,prname,etc
   # elem_ave are those scores to average over cv fold
   # elem_keepfold are those to keep as they come from each fold
   # elem_inherit are those to inherit some parameters from res of subfold as in ensembleResults()
   
-  cvres <- list(validation=paste0(nrepeats,"_repeats_",nfolds,"_fold_cross_validation"))
+  cvres <- list("validation" = "cv_combined")
   
   if (is.null(foldres) || (is.list(foldres) && length(foldres) == 0)) {
     cvres <- list()
@@ -365,10 +368,13 @@ crossValidationCombineResults <- function(foldres,
     }
     cvres <- c(cvres,foldres[[1]][elem_inherit])
     for(elem in elem_keepfold){
-      cvres[[elem]] <- lapply(foldres, function(u){u[[elem]]})
+      cvres[[elem]] <- lapply(foldres, '[[', elem)
     }
     for(elem in elem_ave){
-      cvres[[elem]] <- mean(sapply(foldres, function(u){u[[elem]]}), na.rm=TRUE)
+      ss <- sapply(foldres, '[[', elem)
+      if (elem == "ppv" || elem == "fval")
+        ss[is.na(ss)] <- 0
+      cvres[[elem]] <- mean(ss, na.rm=TRUE)
     }
   }
   

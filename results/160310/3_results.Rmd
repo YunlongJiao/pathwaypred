@@ -81,9 +81,9 @@ for (i.fold in seq(nfolds*nrepeats)) {
       # get obj
       objname <- paste('res', xname, yname, i.fold, nfolds, nrepeats, sep = '_')
       objpath <- paste0('Robj/',objname,'.RData')
-      if (file.exists(objpath)) {
-        ivres <- get(load(objpath))
-      } else {
+      # if (file.exists(objpath)) {
+      #   ivres <- get(load(objpath))
+      # } else {
         # read nested cv res
         cvres <- list()
         for (prname in prlist) {
@@ -104,7 +104,7 @@ for (i.fold in seq(nfolds*nrepeats)) {
           tt <- sapply(cvres, '[[', "system_time")
           # order scores by increasing system time
           ss <- sapply(cvres, '[[', sname)[order(tt, decreasing = FALSE)]
-          ss <- ss[!is.na(ss)]
+          stopifnot(!any(is.na(ss)))
           # fast algorithm is preferred among those returning equal score values
           best.prname <- names(ss)[order(ss, decreasing = slist.prefer.large.score[sname])]
           # get iv res NOTE while loop is to guarantee no iv res is found for such predictor
@@ -116,14 +116,22 @@ for (i.fold in seq(nfolds*nrepeats)) {
                                                      sep = '_'), 
                                      full.names = TRUE)
             if (length(best.files) == 0) {
+              warning(i.fold, " ", nfolds, " ", nrepeats, " ", xname, " ", yname, " cv tuned best", best.prname[1], " but iv not found")
               best.prname <- best.prname[-1]
               next
             } else if (length(best.files) == 1) {
               best.prname <- best.prname[1]
-              ivres[[sname]] <- get(load(best.files))
+              best.objname <- gsub("^Robj/|.RData", "", best.files)
+              ivres1 <- get(load(best.files))
+              if (sname %in% c("ppv","fval") && is.na(ivres1[[sname]])) {
+                warning(best.objname, " is picked by cv for which ", sname, " equal to NA is replaced by 0")
+                ivres1[[sname]] <- 0
+              }
+              ivres[[sname]] <- ivres1
+              rm(list = c("ivres1", best.objname))
               break
             } else {
-              stop("multiple ivres files found for ", best.prname[1])
+              stop("multiple ivres files found for ", i.fold, " ", nfolds, " ", nrepeats, " ", xname, " ", yname, " ", best.prname[1])
             }
           }
           # in case no ivres files found for any predictors
@@ -134,8 +142,7 @@ for (i.fold in seq(nfolds*nrepeats)) {
         assign(objname, ivres)
         save(list = objname, file = objpath)
         rm(list = c(objname,"cvres"))
-        gc()
-      }
+      # }
       
       # record score values
       scores[[objname]] <- data.frame(y = yname, 
@@ -147,7 +154,6 @@ for (i.fold in seq(nfolds*nrepeats)) {
                                       value = sapply(slist, function(sname) ivres[[sname]][[sname]]), 
                                       row.names = NULL)
       rm(ivres)
-      gc()
     }
   }
 }
