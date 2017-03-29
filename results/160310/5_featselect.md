@@ -105,6 +105,7 @@ prlist
 ```r
 # predictors that automate feat select
 prlist.fs <- c("predictorLogitLasso","predictorPAM","predictorRF")
+prname.fs <- "predictorRF"
 prlist.fs <- prlist.fs[prlist.fs %in% prlist]
 prlist.fs
 ```
@@ -174,6 +175,11 @@ slist.prefer.large.score
 ```
 ##   acc   fpr   tpr   ppv  fval auroc 
 ##  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+```
+
+```r
+# max number of selected features to write in file
+n.max.fs <- 50
 ```
 
 ## Independent significance t.test
@@ -520,8 +526,10 @@ First, for each `yname` in subtype.grps, surv.grps, we look at prediction made w
 
 
 ```r
-cat('\nPreview of top 20 most often selected features overall\n')
 pathlist <- c("eff.vals", "path.vals")
+pathselect <- list()
+i <- 1
+cat('\nPreview of top 20 most often selected features overall\n')
 for (yname in ylist) {
   for (prname in prlist.fs) {
     for (xname in pathlist) {
@@ -546,12 +554,28 @@ for (yname in ylist) {
       featlist.scores <- colMeans(do.call("rbind", featlist.scores))
       featlist.scores <- sort(featlist.scores, decreasing = TRUE) # a vector of mean var.imp over cv splits
       print(head(featlist.scores, n = 10))
+      # to write up
+      pathselect[[i]] <- data.frame(
+        "x" = xname,
+        "y" = yname,
+        "type" = xlist.type[xname],
+        "predictor" = prname,
+        "rank" = 1:n.max.fs,
+        "feat" = names(featlist.scores)[1:n.max.fs],
+        "varimp" = featlist.scores[1:n.max.fs],
+        row.names = NULL
+      )
+      i <- i + 1
       message('done!\n')
       
       rm(res)
     }
   }
 }
+pathselect <- do.call("rbind", pathselect)
+rownames(pathselect) <- seq(nrow(pathselect))
+# write up !
+write.table(pathselect, file = "pathselect.txt", row.names = TRUE, col.names = TRUE, sep = '\t')
 ```
 
 ```
@@ -679,6 +703,7 @@ Second, for each `yname` in subtype.grps, surv.grps, we focus on prediction made
 ```r
 xname <- "path.and.other.genes.vals"
 xname.list <- c("other.genes.vals", "path.vals") # must conform with feature types in xname
+stopifnot("other.genes.vals" %in% xname.list)
 featlist.long <- lapply(xname.list, function(u){
   colnames(get(u))
 })
@@ -744,6 +769,8 @@ For each `yname` in subtype.grps, surv.grps, we have several plots to illustrate
 
 ```r
 # show each grp separately
+othergeneselect <- list()
+i <- 1
 for (yname in ylist) {
   cat('\n---> \t Algorithmic feature selection \t <---\n')
   cat('\n---------> \t for ', yname, ' \t <---------\n')
@@ -822,6 +849,18 @@ for (yname in ylist) {
   print(lapply(featlist.scores, head, n = 20))
   cat('\nPreview of top 10 most often selected features in each type\n')
   print(lapply(featlist.scores.split, function(u) lapply(u, head, n=10)))
+  # to write up
+  othergeneselect[[i]] <- data.frame(
+    "x" = xname,
+    "y" = yname,
+    "type" = xlist.type[xname],
+    "predictor" = prname,
+    "rank" = 1:n.max.fs,
+    "othergene" = names(featlist.scores.split[[prname.fs]][["other.genes.vals"]])[1:n.max.fs],
+    "varimp" = featlist.scores.split[[prname.fs]][["other.genes.vals"]][1:n.max.fs],
+    row.names = NULL
+  )
+  i <- i + 1
   
   # count number of times of features from each type being selected over CV runs
   featlist.tab <- lapply(featlist.short, function(u) lapply(u, function(v) 
@@ -845,34 +884,40 @@ for (yname in ylist) {
 }
 ```
 
+![plot of chunk featselect](5_featselect_figure/featselect-1.png)![plot of chunk featselect](5_featselect_figure/featselect-2.png)![plot of chunk featselect](5_featselect_figure/featselect-3.png)![plot of chunk featselect](5_featselect_figure/featselect-4.png)![plot of chunk featselect](5_featselect_figure/featselect-5.png)
+
+```
+## Warning: Removed 205 rows containing non-finite values (stat_boxplot).
+```
+
+![plot of chunk featselect](5_featselect_figure/featselect-6.png)![plot of chunk featselect](5_featselect_figure/featselect-7.png)
+
+```
+## Warning: Removed 74 rows containing non-finite values (stat_boxplot).
+```
+
+![plot of chunk featselect](5_featselect_figure/featselect-8.png)![plot of chunk featselect](5_featselect_figure/featselect-9.png)![plot of chunk featselect](5_featselect_figure/featselect-10.png)
+
+```r
+othergeneselect <- do.call("rbind", othergeneselect)
+rownames(othergeneselect) <- seq(nrow(othergeneselect))
+# write up !
+write.table(othergeneselect, file = "othergeneselect.txt", row.names = TRUE, col.names = TRUE, sep = '\t')
+```
+
 ```
 ## 
 ## ---> 	 Algorithmic feature selection 	 <---
 ## 
 ## ---------> 	 for  subtype.grps  	 <---------
-```
-
-![plot of chunk featselect](5_featselect_figure/featselect-1.png)![plot of chunk featselect](5_featselect_figure/featselect-2.png)
-
-```
 ## 
 ## Total number of features selected at each run (averaged over each CV run)
 ## predictorLogitLasso        predictorPAM         predictorRF 
-##               42.96              178.84             8694.94
-```
-
-![plot of chunk featselect](5_featselect_figure/featselect-3.png)
-
-```
+##               42.96              178.84             8694.94 
 ## 
 ## Total number of features within each type
 ## other.genes.vals        path.vals 
-##            16496             6101
-```
-
-![plot of chunk featselect](5_featselect_figure/featselect-4.png)
-
-```
+##            16496             6101 
 ## 
 ## Preview of top 20 most often selected features overall
 ## $predictorLogitLasso
@@ -976,47 +1021,21 @@ for (yname in ylist) {
 ##   X_hsa04066__12___29  X_hsa05200__27___195   X_hsa04066__12___51 
 ##              4.597030              4.513323              4.384273 
 ##   X_hsa04066__12___44 
-##              4.364264
-```
-
-![plot of chunk featselect](5_featselect_figure/featselect-5.png)
-
-```
+##              4.364264 
+## 
+## 
 ## 
 ## ---> 	 Algorithmic feature selection 	 <---
 ## 
 ## ---------> 	 for  surv.grps  	 <---------
-```
-
-```
-## Warning: Removed 205 rows containing non-finite values (stat_boxplot).
-```
-
-![plot of chunk featselect](5_featselect_figure/featselect-6.png)![plot of chunk featselect](5_featselect_figure/featselect-7.png)
-
-```
 ## 
 ## Total number of features selected at each run (averaged over each CV run)
 ## predictorLogitLasso        predictorPAM         predictorRF 
-##                1.40               12.52             9426.68
-```
-
-```
-## Warning: Removed 74 rows containing non-finite values (stat_boxplot).
-```
-
-![plot of chunk featselect](5_featselect_figure/featselect-8.png)
-
-```
+##                1.40               12.52             9426.68 
 ## 
 ## Total number of features within each type
 ## other.genes.vals        path.vals 
-##            16496             6101
-```
-
-![plot of chunk featselect](5_featselect_figure/featselect-9.png)
-
-```
+##            16496             6101 
 ## 
 ## Preview of top 20 most often selected features overall
 ## $predictorLogitLasso
@@ -1123,8 +1142,6 @@ for (yname in ylist) {
 ##               1.721790
 ```
 
-![plot of chunk featselect](5_featselect_figure/featselect-10.png)
-
 ## Session info
 
 
@@ -1149,14 +1166,14 @@ sessionInfo()
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] randomForest_4.6-12 pamr_1.55           survival_2.39-5    
-## [4] cluster_2.0.4       glmnet_2.0-3        foreach_1.4.3      
-## [7] Matrix_1.2-6        ggplot2_2.1.0       reshape2_1.4.1     
+## [1] randomForest_4.6-12 pamr_1.55           survival_2.40-1    
+## [4] cluster_2.0.5       glmnet_2.0-3        foreach_1.4.3      
+## [7] Matrix_1.2-7.1      ggplot2_2.1.0       reshape2_1.4.2     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.6      knitr_1.12.3     magrittr_1.5     splines_3.2.1   
-##  [5] munsell_0.4.3    colorspace_1.2-6 lattice_0.20-33  stringr_1.0.0   
+##  [1] Rcpp_0.12.7      knitr_1.12.3     magrittr_1.5     splines_3.2.1   
+##  [5] munsell_0.4.3    colorspace_1.2-7 lattice_0.20-34  stringr_1.1.0   
 ##  [9] plyr_1.8.4       tools_3.2.1      gtable_0.2.0     iterators_1.0.8 
-## [13] digest_0.6.9     formatR_1.3      codetools_0.2-14 evaluate_0.8.3  
-## [17] labeling_0.3     stringi_1.1.1    scales_0.4.0
+## [13] digest_0.6.10    formatR_1.3      codetools_0.2-15 evaluate_0.8.3  
+## [17] labeling_0.3     stringi_1.1.2    scales_0.4.0
 ```
