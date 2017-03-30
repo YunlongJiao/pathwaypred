@@ -202,7 +202,7 @@ for (i.fold in seq(nfolds*nrepeats)) {
           tt <- sapply(cvres, '[[', "system_time")
           # order scores by increasing system time
           ss <- sapply(cvres, '[[', sname)[order(tt, decreasing = FALSE)]
-          ss <- ss[!is.na(ss)]
+          stopifnot(!any(is.na(ss)))
           # fast algorithm is preferred among those returning equal score values
           best.prname <- names(ss)[order(ss, decreasing = slist.prefer.large.score[sname])]
           # get iv res NOTE while loop is to guarantee no iv res is found for such predictor
@@ -214,14 +214,22 @@ for (i.fold in seq(nfolds*nrepeats)) {
                                                      sep = '_'), 
                                      full.names = TRUE)
             if (length(best.files) == 0) {
+              warning(i.fold, " ", nfolds, " ", nrepeats, " ", xname, " ", yname, " cv tuned best", best.prname[1], " but iv not found")
               best.prname <- best.prname[-1]
               next
             } else if (length(best.files) == 1) {
               best.prname <- best.prname[1]
-              ivres[[sname]] <- get(load(best.files))
+              best.objname <- gsub("^Robj/|.RData", "", best.files)
+              ivres1 <- get(load(best.files))
+              if (sname %in% c("ppv","fval") && is.na(ivres1[[sname]])) {
+                warning(best.objname, " is picked by cv for which ", sname, " equal to NA is replaced by 0")
+                ivres1[[sname]] <- 0
+              }
+              ivres[[sname]] <- ivres1
+              rm(list = c("ivres1", best.objname))
               break
             } else {
-              stop("multiple ivres files found for ", best.prname[1])
+              stop("multiple ivres files found for ", i.fold, " ", nfolds, " ", nrepeats, " ", xname, " ", yname, " ", best.prname[1])
             }
           }
           # in case no ivres files found for any predictors
@@ -232,7 +240,6 @@ for (i.fold in seq(nfolds*nrepeats)) {
         assign(objname, ivres)
         save(list = objname, file = objpath)
         rm(list = c(objname,"cvres"))
-        gc()
       }
       
       # record score values
@@ -245,7 +252,6 @@ for (i.fold in seq(nfolds*nrepeats)) {
                                       value = sapply(slist, function(sname) ivres[[sname]][[sname]]), 
                                       row.names = NULL)
       rm(ivres)
-      gc()
     }
   }
 }
@@ -298,17 +304,7 @@ for (yname in ylist) {
 }
 ```
 
-```
-## Warning: Removed 7 rows containing non-finite values (stat_boxplot).
-```
-
-![plot of chunk overview](3_results_figure/overview-1.png)
-
-```
-## Warning: Removed 194 rows containing non-finite values (stat_boxplot).
-```
-
-![plot of chunk overview](3_results_figure/overview-2.png)
+![plot of chunk overview](3_results_figure/overview-1.png)![plot of chunk overview](3_results_figure/overview-2.png)
 
 ## Predictor table
 
@@ -768,16 +764,6 @@ rownames(scores) <- seq(nrow(scores))
 head(scores)
 ```
 
-```
-##              y        x      type   predictor      value score  rep
-## 1 subtype.grps eff.vals path-wise predictorRF 0.86868687   acc rep1
-## 2 subtype.grps eff.vals path-wise predictorRF 0.01265823   fpr rep1
-## 3 subtype.grps eff.vals path-wise predictorRF 0.85000000   tpr rep1
-## 4 subtype.grps eff.vals path-wise predictorRF 0.94444444   ppv rep1
-## 5 subtype.grps eff.vals path-wise predictorRF 0.89473684  fval rep1
-## 6 subtype.grps eff.vals path-wise predictorRF 0.97246835 auroc rep1
-```
-
 
 ```r
 # plot each grps in a separate figure
@@ -799,14 +785,6 @@ for (yname in ylist) {
   plot(p1)
 }
 ```
-
-![plot of chunk perfRF](3_results_figure/perfRF-1.png)
-
-```
-## Warning: Removed 35 rows containing non-finite values (stat_boxplot).
-```
-
-![plot of chunk perfRF](3_results_figure/perfRF-2.png)
 
 ## Session info
 
