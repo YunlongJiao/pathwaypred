@@ -1,4 +1,4 @@
-"x"	"y"	"type"	"predictor"	"rank"	"othergene"	"varimp"
+"x"	"y"	"type"	"predictor"	"rank"	"feat"	"varimp"
 "1"	"path.and.other.genes.vals"	"subtype.grps"	"mix-wise"	"predictorRF"	1	"X_10948"	7.82705998686797
 "2"	"path.and.other.genes.vals"	"subtype.grps"	"mix-wise"	"predictorRF"	2	"X_93210"	7.41565872148416
 "3"	"path.and.other.genes.vals"	"subtype.grps"	"mix-wise"	"predictorRF"	3	"X_2886"	7.40830133977327

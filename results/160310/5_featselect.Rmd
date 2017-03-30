@@ -416,7 +416,7 @@ for (yname in ylist) {
     "type" = xlist.type[xname],
     "predictor" = prname,
     "rank" = 1:n.max.fs,
-    "othergene" = names(featlist.scores.split[[prname.fs]][["other.genes.vals"]])[1:n.max.fs],
+    "feat" = names(featlist.scores.split[[prname.fs]][["other.genes.vals"]])[1:n.max.fs],
     "varimp" = featlist.scores.split[[prname.fs]][["other.genes.vals"]][1:n.max.fs],
     row.names = NULL
   )
