@@ -1,0 +1,63 @@
+# Process ICGC BRCA data
+# Yunlong Jiao, 13 Apr 2016
+
+This script shows how incomplete relapse info from ICGC BRCA dataset is so that survival prediction cannot proceed on this dataset...
+
+```{r setup}
+knitr::opts_chunk$set(error = FALSE)
+datapath <- '../../../data/BRCA_saved_data/'
+options(stringsAsFactors = FALSE)
+```
+
+```{r groups, message = FALSE}
+# samples
+load(paste0(datapath, '110_genes_vals.RData'))
+samplelist <- colnames(genes.vals)
+# align
+alignmat <- read.table(paste0(datapath, 'clinical_info_sample.txt'), sep = "\t", quote = "\"", header = TRUE)
+y <- read.table(paste0(datapath, 'clinical_info_donor.txt'), sep = "\t", quote = "\"", header = TRUE)
+alignid <- data.frame(sample = samplelist, 
+                      donor = sapply(samplelist, function(id){
+                        message(".", appendLF = FALSE)
+                        i <- grep(id, alignmat$submitted_sample_id)
+                        if (length(i) == 1) {
+                          return(alignmat$icgc_donor_id[i])
+                        } else if (length(i) == 0) {
+                          return(NA)
+                        } else {
+                          stop(id, " has more than 1 alignment!")
+                        }
+                      }))
+alignid <- subset(alignid, !is.na(alignid$donor))
+id <- match(alignid$donor, y$icgc_donor_id)
+alignid <- alignid[!is.na(id), ]
+id <- id[!is.na(id)]
+y <- y[id, ]
+```
+
+```{r summary}
+# number of patients with clinical info available 
+# after alignment between info_donor and info_sample
+nrow(y)
+# everyone has donor vital status
+table(y$donor_vital_status)
+# only two patients have concrete survival time
+table(y$donor_survival_time)
+# most people have relapse status but data is highly unbalanced
+table(y$disease_status_last_followup)
+# followup period ranges wildly between patients
+# (data is not fair to make binary prediction on binary relapse status?)
+quantile(y$donor_interval_of_last_followup, na.rm = T)
+# vital status is overall survival but not disease-specific?
+table(y[,c("donor_vital_status","disease_status_last_followup")])
+# 5-year true relapses is even rare in data
+i <- which(y$donor_interval_of_last_followup < 365*5)
+length(i) # number of followup less than 5 years
+table(y$disease_status_last_followup[i])
+```
+
+# Session info
+
+```{r session_info}
+sessionInfo()
+```
