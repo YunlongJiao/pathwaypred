@@ -1,0 +1,1100 @@
+icgc_donor_id	project_code	study_donor_involved_in	submitted_donor_id	donor_sex	donor_vital_status	disease_status_last_followup	donor_relapse_type	donor_age_at_diagnosis	donor_age_at_enrollment	donor_age_at_last_followup	donor_relapse_interval	donor_diagnosis_icd10	donor_tumour_staging_system_at_diagnosis	donor_tumour_stage_at_diagnosis	donor_tumour_stage_at_diagnosis_supplemental	donor_survival_time	donor_interval_of_last_followup	prior_malignancy	cancer_type_prior_malignancy	cancer_history_first_degree_relative
+DO1319	BRCA-US		TCGA-D8-A143	female	alive	complete remission		51		51		C50.9					172	unknown		unknown
+DO1814	BRCA-US		TCGA-BH-A0C1	female	alive	progression		61		64		C50.9					1339	unknown		unknown
+DO4695	BRCA-US	PCAWG	TCGA-EW-A1PB	female	alive	complete remission		70		71		C50.9					608	unknown		unknown
+DO5829	BRCA-US		TCGA-A1-A0SB	female	alive	complete remission		70		70		C50.9					259	unknown		unknown
+DO44190	BRCA-US		TCGA-A2-A3XW	female	alive	complete remission		42		45		C50.9					1209	unknown		unknown
+DO51228	BRCA-US		TCGA-XX-A899	female	alive	complete remission		46		46		C50.9					292	unknown		unknown
+DO219594	BRCA-US		TCGA-5L-AAT1	female	alive	progression		63		67		C50.9					1471	unknown		unknown
+DO1491	BRCA-US		TCGA-BH-A1F0	female	deceased			80		80		C50.9				785		unknown		unknown
+DO1653	BRCA-US		TCGA-A8-A09B	female	alive	complete remission		58		59		C50.9					365	unknown		unknown
+DO2049	BRCA-US		TCGA-AR-A24M	female	alive			38		43		C50.9					1991	unknown		unknown
+DO2706	BRCA-US	PCAWG	TCGA-A2-A25B	female	alive	complete remission		39		39		C50.9					258	unknown		unknown
+DO2995	BRCA-US	PCAWG	TCGA-A2-A0D0	female	alive	complete remission		60		61		C50.9					643	unknown		unknown
+DO3886	BRCA-US		TCGA-A2-A0T3	female	alive	complete remission		37		38		C50.9					456	unknown		unknown
+DO4245	BRCA-US		TCGA-BH-A18M	female	deceased			39		39		C50.3				2207		unknown		unknown
+DO4407	BRCA-US		TCGA-B6-A0IN	female	deceased			45		45		C50.9				2573		unknown		unknown
+DO5668	BRCA-US		TCGA-BH-A0E6	female	alive	complete remission		69		69		C50.9					293	unknown		unknown
+DO44272	BRCA-US		TCGA-OL-A66O	female	alive	complete remission		39		39		C50.9					220	unknown		unknown
+DO51229	BRCA-US		TCGA-XX-A89A	female	alive	complete remission		68		68		C50.9					278	unknown		unknown
+DO219595	BRCA-US		TCGA-AC-A7VB	female	alive	complete remission		51		51		C50.9					74	unknown		unknown
+DO2383	BRCA-US		TCGA-AR-A2LO	female	alive			46		47		C50.9					633	unknown		unknown
+DO2545	BRCA-US		TCGA-BH-A0DL	female	alive	complete remission		64		68		C50.9					1467	unknown		unknown
+DO3436	BRCA-US		TCGA-E2-A1LS	female	alive	complete remission		46		46		C50.9					239	unknown		unknown
+DO5137	BRCA-US		TCGA-EW-A2FW	female	alive	complete remission		52		52		C50.9					191	unknown		unknown
+DO44192	BRCA-US		TCGA-E9-A5FK	female	alive	complete remission		60		60		C50.9					12	unknown		unknown
+DO44273	BRCA-US		TCGA-A2-A3Y0	female	alive	complete remission		57		59		C50.9					859	unknown		unknown
+DO219640	BRCA-US		TCGA-OL-A97C	female	alive	complete remission		67		67		C50.9					195	unknown		unknown
+DO1574	BRCA-US		TCGA-E2-A153	female	alive	complete remission		51		52		C50.9					586	unknown		unknown
+DO2014	BRCA-US		TCGA-LQ-A4E4	female	alive	complete remission		73		74		C50.9					484	unknown		unknown
+DO3194	BRCA-US		TCGA-BH-A0C0	female	alive	complete remission		62		65		C50.9					1270	unknown		unknown
+DO3275	BRCA-US		TCGA-AN-A0FS	female	alive	complete remission		55		55		C50.9					191	unknown		unknown
+DO3400	BRCA-US		TCGA-BH-A1F2	female	deceased			53		53		C50.9				959		unknown		unknown
+DO3518	BRCA-US		TCGA-D8-A1JU	female	alive	complete remission		51		51		C50.9					106	unknown		unknown
+DO5633	BRCA-US		TCGA-AO-A03P	female	alive	progression		54		61		C50.9					2576	unknown		unknown
+DO50060	BRCA-US		TCGA-LL-A73Z	female	alive	progression		55		55		C50.9					137	unknown		unknown
+DO219597	BRCA-US		TCGA-AC-A7VC	female	alive	complete remission		56		56		C50.9					1	unknown		unknown
+DO219641	BRCA-US		TCGA-PE-A5DC	female	deceased			72		72		C50.9				1430		unknown		unknown
+DO223925	BRCA-US		TCGA-AC-A2FE	female	alive	progression		62		64		C50.9					791	unknown		unknown
+DO1737	BRCA-US		TCGA-BH-A0BJ	female	alive	complete remission		41		42		C50.9					660	unknown		unknown
+DO2961	BRCA-US		TCGA-A2-A0SY	female	alive	complete remission		62		65		C50.9					1154	unknown		unknown
+DO3852	BRCA-US		TCGA-A8-A09M	female	alive	complete remission		75		76		C50.9					457	unknown		unknown
+DO4086	BRCA-US		TCGA-C8-A12W	female	alive	complete remission		49		49		C50.9					7	unknown		unknown
+DO4167	BRCA-US		TCGA-B6-A0RV	female	alive	complete remission		42		55		C50.9					4788	unknown		unknown
+DO4329	BRCA-US		TCGA-A2-A04N	female	alive	complete remission		66		74		C50.9					3153	unknown		unknown
+DO4581	BRCA-US		TCGA-E2-A1B0	female	alive	complete remission		50		53		C50.9					1271	unknown		unknown
+DO4743	BRCA-US		TCGA-BH-A18V	female	deceased			48		48		C50.4				1556		unknown		unknown
+DO4824	BRCA-US		TCGA-E9-A22A	female	alive	complete remission		74		74		C50.9					0	unknown		unknown
+DO5102	BRCA-US		TCGA-BH-A1ET	female	deceased			55		55		C50.9				2520		unknown		unknown
+DO5472	BRCA-US		TCGA-D8-A1X9	female	alive	complete remission		66		67		C50.9					380	unknown		unknown
+DO44194	BRCA-US		TCGA-E2-A573	female	alive	complete remission		48		49		C50.9					677	unknown		unknown
+DO219642	BRCA-US		TCGA-PE-A5DD	female	alive	complete remission		64		69		C50.9					1953	unknown		unknown
+DO223926	BRCA-US		TCGA-AC-A3EH	female	alive	complete remission		79		79		C50.9					17	unknown		unknown
+DO1990	BRCA-US		TCGA-A8-A09G	female	alive	complete remission		79		79		C50.9					0	unknown		unknown
+DO2467	BRCA-US		TCGA-BH-A0BG	female	alive	complete remission		73		75		C50.9					756	unknown		unknown
+DO2629	BRCA-US	PCAWG	TCGA-E2-A15E	female	alive	complete remission		40		41		C50.9					518	unknown		unknown
+DO3358	BRCA-US		TCGA-A8-A09C	female	alive			69		69		C50.9					31	unknown		unknown
+DO3934	BRCA-US		TCGA-EW-A1IY	female	alive	complete remission		38		38		C50.9					258	unknown		unknown
+DO4050	BRCA-US		TCGA-C8-A273	female	alive	complete remission		29		29		C50.9					6	unknown		unknown
+DO50062	BRCA-US		TCGA-LL-A740	female	alive	complete remission		61		61		C50.9					137	unknown		unknown
+DO219599	BRCA-US		TCGA-AC-A8OS	female	alive	complete remission		71		71		C50.9					70	unknown		unknown
+DO219643	BRCA-US		TCGA-PE-A5DE	female	alive	complete remission		41		46		C50.9					1855	unknown		unknown
+DO223927	BRCA-US		TCGA-AC-A3QQ	female	alive	complete remission		54		54		C50.9					34	unknown		unknown
+DO1496	BRCA-US		TCGA-A7-A26I	female	alive			65		65		C50.9					122	unknown		unknown
+DO1658	BRCA-US		TCGA-BH-A0HA	female	alive	complete remission		31		33		C50.9					856	unknown		unknown
+DO1702	BRCA-US		TCGA-AR-A2LL	female	alive			70		70		C50.9					224	unknown		unknown
+DO2431	BRCA-US		TCGA-AO-A0J7	female	alive	complete remission		71		71		C50.9					261	unknown		unknown
+DO3322	BRCA-US		TCGA-AN-A0XS	female	alive			63		63		C50.9					10	unknown		unknown
+DO3692	BRCA-US		TCGA-E9-A1R6	female	alive	complete remission		63		63		C50.9					84	unknown		unknown
+DO4907	BRCA-US		TCGA-AN-A0FD	female	alive	complete remission		71		71		C50.9					196	unknown		unknown
+DO5717	BRCA-US		TCGA-BH-A0HK	female	alive	complete remission		81		81		C50.9					178	unknown		unknown
+DO44196	BRCA-US		TCGA-OL-A5RU	female	alive	complete remission		63		65		C50.9					841	unknown		unknown
+DO44240	BRCA-US		TCGA-GM-A3XN	female	alive	complete remission		44		48		C50.9					1641	unknown		unknown
+DO219644	BRCA-US		TCGA-UL-AAZ6	female	alive	complete remission		73		74		C50.9					426	unknown		unknown
+DO223928	BRCA-US		TCGA-AC-A3TM	female	alive	complete remission		50		50		C50.9					93	unknown		unknown
+DO1497	BRCA-US		TCGA-GM-A2DL	female	alive	complete remission		50		57		C50.9					2763	unknown		unknown
+DO4665	BRCA-US		TCGA-BH-A202	female	alive			60		60		C50.9					22	unknown		unknown
+DO5556	BRCA-US		TCGA-A2-A25E	female	alive	complete remission		34		40		C50.9					2511	unknown		unknown
+DO50064	BRCA-US		TCGA-LL-A7SZ	female	alive	complete remission		49		49		C50.9					170	unknown		unknown
+DO219645	BRCA-US		TCGA-UU-A93S	female	deceased			63		63		C50.9				116		unknown		unknown
+DO223929	BRCA-US		TCGA-AC-A3W7	female	alive	complete remission		66		66		C50.9					192	unknown		unknown
+DO1380	BRCA-US		TCGA-D8-A27M	female	alive	complete remission		59		59		C50.9					145	unknown		unknown
+DO1542	BRCA-US		TCGA-A7-A4SF	female	alive	complete remission		54		55		C50.9					369	unknown		unknown
+DO1579	BRCA-US		TCGA-A8-A09Q	female	alive	progression		83		85		C50.9					761	unknown		unknown
+DO1623	BRCA-US		TCGA-AR-A0TQ	female	alive	complete remission		27		31		C50.9					1500	unknown		unknown
+DO2389	BRCA-US		TCGA-AO-A0JJ	female	alive	complete remission		54		58		C50.9					1512	unknown		unknown
+DO3775	BRCA-US		TCGA-AQ-A1H2	female	alive	complete remission		84		84		C50.9					230	unknown		unknown
+DO3856	BRCA-US		TCGA-E9-A249	female	alive	complete remission		45		45		C50.9					29	unknown		unknown
+DO4134	BRCA-US		TCGA-AO-A03O	female	deceased			69		69		C50.9				2483		unknown		unknown
+DO4215	BRCA-US		TCGA-BH-A0BS	female	alive	complete remission		55		59		C50.9					1641	unknown		unknown
+DO5025	BRCA-US		TCGA-BH-A0AY	female	alive	complete remission		62		64		C50.9					777	unknown		unknown
+DO44161	BRCA-US		TCGA-AR-A5QM	female	alive	complete remission		62		65		C50.9					1440	unknown		unknown
+DO44198	BRCA-US		TCGA-E9-A3Q9	female	alive	complete remission		78		78		C50.9					31	unknown		unknown
+DO44242	BRCA-US		TCGA-BH-A2L8	female	alive	complete remission		45		45		C50.9					168	unknown		unknown
+DO219646	BRCA-US		TCGA-WT-AB41	female	alive	complete remission		55		59		C50.9					1550	unknown		unknown
+DO2353	BRCA-US		TCGA-B6-A0RG	female	alive	complete remission		26		31		C50.9					2082	unknown		unknown
+DO2515	BRCA-US		TCGA-E2-A14N	female	alive	complete remission		37		40		C50.9					1350	unknown		unknown
+DO2885	BRCA-US		TCGA-AN-A03X	female	alive	complete remission		74		74		C50.9					10	unknown		unknown
+DO2966	BRCA-US		TCGA-BH-A0BR	female	alive	complete remission		59		63		C50.9					1633	unknown		unknown
+DO3082	BRCA-US		TCGA-BH-A0HQ	female	alive	complete remission		56		59		C50.9					1121	unknown		unknown
+DO3406	BRCA-US		TCGA-D8-A1JL	female	alive	complete remission		72		72		C50.9					265	unknown		unknown
+DO5396	BRCA-US		TCGA-EW-A2FR	female	alive	complete remission		59		62		C50.9					1120	unknown		unknown
+DO5521	BRCA-US		TCGA-A8-A09Z	female	alive	progression		83		83		C50.9					0	unknown		unknown
+DO5891	BRCA-US		TCGA-BH-A0HX	female	alive	complete remission		54		56		C50.9					829	unknown		unknown
+DO44243	BRCA-US		TCGA-BH-A42U	female	alive			80		89		C50.9					3324	unknown		unknown
+DO50066	BRCA-US		TCGA-LL-A7T0	female	alive			70		70		C50.9					98	unknown		unknown
+DO219647	BRCA-US		TCGA-WT-AB44	female	alive	complete remission		77		79		C50.9					791	unknown		unknown
+DO2192	BRCA-US		TCGA-BH-A201	female	alive	complete remission		64		64		C50.9					210	unknown		unknown
+DO3083	BRCA-US		TCGA-A7-A2KD	female	alive			53		53		C50.9					182	unknown		unknown
+DO3164	BRCA-US		TCGA-E2-A1LA	female	alive	complete remission		59		60		C50.9					463	unknown		unknown
+DO3245	BRCA-US		TCGA-A8-A07F	female	alive	complete remission		65		66		C50.9					577	unknown		unknown
+DO4587	BRCA-US		TCGA-AR-A24P	female	alive			47		47		C50.9					26	unknown		unknown
+DO4749	BRCA-US		TCGA-D8-A1XK	female	alive	complete remission		55		55		C50.9					326	unknown		unknown
+DO44163	BRCA-US		TCGA-A2-A0CR	female	alive	complete remission		54		62		C50.9					2955	unknown		unknown
+DO50030	BRCA-US		TCGA-AC-A6IX	female	alive	complete remission		49		49		C50.9					13	unknown		unknown
+DO219611	BRCA-US		TCGA-BH-A6R9	female	alive	complete remission		61		61		C50.9					160	unknown		unknown
+DO1464	BRCA-US		TCGA-C8-A1HJ	female	alive	complete remission		53		53		C50.9					5	unknown		unknown
+DO1707	BRCA-US		TCGA-E2-A155	female	alive	complete remission		58		59		C50.9					553	unknown		unknown
+DO1996	BRCA-US		TCGA-AN-A0FZ	female	alive	complete remission		45		45		C50.9					10	unknown		unknown
+DO2931	BRCA-US		TCGA-BH-A0DH	female	alive	complete remission		63		66		C50.9					1156	unknown		unknown
+DO3822	BRCA-US		TCGA-E2-A14R	female	alive	complete remission		62		64		C50.9					845	unknown		unknown
+DO4056	BRCA-US		TCGA-BH-A0BP	female	alive	complete remission		76		80		C50.9					1481	unknown		unknown
+DO4551	BRCA-US		TCGA-C8-A278	female	alive	complete remission		61		61		C50.9					9	unknown		unknown
+DO4713	BRCA-US		TCGA-A8-A07C	female	alive	complete remission		57		58		C50.9					580	unknown		unknown
+DO5109	BRCA-US		TCGA-E2-A14T	female	alive	complete remission		52		54		C50.9					890	unknown		unknown
+DO5361	BRCA-US		TCGA-A2-A0SX	female	alive	progression		48		51		C50.9					1288	unknown		unknown
+DO5479	BRCA-US		TCGA-AO-A0JB	female	alive	complete remission		50		53		C50.9					1150	unknown		unknown
+DO5604	BRCA-US		TCGA-A7-A0CG	female	alive	complete remission		78		78		C50.9					167	unknown		unknown
+DO44245	BRCA-US		TCGA-AR-A5QN	female	alive	complete remission		68		69		C50.9					396	unknown		unknown
+DO50068	BRCA-US		TCGA-LL-A8F5	female	alive			61		61		C50.9					189	unknown		unknown
+DO1384	BRCA-US	PCAWG	TCGA-BH-A0E0	female	alive	complete remission		38		38		C50.9					134	unknown		unknown
+DO1960	BRCA-US		TCGA-BH-A0HW	female	alive	complete remission		62		66		C50.9					1561	unknown		unknown
+DO2275	BRCA-US		TCGA-BH-A18H	female	alive			63		63		C50.9					0	unknown		unknown
+DO2437	BRCA-US		TCGA-BH-A0GY	female	alive	complete remission		67		69		C50.9					917	unknown		unknown
+DO2770	BRCA-US		TCGA-A2-A1FZ	female	alive	complete remission		63		64		C50.9					410	unknown		unknown
+DO3328	BRCA-US		TCGA-E9-A248	female	alive	complete remission		51		51		C50.9					22	unknown		unknown
+DO3698	BRCA-US		TCGA-EW-A1PG	female	alive	complete remission		53		55		C50.9					876	unknown		unknown
+DO3904	BRCA-US		TCGA-C8-A1HM	female	alive	complete remission		74		74		C50.9					6	unknown		unknown
+DO4138	BRCA-US	PCAWG	TCGA-B6-A0I1	female	deceased			73		73		C50.9				2361		unknown		unknown
+DO44165	BRCA-US		TCGA-A7-A56D	female	alive	complete remission		84		84		C50.9					177	unknown		unknown
+DO44246	BRCA-US		TCGA-AC-A6IV	female	alive	complete remission		47		47		C50.9					36	unknown		unknown
+DO50032	BRCA-US		TCGA-AC-A8OP	female	alive	complete remission		72		72		C50.9					53	unknown		unknown
+DO219613	BRCA-US		TCGA-BH-A8FY	female	deceased			87		87		C50.9				295		unknown		unknown
+DO1547	BRCA-US		TCGA-AO-A1KS	female	alive	complete remission		69		69		C50.9					16	unknown		unknown
+DO1628	BRCA-US		TCGA-C8-A27A	female	alive	complete remission		48		49		C50.9					371	unknown		unknown
+DO2401	BRCA-US		TCGA-AC-A23H	female	alive	complete remission		90		90		C50.9					81	unknown		unknown
+DO3662	BRCA-US	PCAWG	TCGA-BH-A0BW	female	alive	complete remission		71		71		C50.9					355	unknown		unknown
+DO5976	BRCA-US		TCGA-EW-A1P5	female	alive	complete remission		77		78		C50.9					365	unknown		unknown
+DO44166	BRCA-US		TCGA-LL-A5YL	female	alive			64		64		C50.9					169	unknown		unknown
+DO44210	BRCA-US		TCGA-A7-A425	female	alive			70		70		C50.9					293	unknown		unknown
+DO44247	BRCA-US		TCGA-MS-A51U	female	alive	progression		44		44		C50.9					85	unknown		unknown
+DO2240	BRCA-US		TCGA-E2-A14Q	female	alive	complete remission		50		52		C50.9					974	unknown		unknown
+DO4473	BRCA-US	PCAWG	TCGA-E2-A15H	female	alive	complete remission		38		38		C50.9					42	unknown		unknown
+DO4635	BRCA-US	PCAWG	TCGA-BH-A0AV	female	alive	complete remission		52		55		C50.9					1180	unknown		unknown
+DO5445	BRCA-US		TCGA-AR-A24K	female	alive			46		50		C50.9					1548	unknown		unknown
+DO44248	BRCA-US		TCGA-A2-A4S3	female	alive	complete remission		59		59		C50.9					104	unknown		unknown
+DO50034	BRCA-US		TCGA-AC-A8OQ	female	alive	complete remission		72		72		C50.9					34	unknown		unknown
+DO219615	BRCA-US		TCGA-BH-A8FZ	female	alive	complete remission		58		58		C50.9					144	unknown		unknown
+DO1468	BRCA-US		TCGA-C8-A132	female	alive	complete remission		56		56		C50.9					13	unknown		unknown
+DO1512	BRCA-US		TCGA-BH-A1F8	female	deceased			90		90		C50.9				749		unknown		unknown
+DO2359	BRCA-US		TCGA-C8-A275	female	alive	complete remission		56		56		C50.9					1	unknown		unknown
+DO2854	BRCA-US		TCGA-E2-A1IE	female	alive	complete remission		61		63		C50.9					983	unknown		unknown
+DO3745	BRCA-US		TCGA-AN-A0XN	female	alive	complete remission		68		68		C50.9					10	unknown		unknown
+DO4104	BRCA-US		TCGA-AR-A0U0	female	alive			73		73		C50.9					8	unknown		unknown
+DO5284	BRCA-US		TCGA-AN-A0FV	female	alive	complete remission		58		58		C50.9					10	unknown		unknown
+DO44131	BRCA-US		TCGA-JL-A3YX	female	alive			46		46		C50.9					352	unknown		unknown
+DO44168	BRCA-US		TCGA-GM-A4E0	female	alive	complete remission		67		71		C50.9					1753	unknown		unknown
+DO44212	BRCA-US		TCGA-OL-A5RX	female	alive	complete remission		51		52		C50.9					513	unknown		unknown
+DO44249	BRCA-US		TCGA-E9-A5UP	female	alive	complete remission		63		63		C50.9					0	unknown		unknown
+DO1270	BRCA-US		TCGA-E2-A1BC	female	alive	complete remission		63		63		C50.9					297	unknown		unknown
+DO1351	BRCA-US		TCGA-AO-A12A	female	alive	complete remission		47		54		C50.9					2755	unknown		unknown
+DO1388	BRCA-US		TCGA-A8-A09V	female	alive	complete remission		51		52		C50.9					457	unknown		unknown
+DO2198	BRCA-US		TCGA-E9-A1RC	female	alive	complete remission		56		59		C50.9					1224	unknown		unknown
+DO2323	BRCA-US	PCAWG	TCGA-AN-A0G0	female	alive	complete remission		56		56		C50.9					16	unknown		unknown
+DO3089	BRCA-US		TCGA-A8-A06T	female	alive	complete remission		75		78		C50.9					1249	unknown		unknown
+DO3584	BRCA-US		TCGA-A8-A0A6	female	alive	complete remission		64		65		C50.9					640	unknown		unknown
+DO4024	BRCA-US		TCGA-E9-A1RG	female	alive	complete remission		62		62		C50.9					35	unknown		unknown
+DO4970	BRCA-US		TCGA-A8-A091	female	alive	complete remission		61		62		C50.9					580	unknown		unknown
+DO5410	BRCA-US		TCGA-BH-A0B2	female	alive	complete remission		43		46		C50.9					1242	unknown		unknown
+DO5528	BRCA-US		TCGA-BH-A0W5	female	alive	complete remission		77		78		C50.9					543	unknown		unknown
+DO5780	BRCA-US		TCGA-E9-A1ND	female	alive	complete remission		75		75		C50.9					0	unknown		unknown
+DO5898	BRCA-US		TCGA-E9-A229	female	alive	complete remission		37		37		C50.9					0	unknown		unknown
+DO50036	BRCA-US		TCGA-AC-A8OR	female	alive	complete remission		75		75		C50.9					40	unknown		unknown
+DO219617	BRCA-US		TCGA-BH-A8G0	female	alive	complete remission		54		54		C50.9					199	unknown		unknown
+DO1271	BRCA-US		TCGA-A8-A083	female	alive	complete remission		67		67		C50.9					0	unknown		unknown
+DO2162	BRCA-US		TCGA-B6-A0RH	female	alive	complete remission		51		66		C50.9					5749	unknown		unknown
+DO2694	BRCA-US	PCAWG	TCGA-E2-A1LL	female	alive	complete remission		73		75		C50.9					1014	unknown		unknown
+DO2937	BRCA-US		TCGA-EW-A1IZ	female	alive	complete remission		53		53		C50.9					260	unknown		unknown
+DO3134	BRCA-US		TCGA-E2-A1IN	female	alive	complete remission		60		61		C50.9					392	unknown		unknown
+DO3215	BRCA-US		TCGA-AO-A03T	female	alive	complete remission		42		45		C50.9					1187	unknown		unknown
+DO3828	BRCA-US		TCGA-AN-A0FN	female	alive	complete remission		61		61		C50.9					218	unknown		unknown
+DO4395	BRCA-US		TCGA-A2-A0ES	female	alive	complete remission		52		54		C50.9					1001	unknown		unknown
+DO4557	BRCA-US	PCAWG	TCGA-B6-A0I6	female	deceased			49		49		C50.9				991		unknown		unknown
+DO4719	BRCA-US	PCAWG	TCGA-A2-A259	female	alive	complete remission		70		73		C50.9					1286	unknown		unknown
+DO6096	BRCA-US		TCGA-E2-A1IK	female	alive	complete remission		71		72		C50.9					519	unknown		unknown
+DO6177	BRCA-US		TCGA-EW-A1IX	female	alive	complete remission		48		50		C50.9					1082	unknown		unknown
+DO44133	BRCA-US		TCGA-C8-A3M7	female	alive	complete remission		60		60		C50.9					1	unknown		unknown
+DO44214	BRCA-US		TCGA-A2-A4RW	female	alive	complete remission		49		49		C50.9					222	unknown		unknown
+DO1272	BRCA-US		TCGA-BH-A0W7	female	alive	complete remission		49		50		C50.9					558	unknown		unknown
+DO1434	BRCA-US		TCGA-BH-A0DP	female	alive	complete remission		60		61		C50.9					476	unknown		unknown
+DO1885	BRCA-US	PCAWG	TCGA-B6-A0I2	female	alive	complete remission		45		55		C50.9					3827	unknown		unknown
+DO1966	BRCA-US		TCGA-E2-A154	female	alive	complete remission		68		68		C50.9					325	unknown		unknown
+DO2776	BRCA-US		TCGA-A2-A04U	female	alive	complete remission		47		48		C50.9					671	unknown		unknown
+DO4521	BRCA-US		TCGA-B6-A0WS	female	deceased			58		58		C50.9				2965		unknown		unknown
+DO5368	BRCA-US		TCGA-A8-A07E	female	alive	complete remission		81		82		C50.9					608	unknown		unknown
+DO5863	BRCA-US		TCGA-B6-A0I9	female	deceased			62		62		C50.9				362		unknown		unknown
+DO5944	BRCA-US		TCGA-C8-A12U	female	alive	complete remission		46		46		C50.9					0	unknown		unknown
+DO6222	BRCA-US		TCGA-AR-A24X	female	alive			52		56		C50.9					1465	unknown		unknown
+DO50038	BRCA-US		TCGA-AQ-A7U7	female	alive	complete remission		55		55		C50.9					304	unknown		unknown
+DO219619	BRCA-US		TCGA-BH-AB28	female	alive	complete remission		53		53		C50.9					185	unknown		unknown
+DO1273	BRCA-US		TCGA-C8-A26Y	female	alive	complete remission		90		90		C50.9					13	unknown		unknown
+DO1354	BRCA-US		TCGA-BH-A0HB	female	alive	complete remission		55		57		C50.9					806	unknown		unknown
+DO2407	BRCA-US		TCGA-BH-A0EI	female	alive	complete remission		51		53		C50.9					743	unknown		unknown
+DO2777	BRCA-US		TCGA-A1-A0SQ	female	alive	complete remission		45		46		C50.9					554	unknown		unknown
+DO3055	BRCA-US		TCGA-B6-A0IE	female	deceased			38		38		C50.9				1993		unknown		unknown
+DO3668	BRCA-US		TCGA-B6-A0X7	female	deceased			62		62		C50.9				1781		unknown		unknown
+DO44135	BRCA-US		TCGA-AR-A5QQ	female	deceased			68		68		C50.9				322		unknown		unknown
+DO44216	BRCA-US		TCGA-A2-A4S1	female	alive	complete remission		66		67		C50.9					365	unknown		unknown
+DO1274	BRCA-US	PCAWG	TCGA-D8-A27F	female	alive	complete remission		40		40		C50.9					106	unknown		unknown
+DO1436	BRCA-US		TCGA-E9-A1NE	female	alive	complete remission		28		28		C50.9					0	unknown		unknown
+DO1517	BRCA-US		TCGA-EW-A1P6	female	alive	complete remission		64		64		C50.9					312	unknown		unknown
+DO2084	BRCA-US	PCAWG	TCGA-BH-A0H6	female	alive	complete remission		82		84		C50.9					747	unknown		unknown
+DO2246	BRCA-US		TCGA-AR-A0TT	female	alive			53		57		C50.9					1730	unknown		unknown
+DO2903	BRCA-US		TCGA-A2-A0YL	female	alive	complete remission		48		48		C50.9					268	unknown		unknown
+DO3470	BRCA-US		TCGA-A2-A0EU	female	alive	complete remission		79		81		C50.9					733	unknown		unknown
+DO3632	BRCA-US		TCGA-A7-A3IZ	female	alive	complete remission		62		62		C50.9					148	unknown		unknown
+DO4479	BRCA-US		TCGA-A2-A0CV	female	alive	complete remission		41		46		C50.9					1870	unknown		unknown
+DO4893	BRCA-US		TCGA-AR-A1AR	female	deceased			50		50		C50.9				524		unknown		unknown
+DO5333	BRCA-US		TCGA-BH-A0B0	female	alive	complete remission		56		59		C50.9					1428	unknown		unknown
+DO1275	BRCA-US		TCGA-AR-A1AT	female	deceased			62		62		C50.9				1272		unknown		unknown
+DO1932	BRCA-US		TCGA-AR-A2LE	female	alive			69		79		C50.9					3913	unknown		unknown
+DO2210	BRCA-US		TCGA-A2-A0T4	female	alive	complete remission		62		63		C50.9					395	unknown		unknown
+DO3101	BRCA-US		TCGA-A2-A25A	female	alive	complete remission		44		52		C50.9					2968	unknown		unknown
+DO4281	BRCA-US		TCGA-E2-A14W	male	alive	complete remission		78		80		C50.9					834	unknown		unknown
+DO4443	BRCA-US		TCGA-AR-A1AO	female	alive	complete remission		47		50		C50.9					1325	unknown		unknown
+DO4605	BRCA-US		TCGA-BH-A1ES	female	deceased			35		35		C50.9				3462		unknown		unknown
+DO5172	BRCA-US		TCGA-EW-A1P4	female	alive	complete remission		43		44		C50.9					501	unknown		unknown
+DO6144	BRCA-US	PCAWG	TCGA-EW-A1J5	female	alive	complete remission		59		59		C50.9					227	unknown		unknown
+DO44137	BRCA-US		TCGA-A2-A3XZ	female	alive	complete remission		46		48		C50.9					973	unknown		unknown
+DO44218	BRCA-US		TCGA-E9-A54Y	female	alive	complete remission		63		63		C50.9					7	unknown		unknown
+DO1276	BRCA-US		TCGA-E2-A14S	female	alive	complete remission		65		67		C50.9					834	unknown		unknown
+DO1357	BRCA-US		TCGA-E2-A15A	female	alive	complete remission		45		46		C50.9					502	unknown		unknown
+DO2329	BRCA-US		TCGA-B6-A0RN	female	alive	complete remission		60		74		C50.9					5261	unknown		unknown
+DO2581	BRCA-US		TCGA-B6-A0RP	female	deceased			73		73		C50.9				3126		unknown		unknown
+DO2743	BRCA-US		TCGA-EW-A1OY	female	alive	complete remission		63		64		C50.9					593	unknown		unknown
+DO3715	BRCA-US		TCGA-E2-A15R	female	alive	complete remission		64		64		C50.9					330	unknown		unknown
+DO6064	BRCA-US		TCGA-A8-A0AD	female	alive	complete remission		83		86		C50.9					1157	unknown		unknown
+DO44101	BRCA-US		TCGA-E2-A56Z	female	alive	complete remission		69		69		C50.9					219	unknown		unknown
+DO44138	BRCA-US		TCGA-AC-A3QP	female	alive	complete remission		79		79		C50.9					286	unknown		unknown
+DO1277	BRCA-US		TCGA-A8-A07O	female	alive	complete remission		51		51		C50.9					304	unknown		unknown
+DO1402	BRCA-US		TCGA-B6-A0IM	female	alive	complete remission		75		85		C50.9					3836	unknown		unknown
+DO2131	BRCA-US		TCGA-E9-A22E	female	alive	complete remission		56		56		C50.9					0	unknown		unknown
+DO2168	BRCA-US		TCGA-E2-A15I	female	alive	complete remission		44		45		C50.9					411	unknown		unknown
+DO2825	BRCA-US		TCGA-AN-A0FW	female	alive	complete remission		67		67		C50.9					11	unknown		unknown
+DO3554	BRCA-US		TCGA-E9-A1RE	female	alive	complete remission		74		74		C50.9					47	unknown		unknown
+DO4977	BRCA-US		TCGA-A8-A099	female	alive			76		76		C50.9					304	unknown		unknown
+DO5417	BRCA-US		TCGA-A2-A0ST	female	alive			62		69		C50.9					2619	unknown		unknown
+DO5787	BRCA-US		TCGA-D8-A1JE	female	alive	complete remission		62		62		C50.9					57	unknown		unknown
+DO5912	BRCA-US		TCGA-D8-A1XT	female	alive	complete remission		61		61		C50.9					193	unknown		unknown
+DO51230	BRCA-US		TCGA-Z7-A8R5	female	alive	complete remission		61		69		C50.9					3042	unknown		unknown
+DO1278	BRCA-US		TCGA-AR-A24W	female	alive			55		59		C50.9					1550	unknown		unknown
+DO1322	BRCA-US		TCGA-AR-A0TY	female	deceased			54		54		C50.9				1699		unknown		unknown
+DO1773	BRCA-US		TCGA-AN-A0XT	female	alive			54		54		C50.9					10	unknown		unknown
+DO1854	BRCA-US		TCGA-AO-A1KT	female	alive	complete remission		78		79		C50.9					541	unknown		unknown
+DO4365	BRCA-US		TCGA-EW-A1P3	female	alive	complete remission		48		50		C50.9					987	unknown		unknown
+DO4527	BRCA-US		TCGA-BH-A18J	female	deceased			56		56		C50.9				612		unknown		unknown
+DO5256	BRCA-US		TCGA-A2-A0EN	female	alive	complete remission		70		81		C50.9					4088	unknown		unknown
+DO44103	BRCA-US		TCGA-A2-A3XX	female	alive	complete remission		49		52		C50.9					1168	unknown		unknown
+DO51231	BRCA-US		TCGA-Z7-A8R6	female	alive	complete remission		46		53		C50.8					2800	unknown		unknown
+DO1279	BRCA-US		TCGA-E9-A1RH	female	alive	complete remission		63		63		C50.9					14	unknown		unknown
+DO1693	BRCA-US		TCGA-A2-A25C	female	alive	complete remission		50		50		C50.9					285	unknown		unknown
+DO1774	BRCA-US		TCGA-A1-A0SI	female	alive	complete remission		52		53		C50.9					635	unknown		unknown
+DO2665	BRCA-US		TCGA-E9-A1RF	female	alive	complete remission		68		68		C50.9					38	unknown		unknown
+DO3394	BRCA-US		TCGA-BH-A0B5	female	alive	complete remission		40		44		C50.9					1471	unknown		unknown
+DO3970	BRCA-US		TCGA-A7-A0DB	female	alive	complete remission		56		56		C50.9					141	unknown		unknown
+DO4780	BRCA-US		TCGA-A2-A0CT	female	alive	complete remission		71		76		C50.9					1918	unknown		unknown
+DO4861	BRCA-US		TCGA-E9-A24A	female	alive	complete remission		69		69		C50.9					11	unknown		unknown
+DO4942	BRCA-US		TCGA-A2-A0EV	female	alive	complete remission		80		81		C50.9					545	unknown		unknown
+DO5095	BRCA-US		TCGA-D8-A1X8	female	alive	complete remission		62		62		C50.9					272	unknown		unknown
+DO5590	BRCA-US		TCGA-BH-A209	female	deceased			77		77		C50.9				3959		unknown		unknown
+DO5752	BRCA-US		TCGA-A7-A13G	female	alive	complete remission		79		79		C50.9					208	unknown		unknown
+DO1937	BRCA-US		TCGA-E2-A1L7	female	alive	complete remission		40		41		C50.9					633	unknown		unknown
+DO2909	BRCA-US		TCGA-AO-A0J8	female	alive	complete remission		61		61		C50.9					277	unknown		unknown
+DO3025	BRCA-US		TCGA-AR-A1AL	female	alive	complete remission		60		64		C50.9					1485	unknown		unknown
+DO3476	BRCA-US		TCGA-EW-A1PE	female	alive	complete remission		56		56		C50.9					107	unknown		unknown
+DO3638	BRCA-US		TCGA-AO-A126	female	alive	complete remission		39		46		C50.9					2850	unknown		unknown
+DO5221	BRCA-US		TCGA-BH-A1FL	female	deceased			69		69		C50.9				1673		unknown		unknown
+DO6112	BRCA-US		TCGA-A8-A096	female	alive	complete remission		73		73		C50.9					0	unknown		unknown
+DO44105	BRCA-US		TCGA-E9-A5UO	female	alive	complete remission		41		41		C50.9					7	unknown		unknown
+DO1325	BRCA-US		TCGA-AN-A0XP	female	alive			69		69		C50.9					9	unknown		unknown
+DO1406	BRCA-US		TCGA-AR-A255	female	alive			62		64		C50.9					1059	unknown		unknown
+DO1820	BRCA-US		TCGA-D8-A1XU	female	alive	complete remission		56		56		C50.9					150	unknown		unknown
+DO2216	BRCA-US		TCGA-AO-A03M	female	alive	complete remission		29		32		C50.9					1455	unknown		unknown
+DO3107	BRCA-US		TCGA-D8-A1Y3	female	alive	complete remission		61		61		C50.9					125	unknown		unknown
+DO3602	BRCA-US		TCGA-E2-A15D	female	alive	complete remission		47		47		C50.9					316	unknown		unknown
+DO4287	BRCA-US		TCGA-C8-A26V	female	alive	complete remission		47		47		C50.9					9	unknown		unknown
+DO4449	BRCA-US	PCAWG	TCGA-E2-A152	female	alive	progression		56		57		C50.9					588	unknown		unknown
+DO5060	BRCA-US		TCGA-AN-A0FJ	female	alive	complete remission		59		59		C50.9					242	unknown		unknown
+DO6032	BRCA-US		TCGA-AR-A1AP	female	alive	complete remission		80		83		C50.9					1216	unknown		unknown
+DO1902	BRCA-US		TCGA-B6-A0IK	female	deceased			63		63		C50.9				571		unknown		unknown
+DO2055	BRCA-US	PCAWG	TCGA-C8-A12L	female	alive	complete remission		67		67		C50.9					0	unknown		unknown
+DO2587	BRCA-US		TCGA-D8-A1XS	male	alive	complete remission		48		48		C50.9					50	unknown		unknown
+DO2712	BRCA-US	PCAWG	TCGA-A8-A07I	female	alive	complete remission		69		70		C50.9					426	unknown		unknown
+DO2749	BRCA-US		TCGA-B6-A0IH	female	deceased			81		81		C50.9				3418		unknown		unknown
+DO3892	BRCA-US		TCGA-D8-A27N	female	alive	complete remission		36		36		C50.9					146	unknown		unknown
+DO4251	BRCA-US		TCGA-A8-A079	female	alive	complete remission		69		69		C50.9					274	unknown		unknown
+DO4413	BRCA-US		TCGA-E2-A14O	female	alive	complete remission		76		79		C50.9					1173	unknown		unknown
+DO5179	BRCA-US		TCGA-GM-A2DB	female	alive	complete remission		62		66		C50.9					1616	unknown		unknown
+DO5836	BRCA-US		TCGA-E9-A245	female	alive	complete remission		47		47		C50.9					26	unknown		unknown
+DO44107	BRCA-US		TCGA-D8-A4Z1	female	alive	complete remission		68		68		C50.9					223	unknown		unknown
+DO1697	BRCA-US		TCGA-D8-A1JD	female	alive	complete remission		41		41		C50.9					273	unknown		unknown
+DO2137	BRCA-US		TCGA-E9-A1RA	female	alive	complete remission		48		48		C50.9					29	unknown		unknown
+DO2551	BRCA-US	PCAWG	TCGA-EW-A1PH	female	alive	complete remission		52		52		C50.9					140	unknown		unknown
+DO2713	BRCA-US		TCGA-AR-A1AQ	female	alive	complete remission		49		52		C50.9					1310	unknown		unknown
+DO3442	BRCA-US		TCGA-D8-A27K	female	alive	complete remission		47		47		C50.9					119	unknown		unknown
+DO5305	BRCA-US		TCGA-A2-A25F	female	alive	complete remission		66		66		C50.9					114	unknown		unknown
+DO5675	BRCA-US		TCGA-C8-A274	female	alive	complete remission		63		63		C50.9					1	unknown		unknown
+DO223930	BRCA-US		TCGA-AC-A4ZE	female	alive	complete remission		63		63		C50.9					152	unknown		unknown
+DO1328	BRCA-US	PCAWG	TCGA-AC-A2BK	female	alive	complete remission		78		81		C50.9					1172	unknown		unknown
+DO2020	BRCA-US		TCGA-A1-A0SO	female	alive	complete remission		67		69		C50.9					852	unknown		unknown
+DO3281	BRCA-US		TCGA-E9-A1R2	female	alive	complete remission		51		51		C50.9					19	unknown		unknown
+DO3524	BRCA-US		TCGA-AR-A24Q	female	alive			49		54		C50.9					2009	unknown		unknown
+DO4866	BRCA-US		TCGA-BH-A0RX	female	alive	complete remission		59		59		C50.9					170	unknown		unknown
+DO5144	BRCA-US		TCGA-A7-A0DC	female	alive	complete remission		63		63		C50.9					273	unknown		unknown
+DO5801	BRCA-US		TCGA-BH-A0HI	female	alive	complete remission		78		79		C50.9					620	unknown		unknown
+DO44109	BRCA-US		TCGA-OL-A5D8	female	alive	complete remission		40		40		C50.9					229	unknown		unknown
+DO223931	BRCA-US		TCGA-AC-A5EH	female	alive	complete remission		76		76		C50.9					63	unknown		unknown
+DO1743	BRCA-US		TCGA-E9-A1NI	female	alive	complete remission		51		51		C50.9					-7	unknown		unknown
+DO2102	BRCA-US		TCGA-AO-A12G	female	alive	complete remission		75		78		C50.9					1266	unknown		unknown
+DO3976	BRCA-US		TCGA-D8-A1XB	female	alive	complete remission		62		62		C50.9					201	unknown		unknown
+DO4092	BRCA-US		TCGA-A8-A06Z	female	alive			84		84		C50.9					31	unknown		unknown
+DO4173	BRCA-US		TCGA-E2-A2P6	female	alive	complete remission		77		77		C50.9					168	unknown		unknown
+DO4335	BRCA-US		TCGA-AO-A0JA	female	alive	progression		36		36		C50.9					346	unknown		unknown
+DO4830	BRCA-US		TCGA-BH-A1FE	female	deceased			31		31		C50.9				2273		unknown		unknown
+DO5640	BRCA-US		TCGA-E2-A15P	female	alive	complete remission		61		61		C50.9					315	unknown		unknown
+DO223932	BRCA-US		TCGA-AC-A5EI	female	alive	complete remission		88		88		C50.9					0	unknown		unknown
+DO1249	BRCA-US	PCAWG	TCGA-D8-A27H	female	alive	complete remission		72		72		C50.9					19	unknown		unknown
+DO1663	BRCA-US	PCAWG	TCGA-AR-A0TX	female	alive			64		64		C50.9					15	unknown		unknown
+DO2473	BRCA-US		TCGA-A8-A0A9	female	alive	complete remission		80		81		C50.9					396	unknown		unknown
+DO2635	BRCA-US		TCGA-A2-A0T5	female	alive	complete remission		39		39		C50.9					321	unknown		unknown
+DO3364	BRCA-US		TCGA-BH-A1FD	female	deceased			68		68		C50.9				1009		unknown		unknown
+DO3940	BRCA-US		TCGA-A8-A095	female	alive	complete remission		45		48		C50.9					1277	unknown		unknown
+DO4787	BRCA-US		TCGA-A2-A04W	female	alive	complete remission		50		55		C50.9					1918	unknown		unknown
+DO4949	BRCA-US		TCGA-A7-A3IY	female	alive	complete remission		71		71		C50.9					151	unknown		unknown
+DO5597	BRCA-US		TCGA-E2-A15S	female	alive	complete remission		34		34		C50.9					274	unknown		unknown
+DO5759	BRCA-US		TCGA-AR-A24O	female	alive	complete remission		43		48		C50.9					1998	unknown		unknown
+DO6000	BRCA-US		TCGA-EW-A2FV	female	alive	complete remission		39		39		C50.9					239	unknown		unknown
+DO223933	BRCA-US		TCGA-AC-A5XU	female	alive	complete remission		74		74		C50.9					9	unknown		unknown
+DO1826	BRCA-US		TCGA-B6-A1KC	female	alive	complete remission		67		70		C50.9					1326	unknown		unknown
+DO3608	BRCA-US		TCGA-A8-A08I	female	alive	complete remission		53		54		C50.9					365	unknown		unknown
+DO5228	BRCA-US		TCGA-AN-A0AS	female	alive	complete remission		70		70		C50.9					10	unknown		unknown
+DO223934	BRCA-US		TCGA-EW-A6SB	female	alive	complete remission		62		64		C50.9					760	unknown		unknown
+DO1584	BRCA-US		TCGA-AR-A0TU	female	alive	complete remission		35		35		C50.9					360	unknown		unknown
+DO1908	BRCA-US		TCGA-A2-A0EM	female	alive	complete remission		73		80		C50.9					2758	unknown		unknown
+DO3898	BRCA-US		TCGA-OK-A5Q2	female	alive			59		59		C50.9					64	unknown		unknown
+DO4257	BRCA-US		TCGA-BH-A1EX	female	deceased			67		67		C50.9				1508		unknown		unknown
+DO4419	BRCA-US		TCGA-C8-A1HF	female	alive	complete remission		48		48		C50.9					0	unknown		unknown
+DO4671	BRCA-US		TCGA-A8-A086	female	alive	complete remission		59		60		C50.9					396	unknown		unknown
+DO4914	BRCA-US		TCGA-E9-A1R0	female	alive	complete remission		58		58		C50.9					0	unknown		unknown
+DO5067	BRCA-US		TCGA-AR-A0U2	female	deceased			47		47		C50.9				2551		unknown		unknown
+DO5724	BRCA-US		TCGA-AR-A251	female	alive			51		54		C50.9					1374	unknown		unknown
+DO50070	BRCA-US		TCGA-LL-A9Q3	female	alive			69		69		C50.9					224	unknown		unknown
+DO223935	BRCA-US		TCGA-EW-A6SC	female	alive	complete remission		60		62		C50.9					952	unknown		unknown
+DO2395	BRCA-US		TCGA-AN-A0XL	female	alive	complete remission		61		61		C50.9					10	unknown		unknown
+DO2557	BRCA-US		TCGA-E2-A1IU	female	alive	complete remission		60		60		C50.9					127	unknown		unknown
+DO2719	BRCA-US	PCAWG	TCGA-E2-A1LK	female	deceased			84		84		C50.9				266		unknown		unknown
+DO3448	BRCA-US		TCGA-A8-A07S	female	alive	progression		73		73		C50.9					243	unknown		unknown
+DO3781	BRCA-US		TCGA-AC-A2FM	female	deceased			87		87		C50.9				792		unknown		unknown
+DO3862	BRCA-US		TCGA-AN-A0FK	female	alive	complete remission		88		88		C50.9					213	unknown		unknown
+DO4221	BRCA-US		TCGA-E2-A14Z	female	alive	progression		64		65		C50.9					518	unknown		unknown
+DO5563	BRCA-US		TCGA-A8-A08H	female	alive	complete remission		66		66		C50.9					0	unknown		unknown
+DO223936	BRCA-US		TCGA-EW-A6SD	female	alive	complete remission		32		34		C50.9					1010	unknown		unknown
+DO2026	BRCA-US		TCGA-E2-A15M	female	alive	complete remission		66		66		C50.9					235	unknown		unknown
+DO2521	BRCA-US		TCGA-AO-A12E	female	alive	complete remission		51		55		C50.9					1743	unknown		unknown
+DO2891	BRCA-US		TCGA-AO-A12F	female	alive	complete remission		36		40		C50.9					1471	unknown		unknown
+DO2972	BRCA-US		TCGA-D8-A1XV	female	alive	complete remission		84		84		C50.9					147	unknown		unknown
+DO3287	BRCA-US		TCGA-D8-A1JS	female	alive	complete remission		77		77		C50.9					105	unknown		unknown
+DO3412	BRCA-US	PCAWG	TCGA-AN-A0XR	female	alive			55		55		C50.9					10	unknown		unknown
+DO5032	BRCA-US		TCGA-A2-A0T1	female	alive	complete remission		55		55		C50.9					323	unknown		unknown
+DO50072	BRCA-US		TCGA-W8-A86G	female	alive	complete remission		66		66		C50.9					161	unknown		unknown
+DO51206	BRCA-US		TCGA-AC-A6NO	female	alive	complete remission		43		43		C50.9					51	unknown		unknown
+DO223937	BRCA-US		TCGA-V7-A7HQ	female	alive	complete remission		75		79		C50.9					1590	unknown		unknown
+DO1550	BRCA-US		TCGA-EW-A1OV	female	alive	complete remission		56		57		C50.9					523	unknown		unknown
+DO1668	BRCA-US		TCGA-AQ-A1H3	female	alive	complete remission		49		49		C50.9					162	unknown		unknown
+DO1712	BRCA-US		TCGA-AN-A0XU	female	alive			54		54		C50.9					10	unknown		unknown
+DO1749	BRCA-US		TCGA-BH-A0HF	female	alive	complete remission		77		78		C50.9					727	unknown		unknown
+DO2108	BRCA-US		TCGA-AN-A0FY	female	alive	complete remission		55		55		C50.9					10	unknown		unknown
+DO3170	BRCA-US		TCGA-E9-A22D	female	alive	complete remission		38		38		C50.9					0	unknown		unknown
+DO3251	BRCA-US		TCGA-E9-A1N3	female	alive	complete remission		70		70		C50.9					0	unknown		unknown
+DO4098	BRCA-US		TCGA-A7-A13F	female	alive	complete remission		44		44		C50.9					196	unknown		unknown
+DO4179	BRCA-US		TCGA-AC-A3TN	female	alive	complete remission		75		75		C50.9					34	unknown		unknown
+DO4593	BRCA-US		TCGA-A8-A07P	female	alive	complete remission		68		68		C50.9					334	unknown		unknown
+DO5808	BRCA-US	PCAWG	TCGA-AO-A03N	female	alive	progression		59		63		C50.9					1645	unknown		unknown
+DO44250	BRCA-US		TCGA-OL-A66N	female	alive	complete remission		59		60		C50.9					413	unknown		unknown
+DO51207	BRCA-US		TCGA-AR-A2LJ	female	alive			40		43		C50.9					1359	unknown		unknown
+DO2479	BRCA-US		TCGA-AR-A24R	female	alive			45		49		C50.9					1746	unknown		unknown
+DO3946	BRCA-US		TCGA-BH-A1FH	female	deceased			47		47		C50.9				1034		unknown		unknown
+DO4062	BRCA-US		TCGA-AR-A1AJ	female	alive	complete remission		83		87		C50.9					1605	unknown		unknown
+DO4143	BRCA-US		TCGA-A1-A0SK	female	deceased			54		54		C50.9				967		unknown		unknown
+DO4305	BRCA-US		TCGA-AN-A049	female	alive	complete remission		62		62		C50.9					19	unknown		unknown
+DO4756	BRCA-US		TCGA-C8-A1HN	female	alive	complete remission		56		56		C50.9					2	unknown		unknown
+DO4837	BRCA-US		TCGA-BH-A0B1	female	alive	complete remission		66		69		C50.9					1148	unknown		unknown
+DO5647	BRCA-US		TCGA-D8-A13Z	female	alive			51		51		C50.9					210	unknown		unknown
+DO44170	BRCA-US		TCGA-A2-A3XT	female	alive	complete remission		45		51		C50.9					2238	unknown		unknown
+DO51208	BRCA-US		TCGA-E2-A576	female	alive	complete remission		69		70		C50.9					578	unknown		unknown
+DO1589	BRCA-US		TCGA-BH-A18K	female	deceased			46		46		C50.9				2763		unknown		unknown
+DO1633	BRCA-US		TCGA-BH-A1FJ	female	deceased			66		66		C50.9				1927		unknown		unknown
+DO2281	BRCA-US		TCGA-BH-A0DI	female	alive	complete remission		63		64		C50.9					673	unknown		unknown
+DO2443	BRCA-US		TCGA-AO-A03V	female	alive	complete remission		41		43		C50.9					886	unknown		unknown
+DO2605	BRCA-US		TCGA-D8-A1XM	female	alive	complete remission		57		57		C50.9					218	unknown		unknown
+DO3334	BRCA-US		TCGA-A8-A09E	female	alive	progression		73		75		C50.9					943	unknown		unknown
+DO3910	BRCA-US		TCGA-AO-A129	female	alive	complete remission		29		37		C50.9					2923	unknown		unknown
+DO5116	BRCA-US		TCGA-E2-A1L6	female	alive	complete remission		44		47		C50.9					1312	unknown		unknown
+DO5486	BRCA-US		TCGA-BH-A0B8	female	alive	complete remission		64		68		C50.9					1569	unknown		unknown
+DO5611	BRCA-US		TCGA-D8-A1XJ	female	alive	complete remission		76		76		C50.9					352	unknown		unknown
+DO44252	BRCA-US		TCGA-A2-A4RY	female	alive	complete remission		46		46		C50.9					268	unknown		unknown
+DO51209	BRCA-US		TCGA-E2-A9RU	female	alive	complete remission		90		90		C50.9					280	unknown		unknown
+DO4677	BRCA-US		TCGA-C8-A12O	female	alive	complete remission		50		50		C50.9					0	unknown		unknown
+DO6008	BRCA-US		TCGA-E2-A106	female	alive	complete remission		34		38		C50.9					1555	unknown		unknown
+DO44172	BRCA-US		TCGA-OL-A66L	female	alive	complete remission		71		73		C50.9					945	unknown		unknown
+DO1392	BRCA-US	PCAWG	TCGA-A7-A13D	female	alive	complete remission		46		46		C50.9					267	unknown		unknown
+DO1473	BRCA-US		TCGA-BH-A18S	female	deceased			79		79		C50.3				2009		unknown		unknown
+DO3787	BRCA-US		TCGA-BH-A204	female	deceased			80		80		C50.9				2534		unknown		unknown
+DO3868	BRCA-US		TCGA-AN-A0FT	female	alive	complete remission		63		63		C50.9					183	unknown		unknown
+DO4227	BRCA-US		TCGA-EW-A1J6	female	alive	complete remission		70		71		C50.9					595	unknown		unknown
+DO4641	BRCA-US		TCGA-EW-A1OW	female	alive	complete remission		58		59		C50.9					464	unknown		unknown
+DO4803	BRCA-US		TCGA-E9-A243	female	alive	complete remission		52		52		C50.9					43	unknown		unknown
+DO5569	BRCA-US		TCGA-A2-A0T7	female	alive	complete remission		51		52		C50.9					397	unknown		unknown
+DO44254	BRCA-US		TCGA-GM-A3XG	female	alive	complete remission		46		48		C50.9					982	unknown		unknown
+DO50040	BRCA-US		TCGA-B6-A401	female	alive	complete remission		47		52		C50.9					1989	unknown		unknown
+DO219621	BRCA-US		TCGA-C8-A8HP	female	alive	complete remission		59		59		C50.9					8	unknown		unknown
+DO1555	BRCA-US		TCGA-BH-A0DX	female	alive	complete remission		62		65		C50.9					1442	unknown		unknown
+DO1717	BRCA-US		TCGA-E9-A1N6	female	alive	complete remission		52		52		C50.9					0	unknown		unknown
+DO2365	BRCA-US		TCGA-AC-A3OD	female	alive	complete remission		68		68		C50.9					35	unknown		unknown
+DO2527	BRCA-US		TCGA-BH-A0DO	female	alive	complete remission		78		79		C50.9					525	unknown		unknown
+DO2860	BRCA-US		TCGA-AO-A0JD	female	alive	complete remission		59		63		C50.9					1813	unknown		unknown
+DO2897	BRCA-US	PCAWG	TCGA-BH-A0WA	female	alive	complete remission		82		83		C50.9					372	unknown		unknown
+DO2978	BRCA-US		TCGA-AO-A03U	female	deceased			31		31		C50.9				1793		unknown		unknown
+DO3418	BRCA-US		TCGA-AO-A12C	female	alive	complete remission		42		47		C50.9					1994	unknown		unknown
+DO3751	BRCA-US		TCGA-C8-A12X	female	alive	complete remission		62		62		C50.9					0	unknown		unknown
+DO4110	BRCA-US		TCGA-C8-A1HI	female	alive	complete remission		40		40		C50.9					0	unknown		unknown
+DO5452	BRCA-US		TCGA-BH-A18Q	female	deceased			56		56		C50.8				1692		unknown		unknown
+DO5984	BRCA-US		TCGA-D8-A146	female	alive			57		57		C50.9					344	unknown		unknown
+DO44174	BRCA-US		TCGA-AQ-A54N	female	alive	complete remission		51		51		C50.9					78	unknown		unknown
+DO50041	BRCA-US		TCGA-B6-A402	female	alive	progression		47		51		C50.9					1651	unknown		unknown
+DO3095	BRCA-US		TCGA-D8-A1XQ	female	alive	complete remission		69		69		C50.9					177	unknown		unknown
+DO3176	BRCA-US		TCGA-BH-A1F5	female	deceased			62		62		C50.9				2712		unknown		unknown
+DO3257	BRCA-US		TCGA-B6-A0WT	female	alive	complete remission		61		75		C50.9					5396	unknown		unknown
+DO3590	BRCA-US		TCGA-D8-A1X5	female	alive	complete remission		81		81		C50.9					171	unknown		unknown
+DO4030	BRCA-US		TCGA-E2-A1LI	female	alive	complete remission		57		64		C50.9					2750	unknown		unknown
+DO4599	BRCA-US		TCGA-D8-A1JJ	female	alive	complete remission		54		54		C50.9					274	unknown		unknown
+DO5039	BRCA-US		TCGA-C8-A12Y	female	alive	complete remission		44		44		C50.9					0	unknown		unknown
+DO5291	BRCA-US		TCGA-A8-A07U	female	alive	complete remission		66		66		C50.9					303	unknown		unknown
+DO44175	BRCA-US		TCGA-AR-A5QP	female	alive	complete remission		54		55		C50.9					439	unknown		unknown
+DO44256	BRCA-US		TCGA-AQ-A54O	male	alive	complete remission		51		52		C50.9					665	unknown		unknown
+DO219623	BRCA-US		TCGA-C8-A8HQ	female	alive	complete remission		53		53		C50.9					9	unknown		unknown
+DO1476	BRCA-US		TCGA-A8-A09W	female	alive			70		70		C50.9					30	unknown		unknown
+DO1638	BRCA-US		TCGA-B6-A1KI	female	alive	complete remission		63		67		C50.9					1463	unknown		unknown
+DO1890	BRCA-US		TCGA-BH-A1FB	female	deceased			60		60		C50.9				3669		unknown		unknown
+DO2943	BRCA-US		TCGA-A8-A081	female	alive	complete remission		80		80		C50.9					0	unknown		unknown
+DO3140	BRCA-US	PCAWG	TCGA-A8-A08S	female	alive	complete remission		71		72		C50.9					580	unknown		unknown
+DO3221	BRCA-US		TCGA-AO-A0J9	female	alive	progression		61		64		C50.9					1256	unknown		unknown
+DO3834	BRCA-US		TCGA-EW-A1OZ	female	alive	complete remission		56		58		C50.9					941	unknown		unknown
+DO4068	BRCA-US		TCGA-AN-A0FF	female	alive	complete remission		32		32		C50.9					172	unknown		unknown
+DO4149	BRCA-US		TCGA-A2-A0YH	female	alive	complete remission		53		54		C50.9					379	unknown		unknown
+DO4563	BRCA-US		TCGA-AC-A2FG	female	alive	complete remission		79		82		C50.9					1125	unknown		unknown
+DO4725	BRCA-US		TCGA-BH-A0AZ	female	alive	complete remission		47		49		C50.9					867	unknown		unknown
+DO5535	BRCA-US		TCGA-B6-A0RQ	female	deceased			68		68		C50.9				4267		unknown		unknown
+DO44220	BRCA-US		TCGA-E9-A5FL	female	alive	complete remission		65		65		C50.9					8	unknown		unknown
+DO50043	BRCA-US		TCGA-B6-A40B	female	alive	complete remission		76		82		C50.9					2521	unknown		unknown
+DO1396	BRCA-US		TCGA-BH-A0BZ	female	alive	complete remission		59		63		C50.9					1492	unknown		unknown
+DO1440	BRCA-US		TCGA-B6-A0WW	female	deceased			58		58		C50.9				558		unknown		unknown
+DO1972	BRCA-US		TCGA-B6-A0WZ	female	alive	complete remission		50		60		C50.9					3941	unknown		unknown
+DO2287	BRCA-US		TCGA-AR-A0TZ	female	alive			43		49		C50.9					2316	unknown		unknown
+DO2449	BRCA-US		TCGA-AR-A252	female	alive			50		53		C50.9					1236	unknown		unknown
+DO3916	BRCA-US		TCGA-AR-A0U4	female	alive			54		58		C50.9					1684	unknown		unknown
+DO44140	BRCA-US		TCGA-A2-A3XV	female	alive	complete remission		46		47		C50.9					428	unknown		unknown
+DO44177	BRCA-US		TCGA-E9-A3X8	female	alive	complete remission		48		48		C50.9					23	unknown		unknown
+DO44258	BRCA-US		TCGA-OL-A66I	female	alive	complete remission		36		37		C50.9					714	unknown		unknown
+DO219625	BRCA-US		TCGA-C8-A8HR	female	alive	complete remission		49		49		C50.9					10	unknown		unknown
+DO1360	BRCA-US		TCGA-B6-A0X0	female	deceased			54		54		C50.919				3945		unknown		unknown
+DO1522	BRCA-US		TCGA-E9-A1NA	female	alive	complete remission		58		58		C50.9					0	unknown		unknown
+DO1559	BRCA-US	PCAWG	TCGA-AO-A0J4	female	alive	complete remission		41		41		C50.9					294	unknown		unknown
+DO2413	BRCA-US		TCGA-E2-A1IG	female	alive	complete remission		45		47		C50.9					755	unknown		unknown
+DO2783	BRCA-US	PCAWG	TCGA-AN-A0AT	female	alive	complete remission		62		62		C50.9					10	unknown		unknown
+DO3061	BRCA-US		TCGA-D8-A1XZ	female	alive	complete remission		81		81		C50.9					121	unknown		unknown
+DO3674	BRCA-US		TCGA-BH-A18T	female	deceased			70		70		C50.9				224		unknown		unknown
+DO5005	BRCA-US		TCGA-BH-A0AW	female	alive	complete remission		56		57		C50.9					622	unknown		unknown
+DO5375	BRCA-US	PCAWG	TCGA-B6-A0RT	female	alive	complete remission		39		46		C50.9					2721	unknown		unknown
+DO5500	BRCA-US		TCGA-EW-A1IW	female	alive	complete remission		80		80		C50.9					252	unknown		unknown
+DO5618	BRCA-US		TCGA-BH-A0BT	female	alive	complete remission		56		59		C50.9					1386	unknown		unknown
+DO5870	BRCA-US		TCGA-A7-A0DA	female	alive	complete remission		62		63		C50.9					373	unknown		unknown
+DO44141	BRCA-US		TCGA-A7-A4SE	female	alive	complete remission		54		55		C50.9					371	unknown		unknown
+DO44178	BRCA-US		TCGA-LD-A66U	female	alive	complete remission		44		44		C50.9					252	unknown		unknown
+DO44222	BRCA-US		TCGA-A2-A3XU	female	deceased			35		35		C50.9				912		unknown		unknown
+DO50045	BRCA-US		TCGA-B6-A40C	female	alive	complete remission		51		55		C50.9					1673	unknown		unknown
+DO1280	BRCA-US		TCGA-AN-A04C	female	alive	complete remission		51		51		C50.9					54	unknown		unknown
+DO1398	BRCA-US		TCGA-D8-A1Y1	female	alive	complete remission		80		80		C50.9					116	unknown		unknown
+DO1604	BRCA-US		TCGA-B6-A1KF	female	alive	complete remission		68		76		C50.9					3088	unknown		unknown
+DO2090	BRCA-US		TCGA-E9-A3HO	female	alive	complete remission		49		49		C50.9					19	unknown		unknown
+DO2252	BRCA-US	PCAWG	TCGA-AO-A0J2	female	alive	complete remission		41		42		C50.9					585	unknown		unknown
+DO3305	BRCA-US		TCGA-A8-A08T	female	alive	progression		64		71		C50.9					2830	unknown		unknown
+DO4485	BRCA-US		TCGA-A2-A0YE	female	alive	complete remission		48		48		C50.9					253	unknown		unknown
+DO4647	BRCA-US		TCGA-C8-A12M	female	alive	complete remission		70		70		C50.9					0	unknown		unknown
+DO5952	BRCA-US		TCGA-E2-A1L9	female	alive	complete remission		40		41		C50.9					388	unknown		unknown
+DO6186	BRCA-US		TCGA-C8-A12Z	female	alive	complete remission		45		45		C50.9					12	unknown		unknown
+DO219627	BRCA-US		TCGA-C8-A9FZ	female	alive	complete remission		49		49		C50.9					7	unknown		unknown
+DO1281	BRCA-US		TCGA-AR-A2LK	female	alive			62		65		C50.9					1304	unknown		unknown
+DO2866	BRCA-US		TCGA-A1-A0SJ	female	alive	complete remission		39		40		C50.9					416	unknown		unknown
+DO3757	BRCA-US		TCGA-E9-A1RB	female	alive	complete remission		40		40		C50.9					21	unknown		unknown
+DO4116	BRCA-US		TCGA-E2-A15J	female	alive	complete remission		51		52		C50.9					464	unknown		unknown
+DO4611	BRCA-US		TCGA-D8-A1JB	female	alive	complete remission		54		55		C50.9					365	unknown		unknown
+DO5340	BRCA-US		TCGA-A2-A0YT	female	deceased			56		56		C50.9				723		unknown		unknown
+DO6231	BRCA-US	PCAWG	TCGA-EW-A1PC	female	alive	complete remission		66		66		C50.9					187	unknown		unknown
+DO44099	BRCA-US		TCGA-D8-A3Z5	female	alive	complete remission		54		55		C50.9					441	unknown		unknown
+DO44143	BRCA-US		TCGA-OL-A5D6	female	alive	complete remission		71		72		C50.9					385	unknown		unknown
+DO44224	BRCA-US		TCGA-OL-A5RV	female	alive	complete remission		43		45		C50.9					733	unknown		unknown
+DO50047	BRCA-US		TCGA-E2-A572	female	alive	complete remission		72		74		C50.9					831	unknown		unknown
+DO1282	BRCA-US		TCGA-AR-A2LQ	female	alive			59		60		C50.9					516	unknown		unknown
+DO2335	BRCA-US		TCGA-A2-A0CW	female	alive	complete remission		67		71		C50.9					1750	unknown		unknown
+DO3596	BRCA-US		TCGA-AQ-A04L	female	alive	complete remission		48		57		C50.9					3359	unknown		unknown
+DO3721	BRCA-US		TCGA-E2-A15F	female	alive	complete remission		64		65		C50.9					469	unknown		unknown
+DO4036	BRCA-US	PCAWG	TCGA-A2-A0YG	female	alive	complete remission		63		64		C50.9					404	unknown		unknown
+DO5459	BRCA-US		TCGA-BH-A1EO	female	deceased			68		68		C50.9				2798		unknown		unknown
+DO50048	BRCA-US		TCGA-E9-A6HE	female	alive			45		45		C50.9					92	unknown		unknown
+DO219629	BRCA-US		TCGA-D8-A73U	female	alive	progression		88		89		C50.9					492	unknown		unknown
+DO1283	BRCA-US		TCGA-BH-A1EU	female	deceased			83		83		C50.9				1286		unknown		unknown
+DO1364	BRCA-US		TCGA-BH-A1FM	female	deceased			44		44		C50.9				1388		unknown		unknown
+DO1445	BRCA-US		TCGA-E9-A1RI	female	alive	complete remission		43		43		C50.9					48	unknown		unknown
+DO1896	BRCA-US		TCGA-A7-A4SA	female	alive	complete remission		40		40		C50.9					241	unknown		unknown
+DO2174	BRCA-US		TCGA-AC-A3HN	female	alive	complete remission		87		87		C50.9					21	unknown		unknown
+DO2831	BRCA-US		TCGA-BH-A0BA	female	alive	complete remission		51		54		C50.9					1132	unknown		unknown
+DO2949	BRCA-US		TCGA-AO-A125	female	alive	complete remission		72		80		C50.9					3019	unknown		unknown
+DO3146	BRCA-US		TCGA-A8-A09K	female	alive	complete remission		68		70		C50.9					912	unknown		unknown
+DO3227	BRCA-US		TCGA-E2-A1IP	female	alive	complete remission		42		43		C50.9					428	unknown		unknown
+DO3560	BRCA-US		TCGA-D8-A1XD	female	alive	complete remission		36		36		C50.9					155	unknown		unknown
+DO4000	BRCA-US		TCGA-C8-A12P	female	alive	complete remission		55		55		C50.9					0	unknown		unknown
+DO4569	BRCA-US		TCGA-GM-A2DA	female	alive	progression		46		62		C50.9					5909	unknown		unknown
+DO5298	BRCA-US		TCGA-A8-A08P	female	alive	complete remission		70		72		C50.9					943	unknown		unknown
+DO6152	BRCA-US		TCGA-A8-A08F	female	alive	complete remission		59		60		C50.9					549	unknown		unknown
+DO44145	BRCA-US		TCGA-A2-A0CO	female	alive	complete remission		85		90		C50.9					3409	unknown		unknown
+DO44226	BRCA-US		TCGA-A2-A4RX	female	alive			67		67		C50.9					274	unknown		unknown
+DO50012	BRCA-US		TCGA-5T-A9QA	female	alive			52		52		C50.9					12	unknown		unknown
+DO50049	BRCA-US		TCGA-LL-A5YN	female	alive			46		46		C50.9					111	unknown		unknown
+DO1284	BRCA-US		TCGA-BH-A0EB	female	alive	complete remission		69		71		C50.9					745	unknown		unknown
+DO1527	BRCA-US		TCGA-E9-A1NF	female	alive	complete remission		60		60		C50.9					0	unknown		unknown
+DO1608	BRCA-US		TCGA-AN-A0AK	female	alive	complete remission		76		76		C50.9					224	unknown		unknown
+DO1860	BRCA-US		TCGA-A2-A0ET	female	alive	complete remission		58		60		C50.9					807	unknown		unknown
+DO1978	BRCA-US		TCGA-E9-A1R7	female	alive	complete remission		64		64		C50.9					34	unknown		unknown
+DO2788	BRCA-US		TCGA-BH-A18I	female	alive	complete remission		53		53		C50.2					220	unknown		unknown
+DO2913	BRCA-US		TCGA-AN-A0XV	female	alive			67		67		C50.9					162	unknown		unknown
+DO3110	BRCA-US	PCAWG	TCGA-A8-A08L	female	deceased			89		89		C50.9				304		unknown		unknown
+DO3804	BRCA-US	PCAWG	TCGA-C8-A130	female	alive	complete remission		52		52		C50.9					4	unknown		unknown
+DO4038	BRCA-US		TCGA-AO-A1KO	female	alive	complete remission		46		47		C50.9					448	unknown		unknown
+DO4371	BRCA-US		TCGA-AC-A23G	female	alive	complete remission		76		76		C50.9					330	unknown		unknown
+DO4533	BRCA-US		TCGA-AR-A1AX	female	alive			64		67		C50.9					1103	unknown		unknown
+DO4984	BRCA-US		TCGA-D8-A142	female	alive	complete remission		74		74		C50.9					61	unknown		unknown
+DO5424	BRCA-US		TCGA-BH-A0E1	female	alive	complete remission		52		53		C50.9					477	unknown		unknown
+DO5794	BRCA-US		TCGA-BH-A18N	female	deceased			88		88		C50.9				1148		unknown		unknown
+DO6072	BRCA-US	PCAWG	TCGA-A2-A0D2	female	alive	complete remission		45		47		C50.9					761	unknown		unknown
+DO44146	BRCA-US		TCGA-GM-A5PX	female	alive	complete remission		65		66		C50.9					551	unknown		unknown
+DO50013	BRCA-US		TCGA-A7-A5ZW	female	alive	complete remission		47		47		C50.9					134	unknown		unknown
+DO1285	BRCA-US		TCGA-AN-A046	female	alive	complete remission		68		68		C50.9					10	unknown		unknown
+DO1410	BRCA-US		TCGA-BH-A28O	female	alive	complete remission		50		50		C50.9					324	unknown		unknown
+DO1780	BRCA-US		TCGA-E9-A227	female	alive	progression		42		42		C50.9					24	unknown		unknown
+DO2419	BRCA-US		TCGA-EW-A1J2	female	alive	complete remission		50		50		C50.9					140	unknown		unknown
+DO2671	BRCA-US		TCGA-BH-A1F6	female	deceased			51		51		C50.9				2965		unknown		unknown
+DO3067	BRCA-US		TCGA-B6-A0IO	female	alive	complete remission		66		75		C50.9					3350	unknown		unknown
+DO5263	BRCA-US		TCGA-E9-A244	female	alive	complete remission		54		54		C50.9					21	unknown		unknown
+DO5920	BRCA-US		TCGA-A2-A1G0	female	alive			49		50		C50.9					380	unknown		unknown
+DO44147	BRCA-US		TCGA-A7-A426	female	alive			50		50		C50.9					229	unknown		unknown
+DO44228	BRCA-US		TCGA-OL-A5RZ	female	alive	complete remission		57		57		C50.9					313	unknown		unknown
+DO50014	BRCA-US		TCGA-A7-A5ZX	female	alive	complete remission		48		48		C50.9					132	unknown		unknown
+DO1286	BRCA-US		TCGA-AR-A254	female	alive			50		53		C50.9					1212	unknown		unknown
+DO1943	BRCA-US		TCGA-AR-A0TW	female	alive			50		52		C50.9					739	unknown		unknown
+DO2096	BRCA-US	PCAWG	TCGA-B6-A0X5	female	deceased			61		61		C50.9				2097		unknown		unknown
+DO2258	BRCA-US		TCGA-A2-A0ER	female	alive	complete remission		63		68		C50.9					1903	unknown		unknown
+DO3031	BRCA-US		TCGA-AR-A1AN	female	alive	complete remission		46		49		C50.9					1330	unknown		unknown
+DO3482	BRCA-US	PCAWG	TCGA-B6-A0RE	female	alive	complete remission		61		78		C50.9					6435	unknown		unknown
+DO3644	BRCA-US		TCGA-B6-A0RL	female	deceased			60		60		C50.9				2469		unknown		unknown
+DO5507	BRCA-US		TCGA-C8-A12T	female	alive	complete remission		43		43		C50.9					0	unknown		unknown
+DO5877	BRCA-US		TCGA-A8-A0AB	female	alive	complete remission		54		55		C50.9					518	unknown		unknown
+DO44111	BRCA-US		TCGA-GM-A3XL	female	alive	complete remission		49		53		C50.9					1717	unknown		unknown
+DO44148	BRCA-US		TCGA-LL-A5YM	female	alive	progression		88		88		C50.9					143	unknown		unknown
+DO50015	BRCA-US		TCGA-A7-A6VV	female	alive	complete remission		51		51		C50.9					181	unknown		unknown
+DO1250	BRCA-US		TCGA-A2-A0YC	female	alive	complete remission		59		60		C50.9					644	unknown		unknown
+DO1287	BRCA-US	PCAWG	TCGA-AO-A124	female	alive	complete remission		38		46		C50.9					3120	unknown		unknown
+DO1331	BRCA-US		TCGA-AN-A0XO	female	alive	complete remission		59		60		C50.9					375	unknown		unknown
+DO1368	BRCA-US		TCGA-AR-A1AH	female	alive	complete remission		51		57		C50.9					2298	unknown		unknown
+DO1449	BRCA-US		TCGA-AN-A0FX	female	alive	complete remission		52		52		C50.9					10	unknown		unknown
+DO2222	BRCA-US	PCAWG	TCGA-AN-A04D	female	alive	complete remission		58		58		C50.9					52	unknown		unknown
+DO4293	BRCA-US		TCGA-E9-A22H	female	alive	complete remission		42		42		C50.9					0	unknown		unknown
+DO4455	BRCA-US		TCGA-D8-A1XW	female	alive	complete remission		53		53		C50.9					118	unknown		unknown
+DO4617	BRCA-US		TCGA-BH-A0B4	male	alive	complete remission		65		68		C50.9					1191	unknown		unknown
+DO1251	BRCA-US		TCGA-A8-A085	male	alive	complete remission		44		47		C50.9					1124	unknown		unknown
+DO1288	BRCA-US		TCGA-D8-A1JH	female	alive	complete remission		56		56		C50.9					284	unknown		unknown
+DO2061	BRCA-US		TCGA-AC-A2QH	female	alive	complete remission		58		58		C50.9					31	unknown		unknown
+DO2593	BRCA-US	PCAWG	TCGA-A8-A094	female	alive	complete remission		75		75		C50.9					0	unknown		unknown
+DO2755	BRCA-US		TCGA-A2-A0CX	female	alive	complete remission		52		55		C50.9					1303	unknown		unknown
+DO2836	BRCA-US		TCGA-A2-A0YK	female	alive	complete remission		61		61		C50.9					334	unknown		unknown
+DO3727	BRCA-US		TCGA-BH-A0DV	female	alive	complete remission		54		57		C50.9					1374	unknown		unknown
+DO5347	BRCA-US	PCAWG	TCGA-A2-A0D4	female	alive	complete remission		37		38		C50.9					496	unknown		unknown
+DO6120	BRCA-US		TCGA-E2-A14U	female	alive	complete remission		74		76		C50.9					838	unknown		unknown
+DO44113	BRCA-US		TCGA-OL-A5D7	female	alive	complete remission		70		73		C50.9					1416	unknown		unknown
+DO50017	BRCA-US		TCGA-A7-A6VW	female	alive	complete remission		48		48		C50.9					176	unknown		unknown
+DO1252	BRCA-US		TCGA-C8-A131	female	alive	complete remission		82		82		C50.9					14	unknown		unknown
+DO1289	BRCA-US		TCGA-AO-A12B	female	alive	complete remission		63		69		C50.9					2359	unknown		unknown
+DO1414	BRCA-US		TCGA-AR-A24S	female	alive			61		66		C50.9					1888	unknown		unknown
+DO2143	BRCA-US		TCGA-D8-A1JT	female	alive	complete remission		70		70		C50.9					123	unknown		unknown
+DO2305	BRCA-US		TCGA-GM-A2DN	female	alive	complete remission		58		64		C50.9					2352	unknown		unknown
+DO3566	BRCA-US		TCGA-B6-A0X4	female	deceased			62		62		C50.9				860		unknown		unknown
+DO4006	BRCA-US		TCGA-A7-A26J	female	alive	progression		49		49		C50.9					68	unknown		unknown
+DO5186	BRCA-US		TCGA-BH-A0BQ	female	alive	complete remission		39		41		C50.9					827	unknown		unknown
+DO5843	BRCA-US		TCGA-E2-A10B	female	alive	complete remission		67		69		C50.9					748	unknown		unknown
+DO6040	BRCA-US		TCGA-AN-A0AJ	female	alive	complete remission		79		79		C50.9					244	unknown		unknown
+DO1253	BRCA-US		TCGA-E9-A1NG	female	alive	complete remission		62		62		C50.9					0	unknown		unknown
+DO1334	BRCA-US		TCGA-E2-A10C	female	alive	complete remission		54		56		C50.9					854	unknown		unknown
+DO1866	BRCA-US		TCGA-GM-A2DC	female	alive	complete remission		57		61		C50.9					1628	unknown		unknown
+DO2676	BRCA-US		TCGA-AC-A2FK	female	alive	complete remission		45		48		C50.9					1180	unknown		unknown
+DO2919	BRCA-US		TCGA-BH-A0DZ	female	alive	complete remission		43		44		C50.9					495	unknown		unknown
+DO3116	BRCA-US		TCGA-A2-A0CQ	female	alive	complete remission		62		68		C50.9					2393	unknown		unknown
+DO3530	BRCA-US		TCGA-AO-A03R	female	alive	complete remission		57		61		C50.9					1707	unknown		unknown
+DO4377	BRCA-US		TCGA-AO-A0J3	female	alive	complete remission		67		67		C50.9					302	unknown		unknown
+DO4539	BRCA-US		TCGA-GM-A3NY	female	alive	complete remission		72		74		C50.9					743	unknown		unknown
+DO4872	BRCA-US		TCGA-A8-A06Y	female	alive	complete remission		66		68		C50.9					791	unknown		unknown
+DO5312	BRCA-US	PCAWG	TCGA-AQ-A04J	female	alive	complete remission		45		45		C50.9					160	unknown		unknown
+DO5682	BRCA-US	PCAWG	TCGA-A2-A0CM	female	deceased			40		40		C50.9				754		unknown		unknown
+DO44115	BRCA-US		TCGA-A7-A5ZV	female	alive	complete remission		62		62		C50.9					210	unknown		unknown
+DO50019	BRCA-US		TCGA-A7-A6VX	female	alive	complete remission		68		68		C50.9					169	unknown		unknown
+DO1254	BRCA-US		TCGA-BH-A0AU	female	alive	complete remission		45		47		C50.9					746	unknown		unknown
+DO1786	BRCA-US		TCGA-EW-A1P1	female	alive	progression		68		70		C50.9					920	unknown		unknown
+DO1830	BRCA-US		TCGA-GM-A2DM	female	alive	complete remission		57		63		C50.9					2331	unknown		unknown
+DO1948	BRCA-US		TCGA-C8-A26W	female	alive	complete remission		58		58		C50.9					7	unknown		unknown
+DO2802	BRCA-US		TCGA-A8-A09T	female	alive	complete remission		68		69		C50.9					579	unknown		unknown
+DO3982	BRCA-US		TCGA-BH-A0HY	female	alive	complete remission		60		62		C50.9					868	unknown		unknown
+DO4341	BRCA-US		TCGA-A2-A0YI	female	alive	complete remission		62		62		C50.9					358	unknown		unknown
+DO4503	BRCA-US		TCGA-D8-A13Y	female	alive	complete remission		52		52		C50.9					264	unknown		unknown
+DO5151	BRCA-US		TCGA-AR-A1AW	female	alive			65		67		C50.9					1072	unknown		unknown
+DO6204	BRCA-US		TCGA-D8-A1JF	female	alive	complete remission		79		79		C50.9					96	unknown		unknown
+DO1255	BRCA-US		TCGA-A8-A08R	female	alive	complete remission		52		52		C50.9					30	unknown		unknown
+DO2641	BRCA-US		TCGA-BH-A0B6	female	alive	complete remission		47		51		C50.9					1732	unknown		unknown
+DO3037	BRCA-US	PCAWG	TCGA-A1-A0SM	male	alive	complete remission		77		77		C50.9					242	unknown		unknown
+DO3370	BRCA-US		TCGA-BH-A0BF	female	alive	complete remission		56		58		C50.9					782	unknown		unknown
+DO3488	BRCA-US		TCGA-A2-A0D3	female	alive	complete remission		42		44		C50.9					736	unknown		unknown
+DO44117	BRCA-US		TCGA-C8-A3M8	female	alive	complete remission		68		68		C50.9					7	unknown		unknown
+DO1256	BRCA-US		TCGA-D8-A1JG	female	alive	complete remission		62		62		C50.9					187	unknown		unknown
+DO1337	BRCA-US		TCGA-AO-A1KQ	male	alive	complete remission		84		88		C50.9					1519	unknown		unknown
+DO2228	BRCA-US		TCGA-BH-A0HO	female	alive	complete remission		48		48		C50.9					76	unknown		unknown
+DO3001	BRCA-US		TCGA-GM-A3NW	female	alive	complete remission		63		71		C50.9					2982	unknown		unknown
+DO3614	BRCA-US	PCAWG	TCGA-A2-A0EY	female	alive	complete remission		62		63		C50.9					485	unknown		unknown
+DO4299	BRCA-US		TCGA-A1-A0SN	female	alive	complete remission		50		53		C50.9					1196	unknown		unknown
+DO4794	BRCA-US		TCGA-C8-A1HO	female	alive	complete remission		34		34		C50.9					0	unknown		unknown
+DO4956	BRCA-US		TCGA-E9-A1NC	female	alive	complete remission		61		61		C50.9					0	unknown		unknown
+DO5766	BRCA-US		TCGA-D8-A1XO	female	alive	complete remission		56		56		C50.9					242	unknown		unknown
+DO5928	BRCA-US		TCGA-A8-A082	female	alive	complete remission		58		59		C50.9					549	unknown		unknown
+DO1257	BRCA-US	PCAWG	TCGA-BH-A0DG	female	alive	complete remission		30		31		C50.9					713	unknown		unknown
+DO1301	BRCA-US	PCAWG	TCGA-BH-A0B3	female	alive	complete remission		53		56		C50.9					1203	unknown		unknown
+DO1419	BRCA-US		TCGA-E9-A1R5	female	alive	complete remission		63		63		C50.9					42	unknown		unknown
+DO1914	BRCA-US		TCGA-A2-A0SV	female	deceased			63		63		C50.9				825		unknown		unknown
+DO2067	BRCA-US		TCGA-D8-A1J9	female	alive	complete remission		48		48		C50.9					248	unknown		unknown
+DO2599	BRCA-US		TCGA-A8-A08A	female	alive	complete remission		89		89		C50.9					30	unknown		unknown
+DO4263	BRCA-US		TCGA-D8-A1XF	female	alive	complete remission		45		45		C50.9					97	unknown		unknown
+DO4425	BRCA-US		TCGA-B6-A2IU	female	alive			62		75		C50.9					4840	unknown		unknown
+DO5235	BRCA-US		TCGA-A2-A1FV	female	alive	complete remission		74		75		C50.9					461	unknown		unknown
+DO44119	BRCA-US		TCGA-JL-A3YW	female	alive			49		49		C50.9					360	unknown		unknown
+DO51210	BRCA-US		TCGA-LD-A7W5	female	alive	progression		52		52		C50.9					124	unknown		unknown
+DO1258	BRCA-US		TCGA-C8-A12K	female	alive	complete remission		80		80		C50.9					0	unknown		unknown
+DO2149	BRCA-US		TCGA-B6-A0I8	female	deceased			46		46		C50.9				749		unknown		unknown
+DO2563	BRCA-US		TCGA-A2-A0CP	female	alive	complete remission		60		66		C50.9					2495	unknown		unknown
+DO2725	BRCA-US		TCGA-BH-A1EY	female	deceased			79		79		C50.9				538		unknown		unknown
+DO3454	BRCA-US		TCGA-BH-A28Q	female	alive	complete remission		46		46		C50.9					196	unknown		unknown
+DO4796	BRCA-US	PCAWG	TCGA-A8-A092	female	alive	complete remission		48		49		C50.9					487	unknown		unknown
+DO4921	BRCA-US		TCGA-EW-A1PD	male	alive	complete remission		61		61		C50.9					175	unknown		unknown
+DO5074	BRCA-US		TCGA-A8-A06X	female	deceased			77		77		C50.9				943		unknown		unknown
+DO5731	BRCA-US		TCGA-E2-A108	female	alive			64		64		C50.9					124	unknown		unknown
+DO51211	BRCA-US		TCGA-LD-A9QF	female	alive	complete remission		73		73		C50.9					266	unknown		unknown
+DO1259	BRCA-US		TCGA-A2-A1G4	female	alive	complete remission		71		72		C50.9					372	unknown		unknown
+DO1303	BRCA-US		TCGA-D8-A1X7	female	alive			40		40		C50.9					85	unknown		unknown
+DO1673	BRCA-US		TCGA-E2-A1LH	female	alive	complete remission		59		66		C50.9					2876	unknown		unknown
+DO2032	BRCA-US		TCGA-D8-A27W	female	alive	complete remission		55		55		C50.9					15	unknown		unknown
+DO3293	BRCA-US		TCGA-BH-A208	female	deceased			48		48		C50.9				1759		unknown		unknown
+DO3536	BRCA-US		TCGA-E2-A105	female	alive	complete remission		79		82		C50.9					1163	unknown		unknown
+DO5200	BRCA-US	PCAWG	TCGA-BH-A18U	female	deceased			72		72		C50.4				1563		unknown		unknown
+DO6128	BRCA-US		TCGA-BH-A1FU	female	deceased			44		44		C50.9				1688		unknown		unknown
+DO51212	BRCA-US		TCGA-LL-A6FP	female	alive	complete remission		90		90		C50.9					352	unknown		unknown
+DO1755	BRCA-US		TCGA-BH-A0HP	female	alive	complete remission		65		66		C50.9					414	unknown		unknown
+DO1836	BRCA-US		TCGA-AN-A0FL	female	alive	complete remission		62		62		C50.9					231	unknown		unknown
+DO2114	BRCA-US	PCAWG	TCGA-BH-A0H0	female	alive	complete remission		69		70		C50.9					461	unknown		unknown
+DO2808	BRCA-US		TCGA-E2-A159	female	alive	complete remission		50		51		C50.9					515	unknown		unknown
+DO3500	BRCA-US		TCGA-A2-A3KC	female	alive	complete remission		55		55		C50.9					363	unknown		unknown
+DO3988	BRCA-US		TCGA-AO-A0JL	female	alive	complete remission		59		62		C50.9					1319	unknown		unknown
+DO4185	BRCA-US	PCAWG	TCGA-A8-A075	female	alive	complete remission		42		43		C50.9					518	unknown		unknown
+DO4347	BRCA-US		TCGA-D8-A147	female	alive			45		45		C50.9					2	unknown		unknown
+DO4509	BRCA-US		TCGA-E2-A15T	female	alive	complete remission		65		65		C50.9					267	unknown		unknown
+DO4879	BRCA-US		TCGA-AR-A0TV	female	alive	complete remission		66		68		C50.9					905	unknown		unknown
+DO5319	BRCA-US		TCGA-AC-A2QJ	female	alive	complete remission		48		48		C50.9					69	unknown		unknown
+DO5689	BRCA-US		TCGA-B6-A0IB	female	deceased			64		64		C50.9				3941		unknown		unknown
+DO6048	BRCA-US		TCGA-D8-A27V	female	alive	complete remission		62		62		C50.9					73	unknown		unknown
+DO51213	BRCA-US		TCGA-OL-A6VO	female	alive	complete remission		43		44		C50.9					480	unknown		unknown
+DO1305	BRCA-US		TCGA-BH-A0DK	female	alive	complete remission		49		50		C50.9					423	unknown		unknown
+DO1594	BRCA-US		TCGA-BH-A1FR	female	deceased			73		73		C50.9				1642		unknown		unknown
+DO2485	BRCA-US		TCGA-GM-A2DI	female	alive	complete remission		52		57		C50.9					1883	unknown		unknown
+DO2647	BRCA-US	PCAWG	TCGA-A8-A09X	female	deceased			62		62		C50.9				426		unknown		unknown
+DO3376	BRCA-US		TCGA-D8-A1Y0	female	alive	complete remission		65		65		C50.9					167	unknown		unknown
+DO3952	BRCA-US		TCGA-C8-A1HL	female	alive	complete remission		38		38		C50.9					2	unknown		unknown
+DO4311	BRCA-US		TCGA-D8-A1JN	female	alive	complete remission		80		80		C50.9					217	unknown		unknown
+DO5158	BRCA-US		TCGA-E2-A15L	female	alive	complete remission		65		65		C50.9					331	unknown		unknown
+DO5815	BRCA-US		TCGA-E9-A1R4	female	alive	complete remission		66		66		C50.9					29	unknown		unknown
+DO51214	BRCA-US		TCGA-OL-A6VQ	female	alive	complete remission		49		49		C50.9					229	unknown		unknown
+DO2611	BRCA-US		TCGA-B6-A0RI	female	alive	progression		44		62		C50.9					6796	unknown		unknown
+DO3007	BRCA-US		TCGA-EW-A1P0	female	alive	progression		55		58		C50.9					1121	unknown		unknown
+DO3340	BRCA-US		TCGA-AQ-A04H	female	alive	complete remission		61		62		C50.9					439	unknown		unknown
+DO3458	BRCA-US	PCAWG	TCGA-AO-A03L	female	alive	complete remission		34		40		C50.9					2442	unknown		unknown
+DO4763	BRCA-US		TCGA-AR-A0TR	female	deceased			68		68		C50.9				160		unknown		unknown
+DO4844	BRCA-US		TCGA-A2-A3KD	female	alive	complete remission		47		49		C50.9					804	unknown		unknown
+DO5654	BRCA-US		TCGA-C8-A1HE	female	alive	complete remission		59		59		C50.9					0	unknown		unknown
+DO51215	BRCA-US		TCGA-PL-A8LV	female	alive	progression		54		54		C50.9					-7	unknown		unknown
+DO1307	BRCA-US		TCGA-C8-A1HK	female	alive	complete remission		53		53		C50.9					7	unknown		unknown
+DO1802	BRCA-US		TCGA-AR-A250	female	alive	complete remission		58		62		C50.9					1708	unknown		unknown
+DO4269	BRCA-US		TCGA-BH-A0C7	female	alive	complete remission		48		51		C50.9					1305	unknown		unknown
+DO4683	BRCA-US		TCGA-D8-A1XA	female	alive	complete remission		64		64		C50.9					274	unknown		unknown
+DO5123	BRCA-US		TCGA-BH-A0W3	female	alive	complete remission		58		58		C50.9					180	unknown		unknown
+DO5493	BRCA-US		TCGA-E2-A1B6	female	alive	complete remission		44		44		C50.9					338	unknown		unknown
+DO51216	BRCA-US		TCGA-PL-A8LX	female	alive	progression		35		35		C50.9					5	unknown		unknown
+DO1678	BRCA-US	PCAWG	TCGA-A2-A04Q	female	alive	complete remission		48		53		C50.9					2179	unknown		unknown
+DO1722	BRCA-US		TCGA-AR-A24N	female	alive			54		59		C50.9					2074	unknown		unknown
+DO2037	BRCA-US		TCGA-GM-A2DO	female	alive	complete remission		54		58		C50.9					1623	unknown		unknown
+DO2569	BRCA-US		TCGA-E9-A1N9	female	alive	complete remission		58		58		C50.9					0	unknown		unknown
+DO2983	BRCA-US		TCGA-E2-A1IH	female	alive	complete remission		80		81		C50.9					658	unknown		unknown
+DO3793	BRCA-US		TCGA-E9-A226	female	alive	complete remission		45		45		C50.9					16	unknown		unknown
+DO3874	BRCA-US	PCAWG	TCGA-E2-A14X	female	alive	complete remission		55		56		C50.9					692	unknown		unknown
+DO4233	BRCA-US	PCAWG	TCGA-AO-A0J6	female	alive	complete remission		61		63		C50.9					775	unknown		unknown
+DO44260	BRCA-US		TCGA-D8-A3Z6	female	alive	complete remission		56		56		C50.9					185	unknown		unknown
+DO51217	BRCA-US		TCGA-PL-A8LY	female	alive	progression		30		30		C50.9					8	unknown		unknown
+DO2371	BRCA-US		TCGA-A2-A04Y	female	alive	complete remission		53		55		C50.9					764	unknown		unknown
+DO2533	BRCA-US		TCGA-AO-A0JF	female	alive	complete remission		68		68		C50.9					354	unknown		unknown
+DO3299	BRCA-US		TCGA-E2-A1B5	female	alive	complete remission		46		48		C50.9					774	unknown		unknown
+DO3424	BRCA-US		TCGA-B6-A0WY	female	deceased			40		40		C50.9				3461		unknown		unknown
+DO4766	BRCA-US	PCAWG	TCGA-E2-A109	female	alive			64		67		C50.9					1172	unknown		unknown
+DO4810	BRCA-US		TCGA-GM-A2D9	female	deceased			69		69		C50.9				1812		unknown		unknown
+DO4847	BRCA-US	PCAWG	TCGA-B6-A0IQ	female	alive	complete remission		40		50		C50.9					3872	unknown		unknown
+DO4928	BRCA-US		TCGA-B6-A0IC	female	deceased			90		90		C50.9				1542		unknown		unknown
+DO5576	BRCA-US		TCGA-EW-A1PA	female	alive	complete remission		59		59		C50.9					267	unknown		unknown
+DO5738	BRCA-US		TCGA-AQ-A0Y5	female	deceased			70		70		C50.9				172		unknown		unknown
+DO6016	BRCA-US		TCGA-E2-A2P5	female	alive	complete remission		78		78		C50.9					326	unknown		unknown
+DO44180	BRCA-US		TCGA-A2-A0EP	female	alive	complete remission		56		64		C50.9					3021	unknown		unknown
+DO51218	BRCA-US		TCGA-PL-A8LZ	female	alive	complete remission		29		29		C50.9					120	unknown		unknown
+DO1481	BRCA-US		TCGA-A2-A0EW	female	alive	complete remission		53		55		C50.9					770	unknown		unknown
+DO1599	BRCA-US		TCGA-BH-A0E2	female	alive	complete remission		49		50		C50.9					376	unknown		unknown
+DO1643	BRCA-US		TCGA-BH-A0HU	female	alive	complete remission		52		53		C50.9					392	unknown		unknown
+DO2002	BRCA-US		TCGA-A2-A1FW	female	alive	complete remission		62		62		C50.9					221	unknown		unknown
+DO3182	BRCA-US	PCAWG	TCGA-C8-A12Q	female	alive	complete remission		78		78		C50.9					2	unknown		unknown
+DO3263	BRCA-US		TCGA-B6-A0IA	female	alive	complete remission		51		69		C50.9					6719	unknown		unknown
+DO3506	BRCA-US		TCGA-BH-A0H9	female	alive	complete remission		69		72		C50.9					1247	unknown		unknown
+DO5207	BRCA-US		TCGA-BH-A0H5	female	alive	complete remission		45		47		C50.9					1080	unknown		unknown
+DO44262	BRCA-US		TCGA-BH-A42T	female	alive	complete remission		75		75		C50.9					30	unknown		unknown
+DO51219	BRCA-US		TCGA-S3-A6ZF	female	alive	complete remission		64		64		C50.9					212	unknown		unknown
+DO3840	BRCA-US		TCGA-GM-A2DF	female	alive	complete remission		53		56		C50.9					1299	unknown		unknown
+DO3958	BRCA-US	PCAWG	TCGA-A2-A0D1	female	alive	complete remission		76		78		C50.9					786	unknown		unknown
+DO4074	BRCA-US		TCGA-BH-A18F	female	alive	complete remission		50		50		C50.9					268	unknown		unknown
+DO4155	BRCA-US	PCAWG	TCGA-AR-A256	female	deceased			45		45		C50.9				2854		unknown		unknown
+DO4317	BRCA-US		TCGA-AR-A0TS	female	alive			46		49		C50.9					1138	unknown		unknown
+DO4731	BRCA-US		TCGA-AN-A0AR	female	alive	complete remission		55		55		C50.9					10	unknown		unknown
+DO5046	BRCA-US	PCAWG	TCGA-E2-A156	female	alive	complete remission		61		62		C50.9					481	unknown		unknown
+DO5703	BRCA-US		TCGA-EW-A1OX	female	alive	complete remission		43		44		C50.9					562	unknown		unknown
+DO5992	BRCA-US		TCGA-GI-A2C8	female	alive			63		63		C50.9					225	unknown		unknown
+DO44182	BRCA-US		TCGA-OL-A66P	female	alive			75		75		C50.9					58	unknown		unknown
+DO1564	BRCA-US		TCGA-E2-A158	female	alive	complete remission		43		44		C50.9					450	unknown		unknown
+DO2293	BRCA-US		TCGA-AC-A23E	female	alive	complete remission		50		50		C50.9					72	unknown		unknown
+DO2455	BRCA-US	PCAWG	TCGA-E2-A14P	female	alive	complete remission		79		80		C50.9					487	unknown		unknown
+DO2617	BRCA-US		TCGA-A8-A076	female	alive	complete remission		66		70		C50.9					1642	unknown		unknown
+DO3346	BRCA-US		TCGA-BH-A18P	female	deceased			60		60		C50.3				921		unknown		unknown
+DO3922	BRCA-US		TCGA-AN-A0AL	female	alive	complete remission		41		41		C50.9					198	unknown		unknown
+DO5542	BRCA-US		TCGA-E2-A10E	female	alive	complete remission		64		65		C50.9					418	unknown		unknown
+DO44264	BRCA-US		TCGA-OL-A5RY	female	alive	progression		52		53		C50.9					429	unknown		unknown
+DO50050	BRCA-US		TCGA-LL-A5YO	female	alive	complete remission		50		50		C50.9					97	unknown		unknown
+DO219631	BRCA-US		TCGA-D8-A73W	female	alive			79		79		C50.9					244	unknown		unknown
+DO1727	BRCA-US		TCGA-E2-A1AZ	female	alive	complete remission		63		68		C50.9					1965	unknown		unknown
+DO1808	BRCA-US		TCGA-E2-A15C	female	alive	complete remission		61		62		C50.9					497	unknown		unknown
+DO2870	BRCA-US		TCGA-A8-A07G	female	alive	complete remission		65		66		C50.9					577	unknown		unknown
+DO3680	BRCA-US		TCGA-A8-A06O	female	alive	complete remission		60		61		C50.9					396	unknown		unknown
+DO4689	BRCA-US		TCGA-AR-A1AI	female	alive	complete remission		47		52		C50.9					1881	unknown		unknown
+DO44184	BRCA-US		TCGA-A2-A4S2	female	alive	complete remission		62		62		C50.9					205	unknown		unknown
+DO219588	BRCA-US		TCGA-3C-AAAU	female	alive	progression		55		65		C50.9					3767	unknown		unknown
+DO2989	BRCA-US		TCGA-E2-A15G	female	alive	complete remission		76		76		C50.9					316	unknown		unknown
+DO3311	BRCA-US		TCGA-A8-A07Z	female	alive	complete remission		85		87		C50.9					853	unknown		unknown
+DO3799	BRCA-US		TCGA-EW-A1P7	female	alive	complete remission		59		60		C50.9					635	unknown		unknown
+DO4239	BRCA-US		TCGA-BH-A0C3	female	alive	complete remission		47		51		C50.9					1464	unknown		unknown
+DO4491	BRCA-US		TCGA-A2-A0SW	female	deceased			82		82		C50.9				1365		unknown		unknown
+DO4653	BRCA-US		TCGA-A7-A3J0	female	alive	complete remission		62		62		C50.9					76	unknown		unknown
+DO5012	BRCA-US	PCAWG	TCGA-A8-A08B	female	alive	complete remission		52		53		C50.9					702	unknown		unknown
+DO5382	BRCA-US		TCGA-C8-A138	female	alive	complete remission		54		54		C50.9					7	unknown		unknown
+DO5625	BRCA-US		TCGA-AN-A041	female	alive			29		29		C50.9					7	unknown		unknown
+DO44266	BRCA-US		TCGA-EW-A423	female	alive	complete remission		75		75		C50.9					309	unknown		unknown
+DO50052	BRCA-US		TCGA-LL-A5YP	female	alive			49		49		C50.9					99	unknown		unknown
+DO219589	BRCA-US		TCGA-3C-AALI	female	alive	complete remission		50		60		C50.9					3801	unknown		unknown
+DO219633	BRCA-US		TCGA-D8-A73X	female	alive	complete remission		53		54		C50.9					368	unknown		unknown
+DO1486	BRCA-US		TCGA-E9-A228	female	alive	complete remission		58		58		C50.9					0	unknown		unknown
+DO1648	BRCA-US		TCGA-D8-A1XL	female	alive	complete remission		34		34		C50.9					319	unknown		unknown
+DO2377	BRCA-US		TCGA-A8-A07L	female	alive	complete remission		58		59		C50.9					518	unknown		unknown
+DO2539	BRCA-US	PCAWG	TCGA-A8-A07B	female	alive	complete remission		69		71		C50.9					1004	unknown		unknown
+DO3763	BRCA-US		TCGA-A8-A08G	female	alive	complete remission		41		42		C50.9					607	unknown		unknown
+DO4122	BRCA-US		TCGA-A2-A0T0	female	alive	complete remission		59		59		C50.9					337	unknown		unknown
+DO4203	BRCA-US		TCGA-A8-A07J	female	alive	complete remission		35		36		C50.9					365	unknown		unknown
+DO5626	BRCA-US	PCAWG	TCGA-AO-A0JM	female	alive	complete remission		40		45		C50.9					1826	unknown		unknown
+DO44186	BRCA-US		TCGA-AR-A1AM	female	alive	complete remission		52		57		C50.9					1903	unknown		unknown
+DO44230	BRCA-US		TCGA-OL-A66K	female	alive	complete remission		72		74		C50.9					1021	unknown		unknown
+DO2008	BRCA-US		TCGA-BH-A0DD	male	alive	complete remission		58		61		C50.9					1394	unknown		unknown
+DO2341	BRCA-US		TCGA-EW-A3U0	female	alive	complete remission		61		61		C50.9					229	unknown		unknown
+DO2503	BRCA-US	PCAWG	TCGA-BH-A0DT	female	alive	complete remission		41		44		C50.9					1170	unknown		unknown
+DO3070	BRCA-US		TCGA-BH-A0HN	female	alive	complete remission		67		68		C50.9					516	unknown		unknown
+DO3188	BRCA-US	PCAWG	TCGA-A8-A09I	female	alive	complete remission		84		86		C50.9					1006	unknown		unknown
+DO3269	BRCA-US		TCGA-BH-A0B7	female	alive	complete remission		42		46		C50.9					1733	unknown		unknown
+DO4817	BRCA-US		TCGA-BH-A0BC	female	alive	complete remission		60		62		C50.9					974	unknown		unknown
+DO5465	BRCA-US		TCGA-D8-A27G	female	alive	complete remission		75		75		C50.9					210	unknown		unknown
+DO5960	BRCA-US		TCGA-D8-A27T	female	alive	complete remission		53		53		C50.9					136	unknown		unknown
+DO44150	BRCA-US		TCGA-A7-A4SB	female	alive	complete remission		56		56		C50.9					200	unknown		unknown
+DO44268	BRCA-US		TCGA-E9-A3QA	female	alive	complete remission		33		33		C50.9					19	unknown		unknown
+DO50054	BRCA-US		TCGA-LL-A6FQ	female	alive			77		77		C50.9					80	unknown		unknown
+DO219635	BRCA-US		TCGA-EW-A6S9	female	alive	complete remission		34		35		C50.9					463	unknown		unknown
+DO1532	BRCA-US		TCGA-A2-A04V	female	deceased			39		39		C50.9				1920		unknown		unknown
+DO1569	BRCA-US		TCGA-AO-A0JG	female	alive	complete remission		49		50		C50.9					449	unknown		unknown
+DO1613	BRCA-US		TCGA-B6-A0IG	female	deceased			50		50		C50.9				4456		unknown		unknown
+DO2180	BRCA-US		TCGA-D8-A27L	female	alive	complete remission		49		49		C50.9					126	unknown		unknown
+DO2874	BRCA-US		TCGA-A7-A0CJ	female	alive	complete remission		57		57		C50.9					189	unknown		unknown
+DO2955	BRCA-US		TCGA-A8-A09A	female	alive	progression		40		40		C50.9					304	unknown		unknown
+DO3152	BRCA-US	PCAWG	TCGA-BH-A0EA	female	deceased			72		72		C50.9				991		unknown		unknown
+DO3233	BRCA-US		TCGA-E2-A1BD	female	alive	complete remission		53		53		C50.9					317	unknown		unknown
+DO3846	BRCA-US		TCGA-AR-A1AK	female	alive	complete remission		70		74		C50.9					1559	unknown		unknown
+DO4575	BRCA-US		TCGA-A7-A26E	female	alive	complete remission		71		72		C50.9					421	unknown		unknown
+DO4737	BRCA-US		TCGA-E9-A1QZ	female	alive	complete remission		61		61		C50.9					0	unknown		unknown
+DO6195	BRCA-US		TCGA-E9-A1N5	female	alive	complete remission		45		45		C50.9					0	unknown		unknown
+DO44188	BRCA-US		TCGA-A2-A0CK	female	alive	complete remission		60		70		C50.9					3820	unknown		unknown
+DO44232	BRCA-US		TCGA-A2-A3XS	female	deceased			62		62		C50.9				1032		unknown		unknown
+DO219636	BRCA-US		TCGA-EW-A6SA	male	alive	complete remission		59		60		C50.9					510	unknown		unknown
+DO1290	BRCA-US	PCAWG	TCGA-E9-A1NH	female	alive	complete remission		71		71		C50.9					0	unknown		unknown
+DO1984	BRCA-US		TCGA-BH-A0H7	female	alive	complete remission		65		66		C50.9					702	unknown		unknown
+DO2299	BRCA-US		TCGA-EW-A1PF	female	alive	complete remission		50		50		C50.9					140	unknown		unknown
+DO2794	BRCA-US		TCGA-B6-A0WV	female	deceased			67		67		C50.9				2417		unknown		unknown
+DO3810	BRCA-US		TCGA-A2-A0T6	female	alive	complete remission		50		50		C50.9					344	unknown		unknown
+DO3928	BRCA-US		TCGA-AR-A24L	female	alive			26		32		C50.9					2221	unknown		unknown
+DO4044	BRCA-US		TCGA-C8-A12V	female	alive	complete remission		55		55		C50.9					0	unknown		unknown
+DO4701	BRCA-US		TCGA-E2-A1IF	female	alive	complete remission		74		76		C50.9					956	unknown		unknown
+DO6240	BRCA-US		TCGA-A8-A097	female	alive	complete remission		65		66		C50.9					365	unknown		unknown
+DO44152	BRCA-US		TCGA-A2-A3XY	female	alive	complete remission		49		51		C50.9					786	unknown		unknown
+DO49021	BRCA-US		TCGA-AC-A62Y	female	alive	complete remission		79		79		C50.9					55	unknown		unknown
+DO50056	BRCA-US		TCGA-LL-A6FR	female	alive	complete remission		50		50		C50.9					118	unknown		unknown
+DO219637	BRCA-US		TCGA-HN-A2NL	female	alive	complete remission		56		56		C50.9					79	unknown		unknown
+DO1291	BRCA-US	PCAWG	TCGA-AR-A24Z	female	alive			57		61		C50.9					1574	unknown		unknown
+DO1372	BRCA-US		TCGA-D8-A1XR	female	alive	complete remission		56		56		C50.9					168	unknown		unknown
+DO2425	BRCA-US		TCGA-C8-A135	female	alive	complete remission		64		64		C50.9					13	unknown		unknown
+DO3686	BRCA-US		TCGA-BH-A18G	female	alive			81		81		C50.5					61	unknown		unknown
+DO4991	BRCA-US		TCGA-AC-A2FF	female	alive	complete remission		40		44		C50.9					1686	unknown		unknown
+DO5431	BRCA-US		TCGA-A8-A06P	female	alive	complete remission		63		64		C50.9					396	unknown		unknown
+DO5549	BRCA-US		TCGA-C8-A26X	female	alive	complete remission		58		58		C50.9					11	unknown		unknown
+DO6160	BRCA-US		TCGA-E2-A150	female	alive	complete remission		48		49		C50.9					591	unknown		unknown
+DO44153	BRCA-US		TCGA-OL-A66J	female	alive	complete remission		80		84		C50.9					1658	unknown		unknown
+DO44234	BRCA-US		TCGA-E9-A54X	female	alive	complete remission		85		85		C50.9					0	unknown		unknown
+DO49022	BRCA-US		TCGA-E2-A574	female	alive	complete remission		44		45		C50.9					605	unknown		unknown
+DO219601	BRCA-US		TCGA-B6-A3ZX	female	alive	progression		50		53		C50.9					1132	unknown		unknown
+DO219638	BRCA-US		TCGA-HN-A2OB	female	alive	progression		45		50		C50.9					1849	unknown		unknown
+DO1292	BRCA-US		TCGA-AN-A03Y	female	alive	complete remission		66		66		C50.9					10	unknown		unknown
+DO1454	BRCA-US		TCGA-E9-A22B	female	alive	complete remission		71		71		C50.9					0	unknown		unknown
+DO2264	BRCA-US		TCGA-A2-A0EX	female	alive	complete remission		46		47		C50.9					550	unknown		unknown
+DO2796	BRCA-US		TCGA-A1-A0SD	female	alive			59		60		C50.9					437	unknown		unknown
+DO3317	BRCA-US		TCGA-GM-A2DH	female	alive	complete remission		58		61		C50.9					1286	unknown		unknown
+DO3650	BRCA-US		TCGA-AO-A0JE	female	alive	complete remission		53		58		C50.9					1966	unknown		unknown
+DO4497	BRCA-US		TCGA-BH-A0GZ	female	alive	complete remission		62		62		C50.9					328	unknown		unknown
+DO4659	BRCA-US		TCGA-AR-A1AV	male	alive			68		71		C50.9					1295	unknown		unknown
+DO5018	BRCA-US		TCGA-BH-A0W4	female	alive	complete remission		46		46		C50.9					175	unknown		unknown
+DO5270	BRCA-US		TCGA-D8-A27I	female	alive	complete remission		58		58		C50.9					186	unknown		unknown
+DO6080	BRCA-US		TCGA-A2-A0CZ	female	alive	complete remission		46		49		C50.9					1339	unknown		unknown
+DO49023	BRCA-US		TCGA-S3-A6ZG	female	alive	complete remission		71		71		C50.9					207	unknown		unknown
+DO50021	BRCA-US		TCGA-A7-A6VY	female	alive	complete remission		48		48		C50.9					125	unknown		unknown
+DO50058	BRCA-US		TCGA-LL-A73Y	female	alive	complete remission		67		67		C50.9					126	unknown		unknown
+DO219639	BRCA-US		TCGA-OL-A6VR	female	alive	complete remission		48		50		C50.9					848	unknown		unknown
+DO1293	BRCA-US		TCGA-E2-A10F	female	alive	complete remission		47		47		C50.9					360	unknown		unknown
+DO3200	BRCA-US		TCGA-AR-A24T	female	alive			46		50		C50.9					1620	unknown		unknown
+DO3769	BRCA-US		TCGA-AC-A3BB	female	alive	complete remission		46		46		C50.9					30	unknown		unknown
+DO4128	BRCA-US		TCGA-A7-A0D9	female	alive	complete remission		37		37		C50.9					160	unknown		unknown
+DO4209	BRCA-US		TCGA-AO-A1KR	female	alive	complete remission		51		56		C50.9					2141	unknown		unknown
+DO4461	BRCA-US		TCGA-E2-A1LB	female	alive	complete remission		41		43		C50.9					972	unknown		unknown
+DO4623	BRCA-US		TCGA-C8-A27B	female	alive	complete remission		48		48		C50.9					30	unknown		unknown
+DO5389	BRCA-US		TCGA-EW-A2FS	female	alive	complete remission		41		44		C50.9					1173	unknown		unknown
+DO5514	BRCA-US		TCGA-D8-A141	female	alive			40		40		C50.9					113	unknown		unknown
+DO5884	BRCA-US		TCGA-AC-A2B8	female	alive			84		84		C50.9					45	unknown		unknown
+DO44155	BRCA-US		TCGA-OL-A5S0	female	alive	complete remission		66		66		C50.9					298	unknown		unknown
+DO44236	BRCA-US		TCGA-AC-A3YI	female	alive			74		74		C50.9					47	unknown		unknown
+DO49024	BRCA-US		TCGA-AC-A3W5	female	alive	complete remission		65		65		C50.9					55	unknown		unknown
+DO219603	BRCA-US		TCGA-B6-A400	female	alive	complete remission		43		43		C50.9					215	unknown		unknown
+DO1537	BRCA-US	PCAWG	TCGA-B6-A0WX	female	deceased			40		40		C50.9				639		unknown		unknown
+DO1618	BRCA-US		TCGA-C8-A12N	female	alive	complete remission		58		58		C50.9					0	unknown		unknown
+DO2347	BRCA-US		TCGA-A8-A08X	female	alive	complete remission		43		45		C50.9					1034	unknown		unknown
+DO2509	BRCA-US	PCAWG	TCGA-AR-A1AY	female	alive			65		66		C50.9					615	unknown		unknown
+DO2761	BRCA-US		TCGA-E2-A1IJ	female	alive	complete remission		57		58		C50.9					725	unknown		unknown
+DO2842	BRCA-US	PCAWG	TCGA-EW-A1P8	female	deceased			58		58		C50.9				239		unknown		unknown
+DO2879	BRCA-US		TCGA-A1-A0SE	female	alive	complete remission		56		59		C50.9					1321	unknown		unknown
+DO3076	BRCA-US		TCGA-A1-A0SP	female	alive	complete remission		40		41		C50.9					584	unknown		unknown
+DO3733	BRCA-US		TCGA-D8-A1XC	female	alive	complete remission		85		85		C50.9					81	unknown		unknown
+DO44200	BRCA-US		TCGA-E2-A570	female	alive	complete remission		47		48		C50.9					549	unknown		unknown
+DO49025	BRCA-US		TCGA-LD-A74U	female	alive	progression		79		79		C50.9					203	unknown		unknown
+DO50023	BRCA-US		TCGA-AC-A5XS	female	alive	complete remission		74		74		C50.9					47	unknown		unknown
+DO1295	BRCA-US		TCGA-BH-A0BV	female	alive	complete remission		78		82		C50.9					1519	unknown		unknown
+DO1376	BRCA-US		TCGA-E2-A10A	female	alive	progression		41		41		C50.9					352	unknown		unknown
+DO2186	BRCA-US		TCGA-E2-A15O	female	alive	complete remission		89		90		C50.9					396	unknown		unknown
+DO2311	BRCA-US		TCGA-A8-A08O	female	alive	progression		45		47		C50.9					943	unknown		unknown
+DO3158	BRCA-US	PCAWG	TCGA-AO-A12H	female	alive	complete remission		69		71		C50.9					863	unknown		unknown
+DO3239	BRCA-US		TCGA-BH-A0H3	female	alive	complete remission		46		49		C50.9					1149	unknown		unknown
+DO3572	BRCA-US		TCGA-BH-A0BD	female	alive	complete remission		47		48		C50.9					554	unknown		unknown
+DO4012	BRCA-US		TCGA-B6-A0RS	female	deceased			38		38		C50.9				3063		unknown		unknown
+DO5354	BRCA-US		TCGA-E9-A1RD	female	alive	complete remission		67		67		C50.9					20	unknown		unknown
+DO44157	BRCA-US		TCGA-A2-A4S0	female	alive			77		77		C50.9					271	unknown		unknown
+DO44238	BRCA-US		TCGA-OL-A5RW	female	alive	complete remission		40		42		C50.9					797	unknown		unknown
+DO49026	BRCA-US		TCGA-B6-A408	female	alive	complete remission		55		59		C50.9					1519	unknown		unknown
+DO50024	BRCA-US		TCGA-AC-A62V	male	alive	progression		58		58		C50.9					2	unknown		unknown
+DO219605	BRCA-US		TCGA-B6-A409	female	deceased			44		44		C50.9				573		unknown		unknown
+DO1340	BRCA-US		TCGA-AR-A0TP	female	alive			43		49		C50.9					2521	unknown		unknown
+DO1502	BRCA-US		TCGA-BH-A0DQ	female	alive	complete remission		42		42		C50.9					98	unknown		unknown
+DO1872	BRCA-US		TCGA-A7-A0CH	female	alive	complete remission		79		79		C50.9					162	unknown		unknown
+DO2682	BRCA-US		TCGA-A7-A0CD	female	alive	complete remission		66		66		C50.9					171	unknown		unknown
+DO2925	BRCA-US		TCGA-D8-A145	female	alive	complete remission		80		80		C50.9					49	unknown		unknown
+DO3122	BRCA-US		TCGA-E2-A1B1	female	alive	complete remission		45		48		C50.9					1361	unknown		unknown
+DO3816	BRCA-US		TCGA-A2-A0EO	female	alive	complete remission		54		59		C50.9					2181	unknown		unknown
+DO4383	BRCA-US		TCGA-E2-A14Y	female	alive	complete remission		35		36		C50.9					688	unknown		unknown
+DO4545	BRCA-US		TCGA-EW-A1J1	female	alive	complete remission		38		38		C50.9					282	unknown		unknown
+DO4707	BRCA-US		TCGA-AO-A12D	female	alive	complete remission		43		48		C50.9					1948	unknown		unknown
+DO5193	BRCA-US		TCGA-AR-A1AU	female	alive			39		42		C50.9					1409	unknown		unknown
+DO5850	BRCA-US		TCGA-E9-A1N4	female	alive	complete remission		41		41		C50.9					5	unknown		unknown
+DO5968	BRCA-US		TCGA-A8-A08C	female	alive	complete remission		65		66		C50.9					608	unknown		unknown
+DO44121	BRCA-US		TCGA-OL-A5DA	female	alive	complete remission		61		64		C50.9					1357	unknown		unknown
+DO44202	BRCA-US		TCGA-EW-A424	female	alive	complete remission		51		51		C50.9					322	unknown		unknown
+DO49027	BRCA-US		TCGA-LD-A7W6	female	alive	complete remission		54		54		C50.2					140	unknown		unknown
+DO1260	BRCA-US		TCGA-D8-A1JI	female	alive	complete remission		54		54		C50.9					21	unknown		unknown
+DO1297	BRCA-US		TCGA-A8-A07W	female	alive	progression		76		76		C50.9					304	unknown		unknown
+DO1459	BRCA-US	PCAWG	TCGA-BH-A0B9	female	alive	complete remission		44		48		C50.9					1572	unknown		unknown
+DO1792	BRCA-US		TCGA-E9-A1R3	female	alive	complete remission		70		70		C50.9					64	unknown		unknown
+DO1873	BRCA-US		TCGA-AN-A0XW	female	alive			36		36		C50.9					170	unknown		unknown
+DO1954	BRCA-US	PCAWG	TCGA-B6-A0RU	female	alive	complete remission		40		59		C50.9					7067	unknown		unknown
+DO2269	BRCA-US		TCGA-AR-A2LH	female	deceased			55		55		C50.9				616		unknown		unknown
+DO2764	BRCA-US		TCGA-B6-A0RO	female	alive	complete remission		71		84		C50.9					4929	unknown		unknown
+DO3204	BRCA-US		TCGA-E2-A1IO	female	alive	complete remission		37		38		C50.9					498	unknown		unknown
+DO44159	BRCA-US		TCGA-OL-A66H	female	alive	complete remission		74		75		C50.9					413	unknown		unknown
+DO50026	BRCA-US		TCGA-AC-A62X	female	alive	complete remission		72		72		C50.9					34	unknown		unknown
+DO219607	BRCA-US		TCGA-BH-A5IZ	female	alive	complete remission		51		51		C50.9					98	unknown		unknown
+DO1261	BRCA-US		TCGA-A1-A0SH	female	alive	complete remission		39		42		C50.9					1437	unknown		unknown
+DO1342	BRCA-US		TCGA-A1-A0SF	female	alive	complete remission		54		58		C50.9					1463	unknown		unknown
+DO3043	BRCA-US		TCGA-AR-A24H	female	alive			65		74		C50.9					3333	unknown		unknown
+DO3494	BRCA-US		TCGA-BH-A1EN	female	deceased			78		78		C50.9				2127		unknown		unknown
+DO3656	BRCA-US		TCGA-B6-A1KN	female	alive	complete remission		57		66		C50.9					3330	unknown		unknown
+DO4998	BRCA-US		TCGA-BH-A0E7	female	alive	complete remission		79		82		C50.9					1363	unknown		unknown
+DO5438	BRCA-US		TCGA-A8-A06N	female	alive	complete remission		66		66		C50.9					0	unknown		unknown
+DO44123	BRCA-US		TCGA-AC-A3W6	female	alive	complete remission		90		90		C50.9					51	unknown		unknown
+DO44204	BRCA-US		TCGA-A7-A13H	female	alive	complete remission		61		62		C50.9					551	unknown		unknown
+DO219608	BRCA-US		TCGA-BH-A5J0	female	alive	complete remission		63		63		C50.9					225	unknown		unknown
+DO1262	BRCA-US		TCGA-A2-A25D	female	alive	complete remission		90		90		C50.9					243	unknown		unknown
+DO1299	BRCA-US		TCGA-BH-A0BM	female	alive	complete remission		54		57		C50.9					1117	unknown		unknown
+DO1424	BRCA-US		TCGA-A2-A0CY	female	alive	complete remission		63		66		C50.9					1288	unknown		unknown
+DO2072	BRCA-US		TCGA-E2-A1L8	female	alive	complete remission		52		54		C50.9					1015	unknown		unknown
+DO2234	BRCA-US		TCGA-D8-A27P	female	alive	complete remission		64		64		C50.9					23	unknown		unknown
+DO3620	BRCA-US		TCGA-A2-A04R	female	alive	complete remission		36		42		C50.9					2365	unknown		unknown
+DO4467	BRCA-US		TCGA-E2-A1B4	female	alive	complete remission		74		76		C50.9					911	unknown		unknown
+DO4629	BRCA-US		TCGA-C8-A137	female	alive	complete remission		34		34		C50.9					34	unknown		unknown
+DO5277	BRCA-US		TCGA-AO-A0JC	female	alive	complete remission		64		68		C50.9					1547	unknown		unknown
+DO6168	BRCA-US		TCGA-LL-A441	female	alive	complete remission		62		62		C50.9					91	unknown		unknown
+DO50028	BRCA-US		TCGA-AC-A6IW	female	alive	complete remission		73		73		C50.9					21	unknown		unknown
+DO219609	BRCA-US		TCGA-BH-A6R8	female	alive	complete remission		46		46		C50.9					293	unknown		unknown
+DO1263	BRCA-US		TCGA-A8-A06Q	female	alive	complete remission		63		63		C50.9					31	unknown		unknown
+DO1920	BRCA-US		TCGA-LL-A442	female	alive	complete remission		56		56		C50.9					109	unknown		unknown
+DO2848	BRCA-US		TCGA-AR-A24V	female	alive			52		56		C50.9					1648	unknown		unknown
+DO3739	BRCA-US		TCGA-A8-A0A4	female	alive	complete remission		73		74		C50.9					396	unknown		unknown
+DO4431	BRCA-US		TCGA-E2-A107	female	alive	progression		54		56		C50.9					763	unknown		unknown
+DO4963	BRCA-US	PCAWG	TCGA-A2-A04P	female	deceased			36		36		C50.9				548		unknown		unknown
+DO5403	BRCA-US		TCGA-A7-A26H	female	alive			72		72		C50.9					65	unknown		unknown
+DO5773	BRCA-US		TCGA-BH-A1FG	female	deceased			88		88		C50.9				3736		unknown		unknown
+DO6088	BRCA-US		TCGA-BH-A0EE	female	alive	complete remission		68		70		C50.9					943	unknown		unknown
+DO6213	BRCA-US		TCGA-D8-A1XG	female	alive	complete remission		86		86		C50.9					75	unknown		unknown
+DO44125	BRCA-US		TCGA-LL-A50Y	female	alive	complete remission		84		84		C50.9					210	unknown		unknown
+DO44206	BRCA-US		TCGA-GM-A5PV	female	alive	complete remission		63		64		C50.9					412	unknown		unknown
+DO1264	BRCA-US		TCGA-A8-A0A2	female	alive	complete remission		66		67		C50.9					579	unknown		unknown
+DO1345	BRCA-US		TCGA-A8-A090	female	alive	complete remission		74		74		C50.9					0	unknown		unknown
+DO1507	BRCA-US		TCGA-EW-A3E8	female	alive	complete remission		60		61		C50.9					647	unknown		unknown
+DO2155	BRCA-US		TCGA-A2-A0CL	female	alive	complete remission		37		42		C50.9					1827	unknown		unknown
+DO2317	BRCA-US		TCGA-AR-A2LM	female	alive			49		52		C50.9					1218	unknown		unknown
+DO2731	BRCA-US		TCGA-AN-A04A	female	alive	complete remission		36		36		C50.9					90	unknown		unknown
+DO3578	BRCA-US		TCGA-BH-A0BO	female	alive	complete remission		54		56		C50.9					1085	unknown		unknown
+DO3703	BRCA-US		TCGA-E9-A295	female	alive	complete remission		71		71		C50.9					22	unknown		unknown
+DO4018	BRCA-US	PCAWG	TCGA-E2-A1LG	female	alive	complete remission		50		50		C50.9					350	unknown		unknown
+DO5242	BRCA-US		TCGA-D8-A1Y2	female	alive	complete remission		71		71		C50.9					73	unknown		unknown
+DO5936	BRCA-US		TCGA-A8-A0A7	female	alive	complete remission		57		57		C50.9					30	unknown		unknown
+DO1265	BRCA-US		TCGA-AR-A0U3	female	alive			59		65		C50.9					2317	unknown		unknown
+DO1797	BRCA-US		TCGA-BH-A1EV	female	deceased			45		45		C50.9				365		unknown		unknown
+DO1922	BRCA-US		TCGA-A2-A1G6	female	alive	complete remission		50		50		C50.9					132	unknown		unknown
+DO2156	BRCA-US		TCGA-BH-A203	female	deceased			78		78		C50.9				1174		unknown		unknown
+DO2688	BRCA-US		TCGA-BH-A0DE	female	alive	complete remission		62		64		C50.9					948	unknown		unknown
+DO2813	BRCA-US	PCAWG	TCGA-B6-A0IJ	female	alive	complete remission		42		56		C50.9					5383	unknown		unknown
+DO3128	BRCA-US		TCGA-B6-A0RM	female	deceased			57		57		C50.9				2373		unknown		unknown
+DO3209	BRCA-US		TCGA-E9-A2JS	female	alive	complete remission		72		72		C50.9					13	unknown		unknown
+DO3542	BRCA-US		TCGA-A8-A09R	female	alive	complete remission		82		82		C50.9					273	unknown		unknown
+DO4389	BRCA-US		TCGA-A8-A07R	female	alive			80		80		C50.9					273	unknown		unknown
+DO5081	BRCA-US		TCGA-A8-A09N	female	alive	complete remission		57		57		C50.9					31	unknown		unknown
+DO44127	BRCA-US		TCGA-A7-A4SC	female	alive	complete remission		62		62		C50.9					215	unknown		unknown
+DO44208	BRCA-US		TCGA-AC-A3YJ	female	alive	complete remission		66		66		C50.9					40	unknown		unknown
+DO1266	BRCA-US		TCGA-D8-A1XY	female	alive	complete remission		74		74		C50.9					81	unknown		unknown
+DO1310	BRCA-US		TCGA-A2-A0T2	female	deceased			66		66		C50.9				255		unknown		unknown
+DO1761	BRCA-US		TCGA-A2-A0YF	female	alive	complete remission		67		67		C50.9					289	unknown		unknown
+DO1842	BRCA-US		TCGA-A2-A0YM	female	alive	complete remission		67		68		C50.9					662	unknown		unknown
+DO1879	BRCA-US		TCGA-AC-A2QI	female	alive	complete remission		76		76		C50.9					28	unknown		unknown
+DO2120	BRCA-US		TCGA-A1-A0SG	female	alive			61		62		C50.9					434	unknown		unknown
+DO3994	BRCA-US		TCGA-E2-A1LE	female	deceased			71		71		C50.9				879		unknown		unknown
+DO4191	BRCA-US		TCGA-AN-A0AM	female	alive	complete remission		56		56		C50.9					5	unknown		unknown
+DO4353	BRCA-US		TCGA-AR-A0U1	female	alive			36		41		C50.9					2134	unknown		unknown
+DO4515	BRCA-US		TCGA-A8-A06U	female	deceased			80		80		C50.9				883		unknown		unknown
+DO5857	BRCA-US		TCGA-D8-A1JP	female	alive			73		73		C50.9					167	unknown		unknown
+DO1267	BRCA-US		TCGA-A2-A1G1	female	alive	complete remission		85		86		C50.9					371	unknown		unknown
+DO1348	BRCA-US		TCGA-D8-A27E	female	alive	complete remission		66		66		C50.9					182	unknown		unknown
+DO1429	BRCA-US		TCGA-AO-A0J5	female	alive	progression		48		50		C50.9					735	unknown		unknown
+DO2491	BRCA-US		TCGA-AC-A2FO	female	alive	complete remission		65		69		C50.9					1542	unknown		unknown
+DO2653	BRCA-US		TCGA-BH-A1EW	female	deceased			38		38		C50.9				1694		unknown		unknown
+DO3049	BRCA-US		TCGA-EW-A1J3	female	alive	complete remission		61		61		C50.9					252	unknown		unknown
+DO3382	BRCA-US		TCGA-AC-A2BM	female	alive	complete remission		41		44		C50.9					1162	unknown		unknown
+DO4886	BRCA-US		TCGA-E2-A3DX	female	alive	complete remission		43		43		C50.9					217	unknown		unknown
+DO5326	BRCA-US		TCGA-AO-A128	female	alive	complete remission		61		68		C50.9					2877	unknown		unknown
+DO5696	BRCA-US	PCAWG	TCGA-A2-A04T	female	alive	complete remission		62		67		C50.9					1950	unknown		unknown
+DO6136	BRCA-US		TCGA-A2-A0CU	female	deceased			73		73		C50.9				158		unknown		unknown
+DO44129	BRCA-US		TCGA-BH-A42V	female	alive	complete remission		41		41		C50.9					272	unknown		unknown
+DO51220	BRCA-US		TCGA-S3-A6ZH	female	alive	complete remission		29		29		C50.9					263	unknown		unknown
+DO1268	BRCA-US		TCGA-GM-A2DK	female	alive	complete remission		58		63		C50.9					1896	unknown		unknown
+DO1925	BRCA-US		TCGA-C8-A1HG	female	alive	complete remission		50		50		C50.9					0	unknown		unknown
+DO2078	BRCA-US	PCAWG	TCGA-BH-A18R	female	deceased			50		50		C50.9				1142		unknown		unknown
+DO3013	BRCA-US		TCGA-A2-A0YJ	female	alive	complete remission		39		39		C50.9					326	unknown		unknown
+DO3464	BRCA-US		TCGA-E2-A1IL	female	alive			78		78		C50.9					14	unknown		unknown
+DO3626	BRCA-US		TCGA-AC-A23C	female	alive			62		62		C50.9					29	unknown		unknown
+DO5165	BRCA-US		TCGA-A8-A06R	female	alive	complete remission		69		70		C50.9					547	unknown		unknown
+DO5822	BRCA-US		TCGA-BH-A18L	female	deceased			50		50		C50.9				811		unknown		unknown
+DO6056	BRCA-US		TCGA-D8-A1JC	female	alive	complete remission		59		59		C50.9					178	unknown		unknown
+DO51221	BRCA-US		TCGA-S3-AA0Z	female	alive	complete remission		63		63		C50.9					322	unknown		unknown
+DO1269	BRCA-US		TCGA-D8-A1J8	female	alive	complete remission		77		77		C50.9					256	unknown		unknown
+DO1313	BRCA-US		TCGA-GM-A2DD	female	alive	complete remission		53		56		C50.9					1309	unknown		unknown
+DO1683	BRCA-US		TCGA-D8-A1X6	female	alive	complete remission		80		80		C50.9					236	unknown		unknown
+DO1926	BRCA-US		TCGA-C8-A133	female	alive	complete remission		65		65		C50.9					0	unknown		unknown
+DO2204	BRCA-US		TCGA-D8-A140	female	alive			62		62		C50.9					27	unknown		unknown
+DO4275	BRCA-US		TCGA-BH-A0BL	female	alive	complete remission		35		38		C50.9					1340	unknown		unknown
+DO4437	BRCA-US		TCGA-A2-A0CS	female	alive	complete remission		73		79		C50.9					2298	unknown		unknown
+DO5661	BRCA-US	PCAWG	TCGA-BH-A1FC	female	deceased			78		78		C50.9				3472		unknown		unknown
+DO51222	BRCA-US		TCGA-S3-AA10	female	alive	complete remission		65		65		C50.9					241	unknown		unknown
+DO1927	BRCA-US		TCGA-D8-A27R	female	alive	complete remission		41		41		C50.9					29	unknown		unknown
+DO2043	BRCA-US		TCGA-AO-A0JI	female	alive	complete remission		56		59		C50.9					1172	unknown		unknown
+DO2575	BRCA-US		TCGA-E9-A247	female	alive	complete remission		59		59		C50.9					13	unknown		unknown
+DO2700	BRCA-US		TCGA-AC-A2FB	female	alive	complete remission		65		65		C50.9					44	unknown		unknown
+DO2737	BRCA-US		TCGA-A8-A08J	female	deceased			52		52		C50.9				1127		unknown		unknown
+DO3709	BRCA-US		TCGA-C8-A26Z	female	alive	complete remission		59		59		C50.9					4	unknown		unknown
+DO3880	BRCA-US		TCGA-D8-A1JK	female	alive			90		90		C50.9					109	unknown		unknown
+DO4401	BRCA-US		TCGA-AR-A24U	female	alive			47		51		C50.9					1623	unknown		unknown
+DO5130	BRCA-US		TCGA-BH-A0DS	female	alive	complete remission		71		71		C50.9					78	unknown		unknown
+DO5905	BRCA-US		TCGA-A8-A09D	female	alive	complete remission		47		48		C50.9					396	unknown		unknown
+DO51223	BRCA-US		TCGA-S3-AA11	female	alive	complete remission		67		67		C50.9					169	unknown		unknown
+DO2125	BRCA-US		TCGA-E9-A22G	female	alive	complete remission		47		47		C50.9					0	unknown		unknown
+DO2819	BRCA-US		TCGA-D8-A1JA	female	alive	complete remission		60		60		C50.9					18	unknown		unknown
+DO3430	BRCA-US		TCGA-BH-A0E9	female	alive	complete remission		53		56		C50.9					1405	unknown		unknown
+DO3548	BRCA-US		TCGA-E2-A14V	female	alive	complete remission		53		55		C50.9					748	unknown		unknown
+DO5249	BRCA-US	PCAWG	TCGA-A2-A04X	female	alive	complete remission		34		37		C50.9					1349	unknown		unknown
+DO51224	BRCA-US		TCGA-S3-AA12	female	alive	complete remission		82		82		C50.9					259	unknown		unknown
+DO219590	BRCA-US		TCGA-3C-AALJ	female	alive	complete remission		62		65		C50.9					1228	unknown		unknown
+DO1316	BRCA-US		TCGA-C8-A134	female	alive	complete remission		52		52		C50.9					14	unknown		unknown
+DO1767	BRCA-US		TCGA-BH-A0HL	female	alive	complete remission		56		56		C50.9					72	unknown		unknown
+DO1848	BRCA-US		TCGA-AR-A1AS	female	alive			54		57		C50.9					1150	unknown		unknown
+DO3512	BRCA-US		TCGA-AO-A1KP	female	alive	complete remission		77		83		C50.9					2513	unknown		unknown
+DO4197	BRCA-US		TCGA-AR-A2LN	female	alive			65		66		C50.9					520	unknown		unknown
+DO4359	BRCA-US	PCAWG	TCGA-A7-A26G	female	alive			50		50		C50.9					210	unknown		unknown
+DO4773	BRCA-US		TCGA-A2-A0EQ	female	alive	complete remission		64		69		C50.9					2053	unknown		unknown
+DO4854	BRCA-US		TCGA-B6-A0X1	female	alive	complete remission		48		63		C50.9					5677	unknown		unknown
+DO4935	BRCA-US		TCGA-AR-A2LR	female	alive	complete remission		49		50		C50.9					620	unknown		unknown
+DO5088	BRCA-US		TCGA-A2-A1FX	female	alive	complete remission		61		63		C50.9					935	unknown		unknown
+DO5583	BRCA-US		TCGA-A7-A3RF	female	alive	complete remission		79		79		C50.9					54	unknown		unknown
+DO5745	BRCA-US	PCAWG	TCGA-GI-A2C9	female	alive	complete remission		58		59		C50.9					711	unknown		unknown
+DO6104	BRCA-US		TCGA-A2-A0SU	female	alive	complete remission		66		69		C50.9					1352	unknown		unknown
+DO51225	BRCA-US		TCGA-S3-AA14	female	alive	complete remission		47		47		C50.9					218	unknown		unknown
+DO219591	BRCA-US		TCGA-3C-AALK	female	alive	complete remission		52		55		C50.9					1217	unknown		unknown
+DO2497	BRCA-US		TCGA-D8-A1JM	female	alive	complete remission		59		59		C50.9					238	unknown		unknown
+DO2659	BRCA-US		TCGA-A7-A13E	female	alive	complete remission		62		62		C50.9					287	unknown		unknown
+DO3388	BRCA-US		TCGA-A8-A0A1	female	alive	complete remission		84		85		C50.9					365	unknown		unknown
+DO3964	BRCA-US		TCGA-E9-A2JT	female	alive	complete remission		63		63		C50.9					23	unknown		unknown
+DO4080	BRCA-US	PCAWG	TCGA-A7-A0CE	female	alive	complete remission		57		57		C50.9					254	unknown		unknown
+DO4161	BRCA-US		TCGA-A8-A093	female	alive	complete remission		61		62		C50.9					546	unknown		unknown
+DO4323	BRCA-US		TCGA-E2-A1II	female	alive	complete remission		51		53		C50.9					850	unknown		unknown
+DO5214	BRCA-US		TCGA-BH-A1FN	female	deceased			34		34		C50.9				2192		unknown		unknown
+DO6024	BRCA-US		TCGA-A8-A08Z	female	alive	complete remission		76		79		C50.9					1217	unknown		unknown
+DO51226	BRCA-US		TCGA-S3-AA15	female	alive	complete remission		51		51		C50.9					209	unknown		unknown
+DO219592	BRCA-US		TCGA-4H-AAAK	female	alive	complete remission		50		50		C50.9					158	unknown		unknown
+DO1688	BRCA-US		TCGA-A8-A084	female	alive	progression		81		82		C50.9					458	unknown		unknown
+DO1732	BRCA-US		TCGA-A7-A26F	female	alive			55		55		C50.9					257	unknown		unknown
+DO2461	BRCA-US		TCGA-A7-A4SD	female	alive	complete remission		52		52		C50.9					168	unknown		unknown
+DO2623	BRCA-US		TCGA-B6-A0IP	female	alive	complete remission		74		83		C50.9					3374	unknown		unknown
+DO3019	BRCA-US		TCGA-E9-A1N8	female	alive	complete remission		48		48		C50.9					0	unknown		unknown
+DO3352	BRCA-US	PCAWG	TCGA-E2-A15K	female	alive	complete remission		58		58		C50.9					34	unknown		unknown
+DO4900	BRCA-US		TCGA-A7-A3J1	female	alive	complete remission		63		63		C50.9					75	unknown		unknown
+DO5053	BRCA-US		TCGA-B6-A0I5	female	alive	complete remission		49		61		C50.9					4550	unknown		unknown
+DO5710	BRCA-US		TCGA-A2-A0YD	female	alive	complete remission		63		64		C50.9					550	unknown		unknown
+DO44270	BRCA-US		TCGA-LL-A440	female	alive	complete remission		61		61		C50.9					20	unknown		unknown
+DO51227	BRCA-US		TCGA-S3-AA17	female	alive	complete remission		64		64		C50.9					119	unknown		unknown
+DO219593	BRCA-US		TCGA-5L-AAT0	female	alive	complete remission		42		46		C50.9					1477	unknown		unknown

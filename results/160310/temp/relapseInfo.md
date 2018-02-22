@@ -1,7 +1,9 @@
 # Process ICGC BRCA data
-# Yunlong Jiao, 13 Apr 2016
+# Yunlong Jiao, 13 Apr 2016, UPDATED 22 FEB 2018
 
 This script shows how incomplete relapse info from ICGC BRCA dataset is so that survival prediction cannot proceed on this dataset...
+
+NOTE survival info has been completed in later releases of the data by ICGC.
 
 
 ```r
@@ -16,8 +18,8 @@ options(stringsAsFactors = FALSE)
 load(paste0(datapath, '110_genes_vals.RData'))
 samplelist <- colnames(genes.vals)
 # align
-alignmat <- read.table(paste0(datapath, 'clinical_info_sample.txt'), sep = "\t", quote = "\"", header = TRUE)
-y <- read.table(paste0(datapath, 'clinical_info_donor.txt'), sep = "\t", quote = "\"", header = TRUE)
+alignmat <- read.table(paste0(datapath, 'sample.BRCA-US.tsv'), sep = "\t", quote = "\"", header = TRUE)
+y <- read.table(paste0(datapath, 'donor.BRCA-US.tsv'), sep = "\t", quote = "\"", header = TRUE)
 alignid <- data.frame(sample = samplelist, 
                       donor = sapply(samplelist, function(id){
                         message(".", appendLF = FALSE)
@@ -61,13 +63,39 @@ table(y$donor_vital_status)
 
 ```r
 # only two patients have concrete survival time
-table(y$donor_survival_time)
+sum(!is.na(y$donor_interval_of_last_followup))
 ```
 
 ```
-## 
-## 315 412 
-##   1   1
+## [1] 755
+```
+
+```r
+quantile(y$donor_survival_time, na.rm = T)
+```
+
+```
+##      0%     25%     50%     75%    100% 
+##  158.00  851.25 1563.00 2384.00 4456.00
+```
+
+```r
+# followup period ranges wildly between patients
+# (data is not fair to make binary prediction on binary relapse status?)
+sum(!is.na(y$donor_survival_time))
+```
+
+```
+## [1] 124
+```
+
+```r
+quantile(y$donor_interval_of_last_followup, na.rm = T)
+```
+
+```
+##   0%  25%  50%  75% 100% 
+##   -7  120  411 1155 7067
 ```
 
 ```r
@@ -78,18 +106,7 @@ table(y$disease_status_last_followup)
 ```
 ## 
 ##                    complete remission        progression 
-##                123                680                 76
-```
-
-```r
-# followup period ranges wildly between patients
-# (data is not fair to make binary prediction on binary relapse status?)
-quantile(y$donor_interval_of_last_followup, na.rm = T)
-```
-
-```
-##     0%    25%    50%    75%   100% 
-##   -7.0  120.5  412.5 1154.5 6796.0
+##                200                658                 21
 ```
 
 ```r
@@ -100,8 +117,8 @@ table(y[,c("donor_vital_status","disease_status_last_followup")])
 ```
 ##                   disease_status_last_followup
 ## donor_vital_status     complete remission progression
-##           alive     93                642          20
-##           deceased  30                 38          56
+##           alive     76                658          21
+##           deceased 124                  0           0
 ```
 
 ```r
@@ -111,7 +128,7 @@ length(i) # number of followup less than 5 years
 ```
 
 ```
-## [1] 683
+## [1] 682
 ```
 
 ```r
@@ -121,7 +138,7 @@ table(y$disease_status_last_followup[i])
 ```
 ## 
 ##                    complete remission        progression 
-##                 81                584                 18
+##                 65                599                 18
 ```
 
 # Session info
@@ -132,17 +149,21 @@ sessionInfo()
 ```
 
 ```
-## R version 3.2.3 (2015-12-10)
-## Platform: x86_64-apple-darwin13.4.0 (64-bit)
-## Running under: OS X 10.11.4 (El Capitan)
+## R version 3.4.3 (2017-11-30)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS Sierra 10.12.6
+## 
+## Matrix products: default
+## BLAS: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
-## [1] C/UTF-8/C/C/C/C
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
 ## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  base     
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## loaded via a namespace (and not attached):
-## [1] magrittr_1.5  formatR_1.2.1 tools_3.2.3   stringi_1.0-1 knitr_1.12.3 
-## [6] methods_3.2.3 stringr_1.0.0 evaluate_0.8
+## [1] compiler_3.4.3  magrittr_1.5    tools_3.4.3     yaml_2.1.16    
+## [5] stringi_1.1.6   knitr_1.18      stringr_1.2.0   evaluate_0.10.1
 ```

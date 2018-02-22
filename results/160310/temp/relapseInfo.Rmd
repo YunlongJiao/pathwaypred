@@ -1,7 +1,9 @@
 # Process ICGC BRCA data
-# Yunlong Jiao, 13 Apr 2016
+# Yunlong Jiao, 13 Apr 2016, UPDATED 22 FEB 2018
 
 This script shows how incomplete relapse info from ICGC BRCA dataset is so that survival prediction cannot proceed on this dataset...
+
+NOTE survival info has been completed in later releases of the data by ICGC.
 
 ```{r setup}
 knitr::opts_chunk$set(error = FALSE)
@@ -14,8 +16,8 @@ options(stringsAsFactors = FALSE)
 load(paste0(datapath, '110_genes_vals.RData'))
 samplelist <- colnames(genes.vals)
 # align
-alignmat <- read.table(paste0(datapath, 'clinical_info_sample.txt'), sep = "\t", quote = "\"", header = TRUE)
-y <- read.table(paste0(datapath, 'clinical_info_donor.txt'), sep = "\t", quote = "\"", header = TRUE)
+alignmat <- read.table(paste0(datapath, 'sample.BRCA-US.tsv'), sep = "\t", quote = "\"", header = TRUE)
+y <- read.table(paste0(datapath, 'donor.BRCA-US.tsv'), sep = "\t", quote = "\"", header = TRUE)
 alignid <- data.frame(sample = samplelist, 
                       donor = sapply(samplelist, function(id){
                         message(".", appendLF = FALSE)
@@ -42,12 +44,14 @@ nrow(y)
 # everyone has donor vital status
 table(y$donor_vital_status)
 # only two patients have concrete survival time
-table(y$donor_survival_time)
-# most people have relapse status but data is highly unbalanced
-table(y$disease_status_last_followup)
+sum(!is.na(y$donor_interval_of_last_followup))
+quantile(y$donor_survival_time, na.rm = T)
 # followup period ranges wildly between patients
 # (data is not fair to make binary prediction on binary relapse status?)
+sum(!is.na(y$donor_survival_time))
 quantile(y$donor_interval_of_last_followup, na.rm = T)
+# most people have relapse status but data is highly unbalanced
+table(y$disease_status_last_followup)
 # vital status is overall survival but not disease-specific?
 table(y[,c("donor_vital_status","disease_status_last_followup")])
 # 5-year true relapses is even rare in data
