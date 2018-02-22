@@ -1,0 +1,72 @@
+# Compare TCGA-BRCA data from ICGC and CBIO
+# Yunlong Jiao, 22 Feb 2018
+
+This script compares TCGA-BRCA data from ICGC and CBIO
+
+```{r setup}
+knitr::opts_chunk$set(error = FALSE)
+options(stringsAsFactors = FALSE)
+```
+
+```{r tcga, message=FALSE}
+# data from ICGC
+alignmatICGC <- read.table("../../../data/BRCA_saved_data/clinical_info_sample.txt", sep = "\t", quote = "\"", header = TRUE)
+yICGC <- read.table("../../../data/BRCA_saved_data/clinical_info_donor.txt", sep = "\t", quote = "\"", header = TRUE)
+
+# data from CBIO
+alignmatCBIO <- read.table("../../../data/brca_tcga/data_bcr_clinical_data_sample.txt", sep = "\t", quote = "\"", header = TRUE)
+yCBIO <- read.table("../../../data/brca_tcga/data_bcr_clinical_data_patient.txt", sep = "\t", quote = "\"", header = TRUE)
+
+# samples
+load("../../../data/BRCA_saved_data/110_genes_vals.RData")
+samplelist <- colnames(genes.vals)
+
+# align id
+alignid <- data.frame("sample" = samplelist, 
+                      "donorICGC" = sapply(samplelist, function(id){
+                        message(".", appendLF = FALSE)
+                        i <- grep(id, alignmatICGC$submitted_sample_id)
+                        if (length(i) == 1) {
+                          alignmatICGC$icgc_donor_id[i]
+                        } else if (length(i) == 0) {
+                          NA
+                        } else {
+                          stop(id, " has more than 1 alignment!")
+                        }
+                      }), 
+                      "donorCBIO" = sapply(samplelist, function(id){
+                        message("+", appendLF = FALSE)
+                        i <- grep(gsub("[.]","-",substr(id,1,15)), alignmatCBIO$SAMPLE_ID)
+                        if (length(i) == 1) {
+                          return(alignmatCBIO$PATIENT_ID[i])
+                        } else if (length(i) == 0) {
+                          return(NA)
+                        } else {
+                          stop(id, " has more than 1 alignment!")
+                        }
+                      }))
+nrow(alignid)
+
+# match back to ICGC donor info
+idICGC <- match(alignid$donorICGC, yICGC$icgc_donor_id)
+yICGC <- yICGC[idICGC, ]
+rownames(yICGC) <- samplelist
+
+# match back to CBIO donor info
+idCBIO <- match(alignid$donorCBIO, yCBIO$PATIENT_ID)
+yCBIO <- yCBIO[idCBIO, ]
+rownames(yCBIO) <- samplelist
+```
+
+```{r summary}
+os.status <- cbind(yICGC$donor_vital_status, yCBIO$OS_STATUS)
+os.status <- os.status[!is.na(os.status[,1]) & !is.na(os.status[,2]), ]
+id <- which(gsub("alive", "living", os.status[,1]) != tolower(os.status[,2]))
+os.status[id, ]
+```
+
+# Session info
+
+```{r session_info}
+sessionInfo()
+```
